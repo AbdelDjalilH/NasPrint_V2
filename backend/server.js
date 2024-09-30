@@ -5,31 +5,36 @@
 const express = require("express");
 const cors = require("cors");
 
-const app = express ();
-
 const mysql = require("mysql");
 
 const PORT = 3335;
+
+const app = express ();
+app.use(express.json());
 
 const pool = mysql.createPool({
     host: "localhost",
     user: "adja",
     password: "hamzaoui",
-    database : "Nas_Print_BDD"
-})
-
-app.get("/", (req, res) => {
-    res.send("Hello world!")
+    database : "Nas_Print_BDD",
 });
 
-app.get("/toto" (req,res) =>{
-    res.json({message: "toto le plus beau"});
-})
+app.get("/", (req, res) => {
+    res.send("Hello world!");
+});
 
-app.get("/users", (req,res) => {
-    SELECT * FROM users;
-    return
-})
+app.get("/toto", (req, res) => {
+    res.json({message: "toto le plus beau"});
+});
+
+app.get("/users", async (req, res) => {
+    try {
+        const users = await pool.query("SELECT * FROM users");
+        res.json(users);
+    } catch (err) {
+        res.status(500).json({error: err.message});
+    }
+});
 
 app.listen(PORT, () => {
     console.log(`j'écoute sur le port ${PORT}`);
