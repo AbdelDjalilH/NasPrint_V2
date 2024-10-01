@@ -4,19 +4,19 @@
 
 const express = require("express");
 const cors = require("cors");
-
-const mysql = require("mysql");
+const mysql = require("mysql2");
 
 const PORT = 3335;
+const app = express();
 
-const app = express ();
 app.use(express.json());
+app.use(cors());
 
 const pool = mysql.createPool({
     host: "localhost",
     user: "adja",
     password: "hamzaoui",
-    database : "Nas_Print_BDD",
+    database: "nas_print_bdd",
 });
 
 app.get("/", (req, res) => {
@@ -24,16 +24,16 @@ app.get("/", (req, res) => {
 });
 
 app.get("/toto", (req, res) => {
-    res.json({message: "toto le plus beau"});
+    res.json({ message: "toto le plus beau" });
 });
 
-app.get("/users", async (req, res) => {
-    try {
-        const users = await pool.query("SELECT * FROM users");
-        res.json(users);
-    } catch (err) {
-        res.status(500).json({error: err.message});
-    }
+app.get("/users", (req, res) => {
+    pool.query("SELECT * FROM users", (err, users) => {
+        if (err) {
+            return res.status(500).json({ error: err.message });
+        }
+        res.json(users); 
+    });
 });
 
 app.listen(PORT, () => {
