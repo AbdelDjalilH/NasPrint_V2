@@ -1,7 +1,5 @@
 // Ce fichier sert à générer un serveur express qui écoute sur un port donné
 
-
-
 const express = require("express");
 const cors = require("cors");
 const usersRouter = require("./routes/usersRoutes");

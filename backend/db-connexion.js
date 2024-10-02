@@ -1,6 +1,6 @@
 // Ce fichier ouvre une connexion vers une base de donnée Mysql
 
-const mysql = require("mysql2");
+const mysql = require("mysql2/promise");
 
 const pool = mysql.createPool({
     host: "localhost",
