@@ -1,0 +1,33 @@
+.container-Apropos {
+  margin-top: 2rem;
+  display: flex;
+
+  align-items: center;
+  flex-direction: column;
+}
+.introduction-container {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: row;
+
+  width: 60%;
+}
+.text-introduction {
+  margin-left: 15rem;
+}
+.formation-container {
+  margin-top: 3rem;
+  display: flex;
+  flex-direction: column;
+  max-width: 50%;
+}
+.formation-div {
+  margin-top: 3rem;
+  display: flex;
+  flex-direction: row;
+  gap: 5rem;
+}
+.experience-container {
+  margin-top: 7rem;
+  max-width: 50%;
+}

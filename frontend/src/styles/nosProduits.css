@@ -1,0 +1,16 @@
+.products-container {
+    margin-top: 7rem;
+    display: flex;
+    gap: 5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .title-nosProduits {
+    margin-top: 3rem;
+    text-align: center;
+  }
+  .filter-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 3rem;
+  }

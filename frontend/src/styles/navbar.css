@@ -1,0 +1,26 @@
+.navbar-container {
+    background-color: black;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+  }
+  .links-nav {
+    text-decoration: none;
+    color: white;
+    font-size: 1.5rem;
+  }
+  .list-2boutons {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-left: 4rem;
+    gap: 3rem;
+  }
+  .panier-img {
+    width: 3rem;
+  }
+  .links-nav2 {
+    text-decoration: none;
+    color: white;
+  }

@@ -1,0 +1,67 @@
+.slider-container {
+    margin-top: 3rem;
+  }
+  .nouveaute-title {
+    text-align: center;
+    margin-top: 3rem;
+    font-size: 2rem;
+  }
+  .nouveautees-product {
+    margin-top: 3rem;
+    margin-left: 8rem;
+    justify-content: center;
+    display: flex;
+    flex-direction: row;
+    gap: 3rem;
+  }
+  .firstimage,
+  .secondimage {
+    width: 25rem;
+  }
+  .titlefirst-one,
+  .titlesecond-two {
+    margin-left: 3rem;
+  }
+  .price1st-one,
+  .price2st-two {
+    margin-left: 11rem;
+  }
+  
+  .bestSells-title {
+    text-align: center;
+    margin-top: 3rem;
+    font-size: 2rem;
+  }
+  .bestSells-product {
+    margin-top: 3rem;
+    margin-left: 8rem;
+    justify-content: center;
+    display: flex;
+    flex-direction: row;
+    gap: 3rem;
+  }
+  .thirdImage,
+  .fourImage,
+  .fiveImage {
+    width: 20rem;
+  }
+  .titlethird-three,
+  .titleFour-four,
+  .titleFive-five {
+    margin-left: 0.7rem;
+  }
+  .price3rd-three,
+  .price4st-four,
+  .price5st-five {
+    margin-left: 9rem;
+  }
+  
+  .nouveaute-one,
+  .nouveaute-two,
+  .bestSells-one,
+  .bestSells-two,
+  .bestSells-three {
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px,
+      rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+  }
+  
