@@ -1,6 +1,6 @@
 const fs = require("fs");
 const path = require ("path");
-const pool = require("./db-connexion");
+const pool = require("./db-connection");
 
 const inizializeDatabase= async () => {
     try {
@@ -17,4 +17,4 @@ const inizializeDatabase= async () => {
     }
 };
 
-MediaSourceHandle.exports = { inizializeDatabase};
+module.exports = { inizializeDatabase};

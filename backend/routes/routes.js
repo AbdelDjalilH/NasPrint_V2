@@ -1,4 +1,4 @@
-const pool = require("../db-connexion");
+const pool = require("../database/db-connection");
 const router = require("express").Router();
 
 router.get("/", (req, res) => {

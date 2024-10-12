@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const pool = require("../db-connexion");
+const pool = require("../database/db-connection");
 
 // Route pour récupérer tous les utilisateurs
 router.get("/", async (req, res) => {
