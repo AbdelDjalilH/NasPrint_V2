@@ -4,8 +4,10 @@ const pool = require("../database/db-connection");
 // Route pour récupérer tous les utilisateurs
 router.get("/", async (req, res) => {
     try {
+        
         const [users] = await pool.query("SELECT * FROM users");
         res.json(users);
+        
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -14,6 +16,7 @@ router.get("/", async (req, res) => {
 // Route pour récupérer un utilisateur par ID
 router.get("/:id", async (req, res) => {
     try {
+        console.log("Fetching all users");
         const [user] = await pool.query("SELECT * FROM users WHERE id = ?", [req.params.id]);
         if (user.length === 0) {
             return res.status(404).send("Not found");
@@ -27,6 +30,7 @@ router.get("/:id", async (req, res) => {
 // Route pour créer un nouvel utilisateur
 router.post("/", async (req, res) => {
     try {
+        
         const { name, email } = req.body;
 
         const [result] = await pool.query(

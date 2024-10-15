@@ -22,6 +22,7 @@ app.use("/", routes);
 
 const PORT = 3335;
 
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
     console.log(`j'écoute sur le port ${PORT}`);
+    await initializeDatabase();
 });

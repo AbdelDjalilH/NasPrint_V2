@@ -24,32 +24,32 @@ if(!passwordMatch) {
 res.json({success: true, user: { id: user.id, email: user.email } });
 };
 
-// const register = async ( req, res) => {
-//     const {email, password, firstname, lastname} = req.body;
-//     console.log(email, password, firstname, lastname);
+const register = async ( req, res) => {
+    const {email, password, firstname, lastname} = req.body;
+    console.log(email, password, firstname, lastname);
 
-//     const hashedPassword = await argon2.hash(password);
-//     console.log(hashedPassword);
+    const hashedPassword = await argon2.hash(password);
+    console.log(hashedPassword);
 
-//     try {
-//         const userId = await createUser({
-//             email,
-//             password: hashedPassword,
-//             firstname,
-//             lastname,
-//         });
-//         req.json({ success: true, userId: userId});
-//     } catch (error) {
-//         console.error("Error registering user", error);
-//         res.status(500).json({ success: false, message: "Internal server error"});
-//     }
-//         };
+    try {
+        const userId = await createUser({
+            email,
+            password: hashedPassword,
+            firstname,
+            lastname,
+        });
+        req.json({ success: true, userId: userId});
+    } catch (error) {
+        console.error("Error registering user", error);
+        res.status(500).json({ success: false, message: "Internal server error"});
+    }
+        };
 
-        // const checkAuth = (req, res) => {
-        //     res.json({authenticated: true});
-        // };
+        const checkAuth = (req, res) => {
+            res.json({authenticated: true});
+        };
 
         module.exports= {login,
-            //  register,
-            //   checkAuth
+             register,
+              checkAuth
             };

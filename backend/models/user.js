@@ -8,4 +8,4 @@ const findOneByEmail = async (email) => {
     return rows;
 };
 
-module.exports = findOneByEmail;
+module.exports = {findOneByEmail};

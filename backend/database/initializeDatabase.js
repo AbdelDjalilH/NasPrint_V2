@@ -1,20 +1,25 @@
 const fs = require("fs");
-const path = require ("path");
+const path = require("path");
 const pool = require("./db-connection");
 
-const inizializeDatabase= async () => {
+const initializeDatabase = async () => {
     try {
-        const sqlPath = path.join(_dirname, "datas.sql");
-        const sql = fs.readfileSync(sqlPath, "utf-8");
+        const sqlPath = path.join( __dirname, 'datas.sql');
+        const sql = fs.readFileSync(sqlPath, "utf-8");
 
-        const queries = sql.split(";").map((query) => query.trim()).filter((query) => query.length);
-        for (const query of queries ) {
-            await pool.querty(query);
+        const queries = sql
+            .split(";")
+            .map((query) => query.trim())
+            .filter((query) => query.length);
+        
+        for (const query of queries) {
+            console.log("Executing query:", query);  // Log chaque requête
+            await pool.query(query);
         }
-        console.log("Database initialize successfully.");
+        console.log("Database initialized successfully.");
     } catch (error) {
-        console.log("Error initializing database", error);
+        console.error("Error initializing database:", error.message); // Log l'erreur
     }
 };
 
-module.exports = { inizializeDatabase};
+module.exports = { initializeDatabase };
