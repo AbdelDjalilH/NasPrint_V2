@@ -3,9 +3,9 @@ const Joi = require("joi");
 const checkRegisterDatas = (req, res, next) => {
     const {error} = Joi.object({
         email: Joi.string().email().presence("required"),
+        username: Joi.string().min(2),
         password: Joi.string().min(8).max(20).presence("required"),
-        firstname: Joi.string().min(2),
-        lastname: Joi.string().min(2),
+        
     }).validate(req.body, {abortEarly: false });
 
     if (!error) {

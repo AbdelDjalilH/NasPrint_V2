@@ -23,6 +23,7 @@ app.listen(PORT, async () => {
     await initializeDatabase();
 })
 
+
 // const startServer = async () => {
 //     try {
 //         await initializeDatabase();
@@ -37,6 +38,7 @@ app.listen(PORT, async () => {
 // };
 
 // startServer();
+
 
 
 
