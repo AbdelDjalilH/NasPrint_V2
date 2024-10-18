@@ -18,20 +18,25 @@ app.use("/", routes);
 
 const PORT = 3335;
 
-const startServer = async () => {
-    try {
-        await initializeDatabase();
-        console.log("Base de données initialisée avec succès.");
-        
-        app.listen(PORT, () => {
-            console.log(`j'écoute sur le port ${PORT}`);
-        });
-    } catch (error) {
-        console.error("Erreur lors de l'initialisation de la base de données :", error.message);
-    }
-};
+app.listen(PORT, async () => {
+    console.log(`Salut j'écoute sur le port ${PORT}`);
+    await initializeDatabase();
+})
 
-startServer();
+// const startServer = async () => {
+//     try {
+//         await initializeDatabase();
+//         console.log("Base de données initialisée avec succès.");
+        
+//         app.listen(PORT, () => {
+//             console.log(`j'écoute sur le port ${PORT}`);
+//         });
+//     } catch (error) {
+//         console.error("Erreur lors de l'initialisation de la base de données :", error.message);
+//     }
+// };
+
+// startServer();
 
 
 
