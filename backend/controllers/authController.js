@@ -1,5 +1,28 @@
 const argon2 = require("argon2");
-const { findOneByEmail, createUser } = require("../models/user"); // Assurez-vous d'importer createUser
+const { findOneByEmail, createUser } = require("../models/user");
+
+
+
+// Assurez-vous d'importer createUser
+// const browse = async (req, res, next) => {
+//     try {
+//       const users = await users.browse();
+//       res.json(users);
+//     } catch (error) {
+//       next(error);
+//     }
+//   };
+
+//   const readOneById = async (req, res, next) => {
+//     try {
+//       const user = await users.readOneById(req.params.id);
+//       res.json(user);
+//     } catch (error) {
+//       next(error);
+//     }
+//   };
+
+
 
 // Fonction de connexion (Login)
 const login = async (req, res) => {
@@ -69,6 +92,45 @@ const register = async (req, res) => {
     }
 };
 
+// const edit = async (req, res, next) => {
+//     try {
+//       const affectedRows = await users.edit(req.params.id, req.body);
+  
+//       if (affectedRows > 0) {
+//         const updatedUser = await users.readOneById(req.params.id);
+  
+//         const response = {
+//           email: updatedUser.email,
+//           username: updatedUser.username,
+//           password: updatedUser.password,
+//           role: updatedUser.role,
+//           inscription_date: updatedUser.inscription_date,
+//           id: updatedUser.id,
+//         };
+  
+//         res.json({ message: "User updated successfully", user: response });
+//       } else {
+//         res.status(404).json({ message: "User not found" });
+//       }
+//     } catch (error) {
+//       next(error);
+//     }
+//   };
+
+//   const destroy = async (req, res, next) => {
+//     const { id } = req.params;
+//     try {
+//       const success = await users.destroy(id);
+//       if (success) {
+//         res.json({ message: "User deleted successfully" });
+//       } else {
+//         res.status(404).json({ message: "User not found" });
+//       }
+//     } catch (error) {
+//       next(error);
+//     }
+//   };
+
 // Fonction de vérification d'authentification (simple check)
 const checkAuth = (req, res) => {
     res.json({ authenticated: true });
@@ -77,5 +139,10 @@ const checkAuth = (req, res) => {
 module.exports = {
     login,
     register,
-    checkAuth
+    checkAuth,
+    // browse,
+    // readOneById,
+    // edit,
+    // destroy
+
 };

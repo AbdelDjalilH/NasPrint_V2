@@ -1,3 +1,4 @@
+// const { DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME } = process.env;
 const argon2 = require("argon2");
 const mysql = require("mysql2/promise");
 

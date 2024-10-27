@@ -12,6 +12,17 @@ const findOneByEmail = async (email) => {
     }
 };
 
+// const browse = async () => {
+//     const [rows] = await pool.query("SELECT * FROM users");
+//     return rows[0];
+// } 
+
+// const edit = async (id, user) => {
+//     const [result] = await pool.query("UPDATE users SET email = ?, username = ?,   password = ?, role = ?, inscription_date =?, WHERE id = ?"
+//       [user.email,user.username,user.password,user.role,user.inscription_date, id]
+//     );
+//     return result.affectedRows;
+// } 
 
 // Fonction pour créer un utilisateur
 const createUser = async ({ email, password, username }) => {
@@ -24,4 +35,23 @@ const createUser = async ({ email, password, username }) => {
     return result.insertId;
 };
 
-module.exports = { findOneByEmail, createUser };
+const destroy = async (id) => {
+    const [result] = await pool.query("DELETE FROM USERS WHERE id = ?"
+      [id]
+    );
+    return result.affectedRows;
+}
+
+
+
+
+
+
+
+module.exports = { findOneByEmail,
+     createUser,
+    //   browse,
+    //    edit,
+    //    destroy
+    
+    };

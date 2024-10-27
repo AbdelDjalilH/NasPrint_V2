@@ -1,77 +1,84 @@
 const router = require("express").Router();
-const pool = require("../database/db-connection");
-
-
+const { pool } = require("../database/db-connection"); // Import correct du pool
 
 // Route pour récupérer tous les utilisateurs
 router.get("/", async (req, res) => {
     try {
-        
-        const [users] = await pool.query("SELECT * FROM users");
+        const [users] = await pool.execute("SELECT * FROM users"); // Utilise execute()
         res.json(users);
-        
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        res.status(500).json({ error: "Erreur lors de la récupération des utilisateurs" });
     }
 });
 
 // Route pour récupérer un utilisateur par ID
 router.get("/:id", async (req, res) => {
     try {
-        console.log("Fetching all users");
-        const [user] = await pool.query("SELECT * FROM users WHERE id = ?", [req.params.id]);
+        const [user] = await pool.execute("SELECT * FROM users WHERE id = ?", [req.params.id]);
         if (user.length === 0) {
-            return res.status(404).send("Not found");
+            return res.status(404).json({ message: "Utilisateur non trouvé" });
         }
-        res.json(user);
+        res.json(user[0]); // Retourner un seul utilisateur
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        res.status(500).json({ error: "Erreur lors de la récupération de l'utilisateur" });
     }
 });
 
 // Route pour créer un nouvel utilisateur
 router.post("/", async (req, res) => {
+    const { username, email } = req.body;
+
+    if (!username || !email) {
+        return res.status(400).json({ message: "Le nom et l'email sont requis" });
+    }
+
     try {
-        
-        const { name, email } = req.body;
-
-        const [result] = await pool.query(
-            "INSERT INTO users (name, email) VALUES (?, ?)",
-            [name, email]
+        const [result] = await pool.execute(
+            "INSERT INTO users (username, email) VALUES (?, ?)",
+            [username, email]
         );
-
-        res.status(201).json({ message: "User created", id: result.insertId });
+        res.status(201).json({ message: "Utilisateur créé", id: result.insertId });
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        res.status(500).json({ error: "Erreur lors de la création de l'utilisateur" });
     }
 });
 
-router.put("/:id", async (req,res) => {
-    try{
-        const {id} = req.params;
-        const {name, email} = req.body;
-        await pool.query("UPDATE users SET name = ?, email = ? WHERE id= ?", [
-            name,
-            email,
-            id,
-          ]);
-          res.json({message: "User updated"});
-    } catch (err) {
-        res.status(500).json({error: err.message});
-    }
-})
+// Route pour mettre à jour un utilisateur
+router.put("/:id", async (req, res) => {
+    const { username, email } = req.body;
 
-router.delete("/:id", async (req,res) => {
+    if (!username || !email) {
+        return res.status(400).json({ message: "Le nom et l'email sont requis" });
+    }
+
     try {
-        const {id} = req.params;
-        await pool.query("DELETE FROM users WHERE id = ?" , [id]);
-        res.json({message: "User deleted"});
-    
+        const [user] = await pool.execute("SELECT * FROM users WHERE id = ?", [req.params.id]);
+
+        if (user.length === 0) {
+            return res.status(404).json({ message: "Utilisateur non trouvé" });
+        }
+
+        await pool.execute("UPDATE users SET username = ?, email = ? WHERE id = ?", [username, email, req.params.id]);
+        res.json({ message: "Utilisateur mis à jour" });
     } catch (err) {
-        res.status(500).json({error: err.message });
+        res.status(500).json({ error: "Erreur lors de la mise à jour de l'utilisateur" });
     }
-})
+});
 
+// Route pour supprimer un utilisateur
+router.delete("/:id", async (req, res) => {
+    try {
+        const [user] = await pool.execute("SELECT * FROM users WHERE id = ?", [req.params.id]);
 
+        if (user.length === 0) {
+            return res.status(404).json({ message: "Utilisateur non trouvé" });
+        }
+
+        await pool.execute("DELETE FROM users WHERE id = ?", [req.params.id]);
+        res.json({ message: "Utilisateur supprimé" });
+    } catch (err) {
+        res.status(500).json({ error: "Erreur lors de la suppression de l'utilisateur" });
+    }
+});
 
 module.exports = router;

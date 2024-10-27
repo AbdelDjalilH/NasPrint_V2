@@ -1,0 +1,62 @@
+
+
+
+
+// const browse = async (req, res, next) => {
+//     try {
+//       const products = await products.browse();
+//       res.json(products);
+//     } catch (error) {
+//       next(error);
+//     }
+//   };
+
+//   const readOneById = async (req, res, next) => {
+//         try {
+//           const product = await products.readOneById(req.params.id);
+//           res.json(product);
+//         } catch (error) {
+//           next(error);
+//         }
+//       };
+
+//       const edit = async (req, res, next) => {
+//             try {
+//               const affectedRows = await products.edit(req.params.id, req.body);
+          
+//               if (affectedRows > 0) {
+//                 const updatedProduct = await products.readOneById(req.params.id);
+          
+//                 const response = {
+//                   product_name: updatedProduct.product_name,
+//                   product_description: updatedProduct.product_description,
+//                   price: updatedProduct.price,
+//                   image_url: updatedProduct.image_url,
+//                   height: updatedProduct.height,
+//                   length: updatedProduct.length,
+//                   weight: updatedProduct.weight,
+                  
+//                 };
+          
+//                 res.json({ message: "Product updated successfully", Product: response });
+//               } else {
+//                 res.status(404).json({ message: "Product not found" });
+//               }
+//             } catch (error) {
+//               next(error);
+//             }
+//           };
+
+//           const destroy = async (req, res, next) => {
+//                 const { id } = req.params;
+//                 try {
+//                   const success = await products.destroy(id);
+//                   if (success) {
+//                     res.json({ message: "Product deleted successfully" });
+//                   } else {
+//                     res.status(404).json({ message: "Product not found" });
+//                   }
+//                 } catch (error) {
+//                   next(error);
+//                 }
+//               };
