@@ -13,7 +13,6 @@ export default function Register() {
   });
 
   const { login } = useAuth();
-
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -28,24 +27,30 @@ export default function Register() {
     e.preventDefault();
 
     try {
+      console.log("Données envoyées au backend :", formDatas);
+
       const response = await axios.post(
-        `http://localhost:3335/auth/register`,
+        `${import.meta.env.VITE_API_URL}/auth/register`,
         formDatas
-      ); // Mettez ici l'URL correcte de votre backend
+      );
 
-      console.info("Données reçues du backend :", response.data);
+      if (response.status === 201) {
+        // Vérifie que le statut est bien "Created"
+        console.info("Données reçues du backend :", response.data);
 
-      const newUser = {
-        username: formDatas.username,
-        email: formDatas.email,
-        password: formDatas.password,
-      };
+        const newUser = {
+          username: formDatas.username,
+          email: formDatas.email,
+          password: formDatas.password,
+        };
 
-      // login(newUser);
-      navigate(`/connexion`);
+        navigate(`/connexion`);
+      } else {
+        console.error("Erreur lors de l'inscription :", response);
+      }
     } catch (error) {
       console.error(
-        "Error during registration:",
+        "Erreur lors de l'enregistrement :",
         error.response ? error.response.data : error.message
       );
     }
@@ -61,7 +66,7 @@ export default function Register() {
               type="text"
               id="username"
               name="username"
-              value={formDatas.username} // Ajout de value pour rendre cet input contrôlé
+              value={formDatas.username}
               onChange={handleChange}
               placeholder="Votre nom d'utilisateur"
               required

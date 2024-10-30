@@ -9,75 +9,48 @@ export default function Navbar() {
 
   return (
     <nav className="navbar-container">
+      <Link className="links-nav" to="/">
+        <img src={logoNas} alt="Logo" />
+      </Link>
+
+      <Link to="/a-propos" className="links-nav">
+        A propos
+      </Link>
+
+      <Link to="/nos-produits" className="links-nav">
+        Nos produits
+      </Link>
+
       {auth ? (
         <>
-          <Link to="/secret-page" className="secret-nav">
+          <Link to="/user-management" className="secret-nav">
             Page secrète
           </Link>
-
-          <Link className="links-nav" to="/">
-            <img src={logoNas} alt="Logo" />
-          </Link>
-
-          <Link to="/a-propos" className="links-nav">
-            A propos
-          </Link>
-
-          <Link to="/nos-produits" className="links-nav">
-            Nos produits
-          </Link>
-
-          <ul className="list-2boutons">
-            <li>
-              <Link to="/inscription" className="links-nav2">
-                S'inscrire
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/connexion"
-                onClick={() => logout()}
-                className="connexion-btn"
-              >
-                Deconnexion
-              </Link>
-            </li>
-            <li>
-              <img className="panier-img" src={panier} alt="Panier" />
-            </li>
-          </ul>
+          <button onClick={logout} className="connexion-btn">
+            Déconnexion
+          </button>
         </>
       ) : (
-        <>
-          <Link className="links-nav" to="/">
-            <img src={logoNas} alt="Logo" />
-          </Link>
-
-          <Link to="/a-propos" className="links-nav">
-            A propos
-          </Link>
-
-          <Link to="/nos-produits" className="links-nav">
-            Nos produits
-          </Link>
-
-          <ul className="list-2boutons">
-            <li>
-              <Link to="/inscription" className="links-nav2">
-                S'inscrire
-              </Link>
-            </li>
-            <li>
-              <Link to="/connexion" className="links-nav2">
-                Connexion
-              </Link>
-            </li>
-            <li>
-              <img className="panier-img" src={panier} alt="Panier" />
-            </li>
-          </ul>
-        </>
+        <ul className="list-2boutons">
+          <li>
+            <Link to="/inscription" className="links-nav2">
+              S'inscrire
+            </Link>
+          </li>
+          <li>
+            <Link to="/connexion" className="links-nav2">
+              Connexion
+            </Link>
+          </li>
+        </ul>
       )}
+      {auth && (
+        <Link to="/second-secret-page" className="secret-nav">
+          Deuxième Page Secrète
+        </Link>
+      )}
+
+      <img className="panier-img" src={panier} alt="Panier" />
     </nav>
   );
 }
