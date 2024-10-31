@@ -56,6 +56,8 @@ CREATE TABLE payments (
 CREATE TABLE adresses (
     id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT NOT NULL,
     user_id INT UNSIGNED NOT NULL,
+    lastname VARCHAR(100) NOT NULL,
+    firstname VARCHAR(100) NOT NULL,
     number_road VARCHAR(100) NOT NULL,
     city VARCHAR(100) NOT NULL,
     postal_code INT NOT NULL,
@@ -190,12 +192,28 @@ VALUES (
 INSERT INTO
     adresses (
         user_id,
+        lastname,
+        firstname,
         number_road,
         city,
         postal_code
     )
-VALUES (1, "35", "Paris", 75008),
-    (2, "32", "Lyon", 69200);
+VALUES (
+        1,
+        "lolo",
+        "lulu",
+        35,
+        "Paris",
+        75008
+    ),
+    (
+        2,
+        "lele",
+        "lalo",
+        "32",
+        "Lyon",
+        69200
+    );
 
 INSERT INTO
     cart (user_id, date_creation)

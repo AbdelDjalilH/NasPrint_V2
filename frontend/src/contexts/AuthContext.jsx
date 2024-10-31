@@ -12,15 +12,14 @@ export const AuthProvider = ({ children }) => {
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/auth/login`,
         { email, password },
-        { withCredentials: true } // Assurez-vous que vous pouvez gérer les cookies si nécessaire
+        { withCredentials: true }
       );
       // Stocker le token dans le localStorage ou les cookies
       localStorage.setItem("token", response.data.token);
       setAuth(true);
-      setUser(response.data.user);
+      setUser(response.data.user); // `response.data.user` doit contenir l'id de l'utilisateur
     } catch (error) {
       console.error("Erreur lors de la connexion :", error);
-      // Gérer l'erreur ici (afficher un message, etc.)
     }
   };
 

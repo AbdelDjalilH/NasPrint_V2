@@ -5,7 +5,7 @@ import "../styles/navbar.css";
 import { useAuth } from "../contexts/AuthContext";
 
 export default function Navbar() {
-  const { auth, logout } = useAuth();
+  const { auth, logout, user } = useAuth();
 
   return (
     <nav className="navbar-container">
@@ -21,14 +21,14 @@ export default function Navbar() {
         Nos produits
       </Link>
 
-      {auth ? (
+      {auth && user.role === "Administrateur" ? (
         <>
-          <Link to="/user-management" className="secret-nav">
-            Page secrète
+          <Link to="/admin-page" className="secret-nav">
+            Admin
           </Link>
-          <button onClick={logout} className="connexion-btn">
+          <Link onClick={logout} className="links-nav2">
             Déconnexion
-          </button>
+          </Link>
         </>
       ) : (
         <ul className="list-2boutons">
@@ -45,8 +45,8 @@ export default function Navbar() {
         </ul>
       )}
       {auth && (
-        <Link to="/second-secret-page" className="secret-nav">
-          Deuxième Page Secrète
+        <Link to="/client-Info" className="secret-nav">
+          Infos Client
         </Link>
       )}
 

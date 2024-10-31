@@ -8,10 +8,11 @@ import APropos from "./pages/APropos.jsx";
 import NosProduits from "./pages/NosProduits.jsx";
 import Register from "./pages/Register.jsx";
 import Connexion from "./pages/Connexion.jsx";
-import SecretPage from "./pages/SecretPage.jsx";
 import { AuthProvider } from "./contexts/AuthContext"; // Import AuthProvider
-import SecondSecretPage from "./pages/SecondSecretPage.jsx";
 import UserManagement from "./pages/UserManagement.jsx";
+import ProductInfo from "./pages/ProductInfo.jsx";
+import AdminPage from "./pages/AdminPage.jsx";
+import ClientInfo from "./pages/ClientInfo.jsx";
 
 const router = createBrowserRouter([
   {
@@ -22,9 +23,10 @@ const router = createBrowserRouter([
       { element: <NosProduits />, path: "/nos-produits" },
       { element: <Register />, path: "/inscription" },
       { element: <Connexion />, path: "/connexion" },
-      // { element: <SecretPage />, path: "/secret-page" }, // Ajoutez une route pour la page secrète
-      { element: <SecondSecretPage />, path: "/second-secret-page" },
       { element: <UserManagement />, path: "/user-management" },
+      { element: <AdminPage />, path: "/admin-page" },
+      { element: <ProductInfo />, path: "/product-info" },
+      { element: <ClientInfo />, path: "/client-info" },
     ],
   },
 ]);
