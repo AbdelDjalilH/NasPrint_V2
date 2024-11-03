@@ -4,7 +4,8 @@ import panier from "../assets/navImages/panier.png";
 import "../styles/navbar.css";
 import { useAuth } from "../contexts/AuthContext";
 
-export default function Navbar() {
+export default function Navbar({ toggleCartModal, cartItemCount }) {
+  // Ajoutez cartItemCount en prop
   const { auth, logout, user } = useAuth();
 
   return (
@@ -44,13 +45,25 @@ export default function Navbar() {
           </li>
         </ul>
       )}
+
       {auth && (
         <Link to="/client-Info" className="secret-nav">
           Infos Client
         </Link>
       )}
 
-      <img className="panier-img" src={panier} alt="Panier" />
+      {/* L'icône panier déclenche toggleCartModal lorsqu'elle est cliquée */}
+      <div
+        className="cart-container"
+        onClick={toggleCartModal}
+        style={{ cursor: "pointer" }}
+      >
+        <img className="panier-img" src={panier} alt="Panier" />
+        {/* Affichage du compteur dans un cercle si cartItemCount > 0 */}
+        {cartItemCount > 0 && (
+          <span className="cart-count">{cartItemCount}</span>
+        )}
+      </div>
     </nav>
   );
 }

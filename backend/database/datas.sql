@@ -1,3 +1,4 @@
+-- Suppression des tables existantes
 DROP TABLE IF EXISTS cart_products;
 
 DROP TABLE IF EXISTS cart;
@@ -16,6 +17,7 @@ DROP TABLE IF EXISTS categories;
 
 DROP TABLE IF EXISTS users;
 
+-- Création des tables
 CREATE TABLE users (
     id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT NOT NULL,
     email VARCHAR(255) NOT NULL UNIQUE,
@@ -25,22 +27,24 @@ CREATE TABLE users (
     inscription_date DATE
 );
 
-CREATE TABLE products (
-    id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT NOT NULL,
-    product_name VARCHAR(100) NOT NULL,
-    product_description VARCHAR(500) NOT NULL,
-    price INT NOT NULL,
-    quantity_available INT,
-    image_url VARCHAR(1000) NOT NULL DEFAULT 'default.jpg',
-    height DECIMAL(10, 2) NOT NULL,
-    length DECIMAL(10, 2) NOT NULL,
-    weight DECIMAL(10, 2) NOT NULL
-);
-
 CREATE TABLE categories (
     id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT NOT NULL,
     category_name VARCHAR(100) NOT NULL,
-    category_description VARCHAR(255) NOT NULL
+    category_description VARCHAR(255)
+);
+
+CREATE TABLE products (
+    id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    product_name VARCHAR(100) NOT NULL,
+    product_description VARCHAR(1000) NOT NULL,
+    category_id INT UNSIGNED,
+    price DECIMAL(10, 2) NOT NULL, -- Changed to DECIMAL for price
+    quantity_available INT,
+    image_url VARCHAR(255) NOT NULL DEFAULT 'default.png',
+    height DECIMAL(10, 2) NOT NULL,
+    length DECIMAL(10, 2) NOT NULL,
+    weight DECIMAL(10, 2) NOT NULL,
+    FOREIGN KEY (category_id) REFERENCES categories (id) ON DELETE SET NULL
 );
 
 CREATE TABLE payments (
@@ -103,6 +107,34 @@ CREATE TABLE orders (
     FOREIGN KEY (address_id) REFERENCES adresses (id)
 );
 
+-- Insertion des catégories
+INSERT INTO
+    categories (
+        category_name,
+        category_description
+    )
+VALUES (
+        "tablette",
+        "Description pour tablette"
+    ),
+    (
+        "meuble",
+        "Description pour meuble"
+    ),
+    (
+        "Evenements & fêtes",
+        "louloulou"
+    ),
+    (
+        "Collection Art Mural",
+        "xhhxhxh"
+    ),
+    (
+        "Collection Art de Table",
+        "xhhxhxh"
+    );
+
+-- Insertion des utilisateurs
 INSERT INTO
     users (
         email,
@@ -126,10 +158,12 @@ VALUES (
         "2024-10-21"
     );
 
+-- Insertion des produits (assurez-vous que category_id correspond à une catégorie existante)
 INSERT INTO
     products (
         product_name,
         product_description,
+        category_id,
         price,
         quantity_available,
         image_url,
@@ -138,34 +172,84 @@ INSERT INTO
         weight
     )
 VALUES (
-        "table",
-        "lalalalalalalalalalalalalla",
+        "Décoration murale - Aid Moubarak",
+        "Décoration Aid Mubarak. Fabriqué en PLA Blanc et peint en doré. Le croissant de Lune est fait en 2 parties",
+        1,
+        15,
         10,
-        10,
-        "https://www.istockphoto.com/photo/woman-hiking-near-lake-antermoia-in-dolomites-gm1790759817-547692024",
+        "https://static.wixstatic.com/media/3f698e_1b05553948c443e0a76d3d41e51e0198~mv2.jpg",
         5,
         6,
         12
     ),
     (
-        "tableooo",
-        "lalalalalalalalalalalalallaoooo",
-        102,
-        101,
-        "https://www.istockphoto.com/photo/woman-hiking-near-lake-antermoia-in-dolomites-gm1790759817-547692024",
-        56,
-        62,
-        123
+        "Décoration murale - Fée",
+        "Décoration Fée pour chambre d'enfant.Bienvenue dans le monde merveilleux des fées ! Si vous cherchez à ajouter une touche magique à la chambre de votre enfant, cette décoration murale représentant une fée est le choix parfait.Cette fée apportera une atmosphère enchantée à n'importe quelle pièce. Cette œuvre d'art murale fera ressortir l'imagination de votre enfant et stimulera sa créativité.Vous souhaitiez ajouter une touche magique à la chambre de votre enfant ou simplement créer un coin de jeu enchanteur, cette fée sera le choix parfait pour votre enfant, offrez-lui un espace féerique où il pourra s'évader et laisser libre cours à son imagination.",
+        2,
+        12.00,
+        15,
+        "https://static.wixstatic.com/media/3f698e_c3a01e021fe949598576307b67224b5f~mv2.jpg",
+        3,
+        3,
+        5
+    ),
+    (
+        "Porte bouteille murale",
+        "Ce support élégant et fonctionnel vous permet de libérer de l'espace.Sa conception discrète et bien pensée, il s'intègre parfaitement à tout décor, offrant une solution pratique dans votre cuisine Conseil de fixation: Double face Cyanolit Koltout Express.",
+        2,
+        7.00,
+        15,
+        "https://static.wixstatic.com/media/3f698e_fc149d4a10004ba984ae220a6ecdad2d~mv2.jpg",
+        3,
+        3,
+        5
+    ),
+    (
+        "Topper baby shower",
+        "Cake topper baby est parfait pour décorer un gâteau de naissance, un gâteau de baptême ou même pour une baby shower.",
+        3,
+        5.00,
+        15,
+        "https://static.wixstatic.com/media/3f698e_b153cda824834ce1b158c0610f594bec~mv2.jpg",
+        3,
+        3,
+        5
+    ),
+    (
+        "Bar à sucette",
+        "Habillez vos évènement avec ce présentoir lors d'une fête d'anniversaire ou à l'occasion d'un mariage gourmand.Il possède plusieurs trous qui permettent de placer vos sucettes.Réutilisable pour diverses occasions.Les enfants adorent!",
+        3,
+        15.00,
+        15,
+        "https://static.wixstatic.com/media/3f698e_306db7e6ad23435488c2703dbbe14ca8~mv2.jpg",
+        3,
+        3,
+        5
+    ),
+    (
+        "Emporte pièce - Eid Mubarak",
+        "Vous cherchez le moyen parfait de rendre vos pâtisseries de l'Aïd encore plus belles cette année ? Ne cherchez pas plus loin Avec son design élégant et festif, il ajoutera une touche de sophistication à votre présentation de pâtisseries de l'Aïd. Préparez-vous à émerveiller vos invités avec vos pâtisseries de l'Aïd parfaitement décorées !",
+        1,
+        8.00,
+        15,
+        "https://static.wixstatic.com/media/3f698e_b4b5e811899c4c1f88c28d972f8760b8~mv2.jpg",
+        3,
+        3,
+        5
+    ),
+    (
+        "Porte chaussure Adultes",
+        "Le Porte Chaussure Adulte est un produit...",
+        3,
+        10.00,
+        15,
+        "https://static.wixstatic.com/media/3f698e_b4b5e811899c4c1f88c28d972f8760b8~mv2.jpg",
+        3,
+        3,
+        5
     );
 
-INSERT INTO
-    categories (
-        category_name,
-        category_description
-    )
-VALUES ("tablette", "louloulou"),
-    ("hxhdhxh", "xhhxhxh");
-
+-- Insertion des paiements
 INSERT INTO
     payments (
         user_id,
@@ -189,6 +273,7 @@ VALUES (
         "accepté"
     );
 
+-- Insertion des adresses
 INSERT INTO
     adresses (
         user_id,
@@ -215,10 +300,13 @@ VALUES (
         69200
     );
 
+-- Insertion des paniers
 INSERT INTO
     cart (user_id, date_creation)
 VALUES (1, "2023-01-12"),
     (2, "2023-01-15");
+
+-- Insertion des produits dans les pani
 
 INSERT INTO
     cart_products (cart_id, product_id, quantity)

@@ -1,5 +1,18 @@
 const router = require("express").Router();
 const { pool } = require("../database/db-connection"); // Import correct du pool
+const multer = require("multer");
+const path = require("path");
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'uploads'); // Assurez-vous que le dossier 'uploads' existe dans votre projet
+    },
+    filename: (req, file, cb) => {
+        cb(null, file.fieldname + "_" + Date.now() + path.extname(file.originalname));
+    }
+});
+
+const upload = multer({ storage: storage });
 
 // Route pour récupérer tous les produits
 router.get("/", async (req, res) => {
@@ -25,23 +38,34 @@ router.get("/:id", async (req, res) => {
 });
 
 // Route pour créer un nouvel produit
-router.post("/", async (req, res) => {
-    const { product_name, product_description, price, quantity_available, image_url, height, length, weight } = req.body;
+router.post("/", upload.single('image'), async (req, res) => {
+    console.log(req.file); // Vérifier le fichier dans la console
+    console.log(req.body); // Vérifier les données du corps
 
-    if (!product_name || !product_description || !price || !quantity_available || !image_url || !height  || !length || !weight) {
-        return res.status(400).json({ message: "Les champs ne sont pas correctement rensignés" });
+    // Récupération des champs depuis req.body
+    const { product_name, product_description, category_id, price, quantity_available, height, length, weight } = req.body;
+
+    // Définir une URL par défaut si aucun fichier n'est téléchargé
+    const imageUrl = req.file ? req.file.path : "path/to/default/image.jpg"; // Remplacez par le chemin de votre image par défaut
+
+    // Vérification des champs obligatoires
+    if (!product_name || !product_description || !category_id || !price || !quantity_available || !height || !length || !weight) {
+        return res.status(400).json({ message: "Les champs ne sont pas correctement renseignés" });
     }
 
     try {
+        // Requête SQL pour insérer les données dans la base
         const [result] = await pool.execute(
-            "INSERT INTO products (product_name, product_description, price, image_url, height, length, weight  ) VALUES (?, ?, ?, ?, ?, ?, ?)",
-            [product_name, product_description, price, image_url, height, length, weight]
+            "INSERT INTO products (product_name, product_description, category_id, price, quantity_available, image_url, height, length, weight) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            [product_name, product_description, category_id, price, quantity_available, imageUrl, height, length, weight]
         );
-        res.status(201).json({ message: "produit créé", id: result.insertId });
+        res.status(201).json({ message: "Produit créé", id: result.insertId });
     } catch (err) {
-        res.status(500).json({ error: "Erreur lors de la création de l'produit" });
+        console.error("Erreur lors de la création :", err);
+        res.status(500).json({ error: "Erreur lors de la création du produit" });
     }
 });
+
 
 // Route pour mettre à jour un produit
 // Route pour mettre à jour un produit

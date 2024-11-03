@@ -39,7 +39,7 @@ const dataCarousel = [
       image: salleDeBain,
       title: "Bar à sucette",
       price:15.00,
-      description: "Habillez vos évènement avec ce présentoir lors d'une fête d'anniversaire ou à l'occasion d'un mariage gourmand.Il possède plusieurs trous qui permettent de placer vos sucettes.Réutilisable pour diverses occasions.Les enfants adorent!"
+      description: "Habillez vos évenements avec ce présentoir lors d'une fête d'anniversaire ou à l'occasion d'un mariage gourmand.Il possède plusieurs trous qui permettent de placer vos sucettes.Réutilisable pour diverses occasions.Les enfants adorent!"
     },
     {
       id: 6,

@@ -18,6 +18,7 @@ const cartProductRouter = require("./routes/cart_productRoutes");
 const noticesRouter = require("./routes/noticesRoutes");
 const ordersRouter = require("./routes/ordersRoutes");
 
+
 const app = express();
 
 // Utilisez les variables d'environnement pour la configuration CORS
@@ -29,6 +30,8 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
+
+
 
 // Middleware pour logger les requêtes
 app.use((req, res, next) => {
