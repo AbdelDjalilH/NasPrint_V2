@@ -243,7 +243,7 @@ VALUES (
         3,
         10.00,
         15,
-        "https://static.wixstatic.com/media/3f698e_b4b5e811899c4c1f88c28d972f8760b8~mv2.jpg",
+        "https://static.wixstatic.com/media/3f698e_5b1f79c592e842389b2271c16819ca26~mv2.jpg/v1/fill/w_500,h_501,al_c,q_80,usm_0.66_1.00_0.01,enc_auto/3f698e_5b1f79c592e842389b2271c16819ca26~mv2.jpg",
         3,
         3,
         5
