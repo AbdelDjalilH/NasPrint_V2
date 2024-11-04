@@ -12,6 +12,10 @@ export default function DetailProduct() {
   const [error, setError] = useState(null);
   const [productList, setProductList] = useState([]); // Liste de tous les produits
 
+  const next = "|  Suivant  >";
+
+  const previous = "<  Précédent  ";
+
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -76,6 +80,10 @@ export default function DetailProduct() {
 
   return (
     <div className="detail-product-container">
+      <nav className="navigation-buttons">
+        <button onClick={handlePrevious}>{previous}</button>
+        <button onClick={handleNext}>{next}</button>
+      </nav>
       <section className="row-section">
         <img
           className="detail-product-main-img"
@@ -96,11 +104,6 @@ export default function DetailProduct() {
           {product.product_description}
         </p>
       </section>
-
-      <div className="navigation-buttons">
-        <button onClick={handlePrevious}>Précédent</button>
-        <button onClick={handleNext}>Suivant</button>
-      </div>
     </div>
   );
 }

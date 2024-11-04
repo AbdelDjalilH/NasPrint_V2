@@ -1,11 +1,10 @@
-// components/CartModal.jsx
 import React, { useState } from "react";
 import { useCart } from "react-use-cart";
 import axios from "axios"; // Assurez-vous d'importer axios pour faire des requêtes
 import "../styles/cartModal.css";
 
 export default function CartModal({ isOpen, onClose, productDetails }) {
-  const { addItem } = useCart();
+  const { addItem, removeItem } = useCart(); // Utilisez removeItem pour supprimer un produit
   const [quantity, setQuantity] = useState(1); // État pour la quantité
 
   if (!isOpen) return null;
@@ -51,6 +50,47 @@ export default function CartModal({ isOpen, onClose, productDetails }) {
     }
   };
 
+  // Nouvelle fonction pour supprimer du panier
+  // Nouvelle fonction pour supprimer du panier
+  const handleRemove = async () => {
+    if (productDetails) {
+      const cartId = 1; // Assurez-vous que cart_id est bien défini selon votre logique
+      const productId = productDetails.id;
+
+      // Supprimez le produit du panier avec l'ID
+      removeItem(productId);
+
+      // Envoyer une requête DELETE pour retirer de la table cart_products
+      try {
+        await removeFromCart(cartId, productId);
+        console.log("Produit supprimé de la base de données.");
+      } catch (error) {
+        console.error("Erreur lors de la suppression du panier :", error);
+      }
+
+      onClose(); // Fermez la modal après la suppression
+    }
+  };
+
+  // Fonction pour supprimer de la table cart_products
+  // Fonction pour supprimer de la table cart_products
+  const removeFromCart = async (cartId, productId) => {
+    try {
+      const response = await axios.delete(
+        `${import.meta.env.VITE_API_URL}/cart_product/${cartId}/${productId}`
+      );
+      console.log("Réponse de suppression :", response.data);
+    } catch (error) {
+      console.error(
+        "Erreur lors de la suppression dans la base de données :",
+        error.response ? error.response.data : error.message
+      );
+      throw new Error(
+        "Erreur lors de la suppression du panier dans la base de données"
+      );
+    }
+  };
+
   return (
     <div className="modal-overlay">
       <div className="modal-content">
@@ -62,6 +102,7 @@ export default function CartModal({ isOpen, onClose, productDetails }) {
           <div>
             <p>{productDetails.product_name}</p>
             <p>Prix : {productDetails.price} €</p>
+            <img src={productDetails.image_url} className="img-product-modal" />
             <div>
               <label>Quantité :</label>
               <input
@@ -71,7 +112,12 @@ export default function CartModal({ isOpen, onClose, productDetails }) {
                 min="1"
               />
             </div>
-            <button onClick={handleConfirm}>Valider</button>
+            <button className="validate-btn" onClick={handleConfirm}>
+              Valider votre panier
+            </button>
+            <button className="remove-btn" onClick={handleRemove}>
+              Supprimer du panier
+            </button>
           </div>
         )}
       </div>

@@ -29,3 +29,10 @@
   background: none;
   cursor: pointer;
 }
+.img-product-modal {
+  width: 3rem;
+}
+
+.validate-btn {
+  background-color: rgb(47, 88, 47);
+}
