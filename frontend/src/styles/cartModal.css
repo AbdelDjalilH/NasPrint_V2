@@ -1,55 +1,31 @@
-/* styles/cartmodal.css */
 .modal-content {
-  /* position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center; */
   width: 400px;
   background-color: #353432;
   color: #eee;
   position: fixed;
   inset: 0 0 0 auto;
-  /* display: grid;
-  grid-template-rows: 70px 1fr 70px; */
+  height: 100vh; /* Hauteur fixe pour le conteneur */
+  overflow-y: auto; /* Activer la barre de défilement verticale si nécessaire */
+  padding: 1rem;
+  border-radius: 8px; /* Bordures arrondies pour un meilleur style */
 }
+hr {
+  width: 100%;
+}
+
 h2 {
   display: flex;
   justify-content: center;
-  margin-top: 3rem;
+  margin-top: 1rem;
 }
+
 .product-cart-data {
-  margin-top: 2rem;
+  margin-top: 1.5rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0.5rem;
 }
-.qte-input {
-  width: 3rem;
-}
-.qte-boutons {
-  gap: 0.5rem;
-  display: flex;
-  align-items: center;
-}
-hr {
-  margin-top: 0.5rem;
-  width: 100%;
-}
-
-/* .modal-content {
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
-  width: 400px;
-  max-width: 90%;
-  position: relative;
-} */
 
 .close-button {
   position: absolute;
@@ -60,10 +36,15 @@ hr {
   background: none;
   cursor: pointer;
 }
+
 .img-product-modal {
   width: 3rem;
 }
 
 .validate-btn {
   background-color: rgb(47, 88, 47);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
 }

@@ -2,13 +2,15 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import "../styles/connexion.css";
 import { useAuth } from "../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 export default function Connexion() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { login } = useAuth(); // Récupérer la méthode login du contexte
   const [error, setError] = useState(""); // État pour stocker les erreurs
-  const [loading, setLoading] = useState(false); // État pour gérer le chargement
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate(); // État pour gérer le chargement
 
   // Fonction de connexion
   const handleLogin = async (e) => {
@@ -18,7 +20,8 @@ export default function Connexion() {
     setError(""); // Réinitialiser les erreurs au début de chaque tentative de connexion
 
     try {
-      await login(email, password); // Utiliser la méthode login du contexte
+      await login(email, password);
+      navigate("/client-info"); // Utiliser la méthode login du contexte
     } catch (error) {
       console.error("Erreur lors de la connexion:", error);
 

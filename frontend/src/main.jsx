@@ -15,6 +15,7 @@ import ProductInfo from "./pages/ProductInfo.jsx";
 import AdminPage from "./pages/AdminPage.jsx";
 import ClientInfo from "./pages/ClientInfo.jsx";
 import DetailProduct from "./pages/DetailProduct.jsx";
+import PaymentPage from "./pages/PaymentPage.jsx";
 
 const router = createBrowserRouter([
   {
@@ -30,6 +31,7 @@ const router = createBrowserRouter([
       { element: <ProductInfo />, path: "/product-info" },
       { element: <ClientInfo />, path: "/client-info" },
       { element: <DetailProduct />, path: "/nos-produits/:id" },
+      { element: <PaymentPage />, path: "/payment-page" },
     ],
   },
 ]);
