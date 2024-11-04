@@ -97,26 +97,30 @@ export default function CartModal({ isOpen, onClose, productDetails }) {
         <button className="close-button" onClick={onClose}>
           &times;
         </button>
-        <h2>Ajouter au Panier</h2>
+        <h2>Votre panier</h2>
+        <hr />
         {productDetails && (
-          <div>
+          <div className="product-cart-data">
             <p>{productDetails.product_name}</p>
             <p>Prix : {productDetails.price} €</p>
             <img src={productDetails.image_url} className="img-product-modal" />
-            <div>
-              <label>Quantité :</label>
+            <div></div>
+            <section className="qte-boutons">
+              <label>Quantité </label>
               <input
+                className="qte-input"
                 type="number"
                 value={quantity}
                 onChange={(e) => setQuantity(Math.max(1, e.target.value))}
                 min="1"
               />
-            </div>
+              <button className="remove-btn" onClick={handleRemove}>
+                Supprimer
+              </button>
+            </section>
+            <hr />
             <button className="validate-btn" onClick={handleConfirm}>
-              Valider votre panier
-            </button>
-            <button className="remove-btn" onClick={handleRemove}>
-              Supprimer du panier
+              Valider
             </button>
           </div>
         )}
