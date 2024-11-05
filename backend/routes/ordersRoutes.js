@@ -60,31 +60,19 @@ router.post("/", async (req, res) => {
 router.put("/:id", async (req, res) => {
     const { user_id, payment_id, address_id, order_date, order_status, total_rising } = req.body;
 
+    console.log("Requête PUT reçue pour commande avec ID:", req.params.id);
+    console.log("Corps de la requête:", req.body);
+
     if (!user_id || !payment_id || !address_id || !order_date || !order_status || total_rising === undefined) {
+        console.error("Données manquantes dans la requête");
         return res.status(400).json({ message: "Tous les champs sont requis" });
     }
 
     try {
         const [orders] = await pool.execute("SELECT * FROM orders WHERE id = ?", [req.params.id]);
-
         if (orders.length === 0) {
+            console.error("Commande non trouvée pour ID:", req.params.id);
             return res.status(404).json({ message: "Commande non trouvée" });
-        }
-
-        const [user] = await pool.execute("SELECT * FROM users WHERE id = ?", [user_id]);
-        const [payment] = await pool.execute("SELECT * FROM payments WHERE id = ?", [payment_id]);
-        const [address] = await pool.execute("SELECT * FROM adresses WHERE id = ?", [address_id]);
-
-        if (user.length === 0) {
-            return res.status(404).json({ message: "Utilisateur non trouvé" });
-        }
-        
-        if (payment.length === 0) {
-            return res.status(404).json({ message: "Paiement non trouvé" });
-        }
-        
-        if (address.length === 0) {
-            return res.status(404).json({ message: "Adresse non trouvée" });
         }
 
         await pool.execute(
@@ -92,12 +80,14 @@ router.put("/:id", async (req, res) => {
             [user_id, payment_id, address_id, order_date, order_status, total_rising, req.params.id]
         );
 
+        console.log("Commande mise à jour avec succès pour ID:", req.params.id);
         res.json({ message: "Commande mise à jour avec succès" });
     } catch (err) {
         console.error("Erreur lors de la mise à jour de la commande :", err);
         res.status(500).json({ error: "Erreur lors de la mise à jour de la commande" });
     }
 });
+
 
 router.delete("/:id", async (req, res) => {
     try {

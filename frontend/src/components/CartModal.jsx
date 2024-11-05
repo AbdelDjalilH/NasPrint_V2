@@ -4,9 +4,12 @@ import axios from "axios";
 import "../styles/cartModal.css";
 
 export default function CartModal({ isOpen, onClose, productDetails }) {
-  const { addItem, removeItem, items, emptyCart } = useCart();
+  const { addItem, removeItem, items } = useCart();
   const [quantity, setQuantity] = useState(1);
   const [quantityById, setQuantityById] = useState({});
+  const [orderId, setOrderId] = useState(null);
+  const [paymentId, setPaymentId] = useState(null);
+  const [cartId, setCartId] = useState(1); // Ajouter un état dynamique pour cartId
 
   if (!isOpen) return null;
 
@@ -20,7 +23,6 @@ export default function CartModal({ isOpen, onClose, productDetails }) {
         image_url: productDetails.image_url,
       });
 
-      // Mise à jour de quantityById avec la quantité du produit ajouté
       setQuantityById((prevQuantities) => ({
         ...prevQuantities,
         [productDetails.id]: quantity,
@@ -56,19 +58,63 @@ export default function CartModal({ isOpen, onClose, productDetails }) {
 
   const handleRemove = async (productId) => {
     removeItem(productId);
-
-    // Supprime également la quantité du produit retiré de quantityById
     setQuantityById((prevQuantities) => {
       const updatedQuantities = { ...prevQuantities };
-      delete updatedQuantities[productId];
       return updatedQuantities;
     });
 
     try {
-      await removeFromCart(1, productId);
+      await removeFromCart(cartId, productId);
       console.log("Produit supprimé de la base de données.");
+
+      const newTotal = items.reduce(
+        (acc, item) =>
+          item.id !== productId
+            ? acc + item.price * (quantityById[item.id] || item.quantity)
+            : acc,
+        0
+      );
+
+      await updateOrderAndPaymentTotal(newTotal);
     } catch (error) {
       console.error("Erreur lors de la suppression du panier :", error);
+    }
+  };
+
+  const updateOrderAndPaymentTotal = async (newTotal) => {
+    try {
+      if (paymentId) {
+        await axios.put(
+          `${import.meta.env.VITE_API_URL}/payments/${paymentId}`,
+          {
+            rising: newTotal,
+            payment_date: new Date()
+              .toISOString()
+              .slice(0, 19)
+              .replace("T", " "),
+            payment_mean: "carte",
+            payment_status: "en cours",
+          }
+        );
+        console.log("Total du paiement mis à jour :", newTotal);
+      }
+
+      if (orderId) {
+        await axios.put(`${import.meta.env.VITE_API_URL}/orders/${orderId}`, {
+          user_id: 1,
+          payment_id: paymentId,
+          address_id: 1,
+          order_date: new Date().toISOString().slice(0, 19).replace("T", " "),
+          order_status: "en cours",
+          total_rising: newTotal,
+        });
+        console.log("Total de la commande mis à jour :", newTotal);
+      }
+    } catch (error) {
+      console.error(
+        "Erreur lors de la mise à jour du total de la commande :",
+        error
+      );
     }
   };
 
@@ -77,7 +123,7 @@ export default function CartModal({ isOpen, onClose, productDetails }) {
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/cart_product`,
         {
-          cart_id: 1,
+          cart_id: cartId,
           product_id: productId,
           quantity: quantity,
         }
@@ -92,7 +138,7 @@ export default function CartModal({ isOpen, onClose, productDetails }) {
 
   const createOrderAndPayment = async () => {
     const now = new Date();
-    const mysqlFormattedDate = now.toISOString().slice(0, 19).replace("T", " "); // YYYY-MM-DD HH:MM:SS
+    const mysqlFormattedDate = now.toISOString().slice(0, 19).replace("T", " ");
 
     const totalAmount = items.reduce(
       (acc, item) =>
@@ -111,15 +157,20 @@ export default function CartModal({ isOpen, onClose, productDetails }) {
           user_id: 1,
         }
       );
+      setPaymentId(paymentResponse.data.id);
 
-      await axios.post(`${import.meta.env.VITE_API_URL}/orders`, {
-        user_id: 1,
-        payment_id: paymentResponse.data.id,
-        address_id: 1,
-        order_date: mysqlFormattedDate,
-        order_status: "en cours",
-        total_rising: totalAmount,
-      });
+      const orderResponse = await axios.post(
+        `${import.meta.env.VITE_API_URL}/orders`,
+        {
+          user_id: 1,
+          payment_id: paymentResponse.data.id,
+          address_id: 1,
+          order_date: mysqlFormattedDate,
+          order_status: "en cours",
+          total_rising: totalAmount,
+        }
+      );
+      setOrderId(orderResponse.data.id);
 
       console.log("Nouvelle commande et paiement créés.");
     } catch (error) {
@@ -148,7 +199,7 @@ export default function CartModal({ isOpen, onClose, productDetails }) {
           <div>
             {items.map((item) => {
               const itemQuantity = quantityById[item.id] || item.quantity;
-              const subtotal = item.price * itemQuantity; // Calcul du sous-total
+              const subtotal = item.price * itemQuantity;
 
               return (
                 <div key={item.id} className="product-cart-data">
@@ -177,12 +228,6 @@ export default function CartModal({ isOpen, onClose, productDetails }) {
           <p>Votre panier est vide.</p>
         )}
 
-        {items.length > 0 && (
-          <button className="empty-cart-btn" onClick={emptyCart}>
-            Vider le panier
-          </button>
-        )}
-
         <button className="confirm-order-btn" onClick={createOrderAndPayment}>
           Confirmer la commande
         </button>
@@ -195,13 +240,12 @@ export default function CartModal({ isOpen, onClose, productDetails }) {
               <input
                 type="number"
                 value={quantity}
-                onChange={(e) =>
-                  setQuantity(Math.max(1, parseInt(e.target.value)))
-                }
-                min="1"
+                onChange={(e) => setQuantity(Number(e.target.value))}
               />
             </div>
-            <button onClick={handleConfirm}>Ajouter au panier</button>
+            <button className="add-to-cart-btn" onClick={handleConfirm}>
+              Ajouter au panier
+            </button>
           </div>
         )}
       </div>

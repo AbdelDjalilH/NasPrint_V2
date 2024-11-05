@@ -52,26 +52,28 @@ router.post("/", async (req, res) => {
 router.put("/:id", async (req, res) => {
     const { rising, payment_date, payment_mean, payment_status } = req.body;
 
-    // Vérification que tous les champs nécessaires sont présents
+    console.log("Requête PUT reçue pour paiement avec ID:", req.params.id);
+    console.log("Corps de la requête:", req.body);
+
     if (!rising || !payment_date || !payment_mean || !payment_status) {
+        console.error("Données manquantes dans la requête");
         return res.status(400).json({ message: "Tous les champs sont requis" });
     }
 
     try {
-        // Vérifier si le paiement existe
         const [payments] = await pool.execute("SELECT * FROM payments WHERE id = ?", [req.params.id]);
-
         if (payments.length === 0) {
-            return res.status(404).json({ message: "paiement non trouvé" });
+            console.error("Paiement non trouvé pour ID:", req.params.id);
+            return res.status(404).json({ message: "Paiement non trouvé" });
         }
 
-        // Mettre à jour le paiement
         await pool.execute(
-            "UPDATE payments SET  rising = ?, payment_date = ?, payment_mean = ?, payment_status = ? WHERE id = ?",
+            "UPDATE payments SET rising = ?, payment_date = ?, payment_mean = ?, payment_status = ? WHERE id = ?",
             [rising, payment_date, payment_mean, payment_status, req.params.id]
         );
 
-        res.json({ message: "paiement mis à jour" });
+        console.log("Paiement mis à jour avec succès pour ID:", req.params.id);
+        res.json({ message: "Paiement mis à jour" });
     } catch (err) {
         console.error("Erreur lors de la mise à jour :", err);
         res.status(500).json({ error: "Erreur lors de la mise à jour du paiement" });
