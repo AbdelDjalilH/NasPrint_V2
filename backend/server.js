@@ -1,9 +1,10 @@
+require("dotenv").config(); // Chargez les variables d'environnement au début
+
 const express = require("express");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
-const dotenv = require("dotenv"); // Importez dotenv pour utiliser le fichier .env
-
-dotenv.config(); // Chargez les variables d'environnement avant de les utiliser
+const stripe = require("stripe")(process.env.STRIPE_SECRET_TEST);
+const bodyParser = require("body-parser");
 
 const { initializeDatabase } = require("./database/initializeDatabase");
 const routes = require("./routes/routes");
@@ -18,7 +19,6 @@ const cartProductRouter = require("./routes/cart_productRoutes");
 const noticesRouter = require("./routes/noticesRoutes");
 const ordersRouter = require("./routes/ordersRoutes");
 
-
 const app = express();
 
 // Utilisez les variables d'environnement pour la configuration CORS
@@ -28,10 +28,40 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 app.use(express.json());
 app.use(cookieParser());
 
+// Route de paiement Stripe
+app.post("/stripe/charge", async (req, res) => {
+    const { amount, id } = req.body;
+    console.log("amount & id :", amount, id);
+    try {
+        // Création d'une intention de paiement avec Stripe
+        const paymentIntent = await stripe.paymentIntents.create({
+            amount: amount, // montant en centimes
+            currency: "EUR", // devise
+            description: "Votre description de l'entreprise",
+            payment_method: id,
+            confirm: true,
+            return_url: process.env.RETURN_URL  // Utilisation de la variable d'environnement pour la redirection
+        });
 
+        // Si le paiement est réussi, renvoyer un message de succès avec l'URL de retour
+        res.json({
+            message: "Paiement réussi",
+            success: true,
+            returnUrl: process.env.RETURN_URL  // Renvoie l'URL de retour au frontend
+        });
+    } catch (error) {
+        console.log("Erreur lors du paiement:", error);
+        res.json({
+            message: "Le paiement a échoué",
+            success: false,
+        });
+    }
+});
 
 // Middleware pour logger les requêtes
 app.use((req, res, next) => {
@@ -63,10 +93,10 @@ app.use((err, req, res, next) => {
     res.status(500).send("Quelque chose s'est mal passé !");
 });
 
-// Utilisez la variable d'environnement pour le port
-const PORT = process.env.APP_PORT || 3335; // Si APP_PORT n'est pas défini, utilisez 3335
+// Utilisez la variable d'environnement pour le port avec une valeur par défaut
+const PORT = process.env.APP_PORT || 3335;
 
 app.listen(PORT, async () => {
-    console.log(`Salut, j'écoute sur le port ${PORT}`);
+    console.log(`Serveur démarré sur le port ${PORT}`);
     await initializeDatabase();
 });

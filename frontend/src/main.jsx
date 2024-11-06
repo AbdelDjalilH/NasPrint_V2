@@ -16,6 +16,7 @@ import AdminPage from "./pages/AdminPage.jsx";
 import ClientInfo from "./pages/ClientInfo.jsx";
 import DetailProduct from "./pages/DetailProduct.jsx";
 import PaymentPage from "./pages/PaymentPage.jsx";
+import PaymentComplete from "./pages/PaymentComplete.jsx";
 
 const router = createBrowserRouter([
   {
@@ -32,6 +33,7 @@ const router = createBrowserRouter([
       { element: <ClientInfo />, path: "/client-info" },
       { element: <DetailProduct />, path: "/nos-produits/:id" },
       { element: <PaymentPage />, path: "/payment-page" },
+      { element: <PaymentComplete />, path: "/payment-complete" },
     ],
   },
 ]);
