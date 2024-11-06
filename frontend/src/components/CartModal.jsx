@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useCart } from "react-use-cart";
 import axios from "axios";
 import "../styles/cartModal.css";
