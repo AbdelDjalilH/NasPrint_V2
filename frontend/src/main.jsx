@@ -9,7 +9,8 @@ import NosProduits from "./pages/NosProduits.jsx";
 import Register from "./pages/Register.jsx";
 import Connexion from "./pages/Connexion.jsx";
 import { AuthProvider } from "./contexts/AuthContext";
-import { CartProvider } from "react-use-cart"; // Importer CartProvider
+import { CartProvider } from "react-use-cart";
+import { OrderProvider } from "./contexts/OrdersContext"; // Importer OrderProvider
 import UserManagement from "./pages/UserManagement.jsx";
 import ProductInfo from "./pages/ProductInfo.jsx";
 import AdminPage from "./pages/AdminPage.jsx";
@@ -44,9 +45,11 @@ root.render(
   <React.StrictMode>
     <AuthProvider>
       <CartProvider>
-        {" "}
-        {/* Enveloppe toute l'application pour rendre le panier disponible */}
-        <RouterProvider router={router} />
+        <OrderProvider>
+          {" "}
+          {/* Enveloppe votre application avec OrderProvider */}
+          <RouterProvider router={router} />
+        </OrderProvider>
       </CartProvider>
     </AuthProvider>
   </React.StrictMode>

@@ -2,16 +2,16 @@ import { useState } from "react";
 import { useCart } from "react-use-cart";
 import axios from "axios";
 import "../styles/cartModal.css";
+import { useOrder } from "../contexts/OrdersContext"; // Importer useOrder
 
 export default function CartModal({ isOpen, onClose, productDetails }) {
   const { addItem, removeItem, items } = useCart();
   const [quantity, setQuantity] = useState(1);
   const [quantityById, setQuantityById] = useState({});
-  const [orderId, setOrderId] = useState(null);
-  const [paymentId, setPaymentId] = useState(null);
-  const [cartId, setCartId] = useState(1); // Ajouter un état dynamique pour cartId
+  const [cartId, setCartId] = useState(1); // État dynamique pour cartId
+  const { setOrderId } = useOrder(); // Utiliser setOrderId depuis le contexte
 
-  if (!isOpen) return null;
+  if (!isOpen) return null; // Ne pas afficher le modal s'il est fermé
 
   const handleConfirm = async () => {
     if (productDetails) {
@@ -35,7 +35,7 @@ export default function CartModal({ isOpen, onClose, productDetails }) {
         console.error("Erreur lors de l'ajout au panier :", error);
       }
 
-      onClose();
+      onClose(); // Fermer le modal après l'ajout
     }
   };
 
@@ -60,6 +60,7 @@ export default function CartModal({ isOpen, onClose, productDetails }) {
     removeItem(productId);
     setQuantityById((prevQuantities) => {
       const updatedQuantities = { ...prevQuantities };
+      delete updatedQuantities[productId]; // Supprimer la quantité de l'élément
       return updatedQuantities;
     });
 
@@ -83,33 +84,7 @@ export default function CartModal({ isOpen, onClose, productDetails }) {
 
   const updateOrderAndPaymentTotal = async (newTotal) => {
     try {
-      if (paymentId) {
-        await axios.put(
-          `${import.meta.env.VITE_API_URL}/payments/${paymentId}`,
-          {
-            rising: newTotal,
-            payment_date: new Date()
-              .toISOString()
-              .slice(0, 19)
-              .replace("T", " "),
-            payment_mean: "carte",
-            payment_status: "en cours",
-          }
-        );
-        console.log("Total du paiement mis à jour :", newTotal);
-      }
-
-      if (orderId) {
-        await axios.put(`${import.meta.env.VITE_API_URL}/orders/${orderId}`, {
-          user_id: 1,
-          payment_id: paymentId,
-          address_id: 1,
-          order_date: new Date().toISOString().slice(0, 19).replace("T", " "),
-          order_status: "en cours",
-          total_rising: newTotal,
-        });
-        console.log("Total de la commande mis à jour :", newTotal);
-      }
+      // Logique de mise à jour de la commande et du paiement (si nécessaire)
     } catch (error) {
       console.error(
         "Erreur lors de la mise à jour du total de la commande :",
@@ -157,21 +132,21 @@ export default function CartModal({ isOpen, onClose, productDetails }) {
           user_id: 1,
         }
       );
-      setPaymentId(paymentResponse.data.id);
+      const paymentId = paymentResponse.data.id;
 
       const orderResponse = await axios.post(
         `${import.meta.env.VITE_API_URL}/orders`,
         {
           user_id: 1,
-          payment_id: paymentResponse.data.id,
+          payment_id: paymentId,
           address_id: 1,
           order_date: mysqlFormattedDate,
           order_status: "en cours",
           total_rising: totalAmount,
         }
       );
-      setOrderId(orderResponse.data.id);
 
+      setOrderId(orderResponse.data.id); // Mettre à jour l'orderId dans le contexte
       console.log("Nouvelle commande et paiement créés.");
     } catch (error) {
       console.error(

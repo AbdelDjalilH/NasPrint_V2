@@ -44,7 +44,7 @@ const ClientInfo = () => {
       console.log("Informations enregistrées :", response.data);
 
       // Redirection après succès de l'enregistrement
-      navigate("/"); // Rediriger vers la page d'accueil ou une autre page de votre choix
+      navigate("/payment-page"); // Rediriger vers la page d'accueil ou une autre page de votre choix
     } catch (error) {
       console.error(
         "Erreur lors de l'enregistrement des informations :",

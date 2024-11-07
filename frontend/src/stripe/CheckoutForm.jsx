@@ -1,46 +1,45 @@
-import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
-import axios from "axios";
+import React from "react";
+import { useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
 
-export const CheckoutForm = () => {
+const CheckoutForm = ({ totalRising }) => {
   const stripe = useStripe();
   const elements = useElements();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const { error, paymentMethod } = await stripe.createPaymentMethod({
-      type: "card",
-      card: elements.getElement(CardElement),
-    });
 
-    if (!error) {
-      try {
-        const response = await axios.post(
-          `${import.meta.env.VITE_API_URL}/stripe/charge`,
-          {
-            amount: 1000, // Exemple : 10,00 EUR en centimes
-            id: paymentMethod.id,
-          }
-        );
+    if (!stripe || !elements) {
+      return;
+    }
 
-        if (response.data.success) {
-          // Redirection en cas de succès (utilisation de l'URL renvoyée par le backend)
-          window.location.href =
-            response.data.returnUrl || "http://localhost:5173/payment-complete";
-        } else {
-          console.log("Le paiement a échoué");
-        }
-      } catch (error) {
-        console.log("Erreur lors du traitement du paiement:", error);
+    try {
+      const { error, paymentIntent } = await stripe.createPaymentIntent({
+        amount: totalRising * 100, // Montant en centimes
+        currency: "eur",
+        payment_method: {
+          card: elements.getElement(CardElement),
+        },
+        confirm: true,
+      });
+
+      if (error) {
+        console.error("Erreur de paiement :", error);
+      } else {
+        console.log("Paiement réussi :", paymentIntent);
       }
-    } else {
-      console.log("Erreur dans la création du paiement:", error.message);
+    } catch (err) {
+      console.error("Erreur lors de la création du paiement :", err);
     }
   };
 
   return (
     <form onSubmit={handleSubmit} style={{ maxWidth: 400 }}>
       <CardElement options={{ hidePostalCode: true }} />
-      <button>Payer</button>
+      <button type="submit" disabled={!stripe}>
+        Payer {totalRising} €
+      </button>
     </form>
   );
 };
+
+export default CheckoutForm;
