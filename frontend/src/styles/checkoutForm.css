@@ -1,0 +1,31 @@
+.card-element-container {
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 4px;
+  background-color: #f9f9f9;
+  margin-bottom: 20px;
+}
+
+.stripe-card-element {
+  padding: 10px;
+}
+
+.payement-btn {
+  background-color: #6772e5;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.payement-btn:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.payement-btn:hover:enabled {
+  background-color: #5469d4;
+}

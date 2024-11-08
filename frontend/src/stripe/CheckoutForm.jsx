@@ -1,26 +1,45 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
+import axios from "axios";
+import "../styles/checkoutForm.css"; // Assurez-vous d'avoir un fichier CSS pour styliser le formulaire
 
 const CheckoutForm = ({ totalRising }) => {
   const stripe = useStripe();
   const elements = useElements();
+  const [clientSecret, setClientSecret] = useState("");
+
+  useEffect(() => {
+    const createPaymentIntent = async () => {
+      try {
+        const response = await axios.post(
+          `${import.meta.env.VITE_API_URL}/create-payment-intent`,
+          { amount: totalRising * 100 } // Montant en centimes
+        );
+        setClientSecret(response.data.clientSecret);
+      } catch (error) {
+        console.error("Erreur lors de la création du PaymentIntent :", error);
+      }
+    };
+
+    createPaymentIntent();
+  }, [totalRising]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    if (!stripe || !elements) {
+    if (!stripe || !elements || !clientSecret) {
       return;
     }
 
     try {
-      const { error, paymentIntent } = await stripe.createPaymentIntent({
-        amount: totalRising * 100, // Montant en centimes
-        currency: "eur",
-        payment_method: {
-          card: elements.getElement(CardElement),
-        },
-        confirm: true,
-      });
+      const { error, paymentIntent } = await stripe.confirmCardPayment(
+        clientSecret,
+        {
+          payment_method: {
+            card: elements.getElement(CardElement),
+          },
+        }
+      );
 
       if (error) {
         console.error("Erreur de paiement :", error);
@@ -28,14 +47,36 @@ const CheckoutForm = ({ totalRising }) => {
         console.log("Paiement réussi :", paymentIntent);
       }
     } catch (err) {
-      console.error("Erreur lors de la création du paiement :", err);
+      console.error("Erreur lors de la confirmation du paiement :", err);
     }
   };
 
+  // Options de style pour le CardElement
+  const cardStyle = {
+    style: {
+      base: {
+        color: "#303238",
+        fontSize: "16px",
+        "::placeholder": {
+          color: "#aab7c4",
+        },
+      },
+      invalid: {
+        color: "#fa755a",
+      },
+    },
+  };
+
   return (
-    <form onSubmit={handleSubmit} style={{ maxWidth: 400 }}>
-      <CardElement options={{ hidePostalCode: true }} />
-      <button type="submit" disabled={!stripe}>
+    <form onSubmit={handleSubmit}>
+      <div className="card-element-container">
+        <CardElement options={cardStyle} className="stripe-card-element" />
+      </div>
+      <button
+        className="payement-btn"
+        type="submit"
+        disabled={!stripe || !clientSecret}
+      >
         Payer {totalRising} €
       </button>
     </form>
