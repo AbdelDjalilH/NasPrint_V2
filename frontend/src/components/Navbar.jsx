@@ -5,7 +5,6 @@ import "../styles/navbar.css";
 import { useAuth } from "../contexts/AuthContext";
 
 export default function Navbar({ toggleCartModal, cartItemCount }) {
-  // Ajoutez cartItemCount en prop
   const { auth, logout, user } = useAuth();
 
   return (
@@ -22,11 +21,13 @@ export default function Navbar({ toggleCartModal, cartItemCount }) {
         Nos produits
       </Link>
 
-      {auth && user.role === "Administrateur" ? (
+      {auth ? (
         <>
-          <Link to="/admin-page" className="secret-nav">
-            Admin
-          </Link>
+          {user.role === "Administrateur" && (
+            <Link to="/admin-page" className="secret-nav">
+              Admin
+            </Link>
+          )}
           <Link onClick={logout} className="links-nav2">
             Déconnexion
           </Link>
@@ -52,14 +53,12 @@ export default function Navbar({ toggleCartModal, cartItemCount }) {
         </Link>
       )}
 
-      {/* L'icône panier déclenche toggleCartModal lorsqu'elle est cliquée */}
       <div
         className="cart-container"
         onClick={toggleCartModal}
         style={{ cursor: "pointer" }}
       >
         <img className="panier-img" src={panier} alt="Panier" />
-        {/* Affichage du compteur dans un cercle si cartItemCount > 0 */}
         {cartItemCount > 0 && (
           <span className="cart-count">{cartItemCount}</span>
         )}

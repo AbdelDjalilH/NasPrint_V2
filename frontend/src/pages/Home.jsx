@@ -1,6 +1,5 @@
 import Slider from "../components/Slider";
 import "../styles/home.css";
-// import dataAllproducts from "../data/sliderHome.js";
 import img1 from "../assets/homeImages/img1.png";
 import img2 from "../assets/homeImages/img2.png";
 import img3 from "../assets/homeImages/img3.png";

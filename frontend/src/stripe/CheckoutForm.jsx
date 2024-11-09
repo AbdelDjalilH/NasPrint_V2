@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import "../styles/checkoutForm.css"; // Assurez-vous d'avoir un fichier CSS pour styliser le formulaire
 
 const CheckoutForm = ({ totalRising }) => {
   const stripe = useStripe();
   const elements = useElements();
+  const navigate = useNavigate();
   const [clientSecret, setClientSecret] = useState("");
 
   useEffect(() => {
@@ -45,6 +47,7 @@ const CheckoutForm = ({ totalRising }) => {
         console.error("Erreur de paiement :", error);
       } else {
         console.log("Paiement réussi :", paymentIntent);
+        navigate("/payment-complete");
       }
     } catch (err) {
       console.error("Erreur lors de la confirmation du paiement :", err);
@@ -70,10 +73,17 @@ const CheckoutForm = ({ totalRising }) => {
   return (
     <form onSubmit={handleSubmit}>
       <div className="card-element-container">
-        <CardElement options={cardStyle} className="stripe-card-element" />
+        {/* Correction de la syntaxe de CardElement */}
+        <CardElement
+          options={{
+            hidePostalCode: true,
+            style: cardStyle, // Ajout correct de l'objet cardStyle
+          }}
+          className="stripe-card-element"
+        />
       </div>
       <button
-        className="payement-btn"
+        className="payment-btn"
         type="submit"
         disabled={!stripe || !clientSecret}
       >

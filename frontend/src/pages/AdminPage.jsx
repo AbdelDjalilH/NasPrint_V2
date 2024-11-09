@@ -2,7 +2,6 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import "../styles/adminPage.css";
 import produit from "../assets/produit.png";
-// import { useNavigate } from "react-router-dom";
 
 export default function AdminPage() {
   const { auth } = useAuth();

@@ -1,4 +1,3 @@
-import axios from "axios";
 import { useState, useEffect } from "react";
 import "../styles/connexion.css";
 import { useAuth } from "../contexts/AuthContext";

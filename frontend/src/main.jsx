@@ -18,6 +18,7 @@ import ClientInfo from "./pages/ClientInfo.jsx";
 import DetailProduct from "./pages/DetailProduct.jsx";
 import PaymentPage from "./pages/PaymentPage.jsx";
 import PaymentComplete from "./pages/PaymentComplete.jsx";
+import ContactPage from "./pages/ContactPage.jsx";
 
 const router = createBrowserRouter([
   {
@@ -35,6 +36,7 @@ const router = createBrowserRouter([
       { element: <DetailProduct />, path: "/nos-produits/:id" },
       { element: <PaymentPage />, path: "/payment-page" },
       { element: <PaymentComplete />, path: "/payment-complete" },
+      { element: <ContactPage />, path: "/contact-page" },
     ],
   },
 ]);

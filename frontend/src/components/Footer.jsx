@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import "../styles/footer.css";
 import madeInFrance from "../assets/footerImages/madeInFrance.png";
 import instagram from "../assets/footerImages/instagram.png";
@@ -23,9 +24,9 @@ export default function Footer() {
         <p className="contact-sentence">
           Des demandes ou des idées sur nos produits?
         </p>
-        <a className="contact-btn" href="mailto:smeziani@ymail.com">
+        <Link to="/contact-page" className="contact-btn">
           Nous contacter
-        </a>
+        </Link>
       </section>
       <section className="last-section">
         <hr className="hr" />

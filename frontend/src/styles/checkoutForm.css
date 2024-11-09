@@ -10,7 +10,7 @@
   padding: 10px;
 }
 
-.payement-btn {
+.payment-btn {
   background-color: #6772e5;
   color: #fff;
   border: none;
@@ -21,11 +21,11 @@
   transition: background-color 0.2s;
 }
 
-.payement-btn:disabled {
+.payment-btn:disabled {
   background-color: #cccccc;
   cursor: not-allowed;
 }
 
-.payement-btn:hover:enabled {
+.payment-btn:hover:enabled {
   background-color: #5469d4;
 }
