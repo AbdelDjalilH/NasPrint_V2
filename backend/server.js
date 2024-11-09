@@ -63,6 +63,24 @@ app.post("/stripe/charge", async (req, res) => {
     }
 });
 
+app.post("/create-payment-intent", async (req, res) => {
+    try {
+      const { amount } = req.body; // Récupérer le montant depuis la requête
+  
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: amount, // Montant en centimes
+        currency: "eur",
+      });
+  
+      res.send({
+        clientSecret: paymentIntent.client_secret, // Renvoyer le client_secret au frontend
+      });
+    } catch (error) {
+      console.error("Erreur lors de la création du PaymentIntent :", error);
+      res.status(500).send("Erreur lors de la création du PaymentIntent");
+    }
+  });
+
 // Middleware pour logger les requêtes
 app.use((req, res, next) => {
     console.log(`Received ${req.method} request for '${req.url}'`);
