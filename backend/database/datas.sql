@@ -144,16 +144,16 @@ INSERT INTO
         inscription_date
     )
 VALUES (
-        "adj@adj.com",
+        "adj.hamzaoui@gmail.com",
         "adj",
-        "Iamthebest",
+        "$argon2id$v=19$m=65536,t=3,p=4$nL93G4/31nGyD/wk9YETeA$DJYth4BLLOKgwvUs5OxmS/KAAPyisBNMDLZD5PqaV1w",
         "Administrateur",
         "2024-10-20"
     ),
     (
         "adjo@adjo.dz",
         "adjo",
-        "Youarethebest",
+        "$argon2id$v=19$m=65536,t=3,p=4$pHNxg54365gOoQ/iBJ8DeQ$6CeMc+KJD41qBcUiEFSJW1OSjzcMxREDCvh4PIl8SzE",
         "Utilisateur",
         "2024-10-21"
     );
