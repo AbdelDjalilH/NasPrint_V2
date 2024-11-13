@@ -1,6 +1,7 @@
 const argon2 = require("argon2");
 const jwt = require("jsonwebtoken");
 const { findOneByEmail, createUser } = require("../models/user");
+const sendWelcomeEmail = require("../services/sendWelcomeEmail")
 
 // Messages d'erreur
 const ERROR_MESSAGES = {
@@ -47,36 +48,40 @@ const login = async (req, res) => {
 
 // Fonction d'inscription (Register)
 const register = async (req, res) => {
-    console.log("Contenu de req.body dans register :", req.body); // Vérifiez ce qui est reçu
-
-    const { email, password, username } = req.body || {}; // Ajoutez des valeurs par défaut pour éviter `undefined`
+    console.log("Contenu de req.body dans register :", req.body);
+  
+    const { email, password, username } = req.body || {};
     
     if (!email || !password || !username) {
-        console.error("Champs manquants dans la requête : ", { email, password, username });
-        return res.status(400).json({ success: false, message: ERROR_MESSAGES.MISSING_FIELDS });
+      console.error("Champs manquants dans la requête : ", { email, password, username });
+      return res.status(400).json({ success: false, message: ERROR_MESSAGES.MISSING_FIELDS });
     }
-
+  
     try {
-        const existingUser = await findOneByEmail(email.toLowerCase());
-        if (existingUser) {
-            return res.status(400).json({ success: false, message: ERROR_MESSAGES.USER_EXISTS });
-        }
-
-        const hashedPassword = await argon2.hash(password);
-        console.log("Mot de passe hashé :", hashedPassword);
-
-        const userId = await createUser({
-            email: email.toLowerCase(),
-            password: hashedPassword,
-            username,
-        });
-
-        res.status(201).json({ success: true, message: "Utilisateur enregistré avec succès.", userId });
+      const existingUser = await findOneByEmail(email.toLowerCase());
+      if (existingUser) {
+        return res.status(400).json({ success: false, message: ERROR_MESSAGES.USER_EXISTS });
+      }
+  
+      const hashedPassword = await argon2.hash(password);
+      console.log("Mot de passe hashé :", hashedPassword);
+  
+      const userId = await createUser({
+        email: email.toLowerCase(),
+        password: hashedPassword,
+        username,
+      });
+  
+      // Envoyer l'e-mail de bienvenue
+      await sendWelcomeEmail(email, username);
+  
+      res.status(201).json({ success: true, message: "Utilisateur enregistré avec succès.", userId });
     } catch (error) {
-        console.error("Erreur lors de l'enregistrement de l'utilisateur :", error);
-        res.status(500).json({ success: false, message: ERROR_MESSAGES.INTERNAL_SERVER_ERROR });
+      console.error("Erreur lors de l'enregistrement de l'utilisateur :", error);
+      res.status(500).json({ success: false, message: ERROR_MESSAGES.INTERNAL_SERVER_ERROR });
     }
-};
+  };
+  
 
 module.exports = {
     login,

@@ -5,8 +5,8 @@ const mysql = require("mysql2/promise");
 const pool = mysql.createPool({
     host: "localhost",
     user: "adja",
-    password: "hamzaoui",
-    database: "nas_print_bdd",
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
 });
 
 async function addUserOrUpdate(email, username, password) {

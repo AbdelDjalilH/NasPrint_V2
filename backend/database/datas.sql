@@ -11,6 +11,8 @@ DROP TABLE IF EXISTS payments;
 
 DROP TABLE IF EXISTS adresses;
 
+DROP TABLE IF EXISTS images;
+
 DROP TABLE IF EXISTS products;
 
 DROP TABLE IF EXISTS categories;
@@ -47,7 +49,19 @@ CREATE TABLE products (
     FOREIGN KEY (category_id) REFERENCES categories (id) ON DELETE SET NULL
 );
 
-CREATE TABLE payments (
+CREATE TABLE images (
+    id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    product_id INT UNSIGNED NOT NULL,
+    first_image VARCHAR(255) DEFAULT 'default.png',
+    second_image VARCHAR(255) DEFAULT 'default.png',
+    third_image VARCHAR(255) DEFAULT 'default.png',
+    four_image VARCHAR(255) DEFAULT 'default.png',
+    five_image VARCHAR(255) DEFAULT 'default.png',
+    FOREIGN KEY (product_id) REFERENCES products (id)
+);
+
+CREATE TABLE payments ( 
+
     id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT NOT NULL,
     user_id INT UNSIGNED NOT NULL,
     rising INT NOT NULL,
