@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const { pool } = require("../database/db-connection"); // Importation correcte du pool
+
  // Importation de Nodemailer
 
 // Route pour récupérer tous les paiements
@@ -40,6 +41,7 @@ router.post("/", async (req, res) => {
             [rising, payment_date, payment_mean, payment_status, user_id]
         );
         res.status(201).json({ message: "paiement créé", id: result.insertId });
+       
     } catch (err) {
         console.error("Erreur lors de la création du paiement :", err);  // Affiche l'erreur dans la console
         res.status(500).json({ error: "Erreur lors de la création du paiement" });

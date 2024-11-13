@@ -4,7 +4,8 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "../styles/checkoutForm.css"; // Assurez-vous d'avoir un fichier CSS pour styliser le formulaire
 
-const CheckoutForm = ({ totalRising }) => {
+const CheckoutForm = ({ totalRising, userId }) => {
+  // Ajoutez `userId` comme prop
   const stripe = useStripe();
   const elements = useElements();
   const navigate = useNavigate();
@@ -15,7 +16,10 @@ const CheckoutForm = ({ totalRising }) => {
       try {
         const response = await axios.post(
           `${import.meta.env.VITE_API_URL}/create-payment-intent`,
-          { amount: totalRising * 100 } // Montant en centimes
+          {
+            amount: totalRising * 100, // Montant en centimes
+            user_id: userId, // Ajoutez `user_id` ici
+          }
         );
         setClientSecret(response.data.clientSecret);
       } catch (error) {
@@ -24,7 +28,7 @@ const CheckoutForm = ({ totalRising }) => {
     };
 
     createPaymentIntent();
-  }, [totalRising]);
+  }, [totalRising, userId]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -73,11 +77,10 @@ const CheckoutForm = ({ totalRising }) => {
   return (
     <form onSubmit={handleSubmit}>
       <div className="card-element-container">
-        {/* Correction de la syntaxe de CardElement */}
         <CardElement
           options={{
             hidePostalCode: true,
-            style: cardStyle, // Ajout correct de l'objet cardStyle
+            style: cardStyle,
           }}
           className="stripe-card-element"
         />

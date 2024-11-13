@@ -264,28 +264,6 @@ VALUES (
     );
 
 -- Insertion des paiements
-INSERT INTO
-    payments (
-        user_id,
-        rising,
-        payment_date,
-        payment_mean,
-        payment_status
-    )
-VALUES (
-        1,
-        50,
-        "2020-03-03",
-        "paypal",
-        "accepté"
-    ),
-    (
-        2,
-        40,
-        "2021-03-20",
-        "carte",
-        "accepté"
-    );
 
 -- Insertion des adresses
 INSERT INTO
@@ -348,30 +326,4 @@ VALUES (
         "azerrrrrtyyy",
         5,
         "2020-10-20"
-    );
-
-INSERT INTO
-    orders (
-        user_id,
-        payment_id,
-        address_id,
-        order_date,
-        order_status,
-        total_rising
-    )
-VALUES (
-        1,
-        1,
-        1,
-        "2020-10-25",
-        "lalala",
-        200
-    ),
-    (
-        2,
-        2,
-        2,
-        "2020-10-15",
-        "lalalalou",
-        150
     );

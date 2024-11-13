@@ -6,6 +6,7 @@ const cookieParser = require("cookie-parser");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_TEST);
 const bodyParser = require("body-parser");
 const nodemailer = require("nodemailer");
+const { pool} = require("./database/db-connection");
 
 const { initializeDatabase } = require("./database/initializeDatabase");
 const routes = require("./routes/routes");
@@ -66,48 +67,70 @@ app.post("/stripe/charge", async (req, res) => {
 });
 
 
-  app.post("/create-payment-intent", async (req, res) => {
-    try {
-      const { amount } = req.body; // Récupérer le montant depuis la requête
-  
+app.post("/create-payment-intent", async (req, res) => {
+  try {
+    console.log("Corps de la requête reçu :", req.body);
+      const { amount, user_id } = req.body;
+
+      // Validation des données
+      if (!amount || !user_id) {
+          return res.status(400).send("Le montant et l'user_id sont requis");
+      }
+
+      // Vérifiez que `amount` est un entier positif
+      if (typeof amount !== "number" || amount <= 0) {
+          return res.status(400).send("Le montant doit être un entier positif");
+      }
+
+      // Récupérez l'adresse e-mail de l'utilisateur à partir de la base de données
+      const [user] = await pool.execute("SELECT email FROM users WHERE id = ?", [user_id]);
+      if (user.length === 0) {
+          return res.status(404).send("Utilisateur non trouvé");
+      }
+      const email = user[0].email;
+      console.log("Adresse e-mail de l'utilisateur :", email);
+
+      // Créez l'intention de paiement avec Stripe
       const paymentIntent = await stripe.paymentIntents.create({
-        amount: amount, // Montant en centimes
-        currency: "eur",
+          amount: amount, // Montant en centimes
+          currency: "eur",
       });
-    //   const transporter = nodemailer.createTransport({
-    //     service: "gmail",
-    //     auth: {
-    //         user: process.env.EMAIL_USER, // Utiliser l'email configuré dans les variables d'environnement
-    //         pass: process.env.EMAIL_PASS, // Utiliser le mot de passe de l'application
-    //     },
-    // });
-  
-    // // Configurer l'email à envoyer
-    // const mailOptions = {
-    //     from: process.env.EMAIL_USER,
-    //     to: email,
-    //     subject: "Confirmation de votre paiement",
-    //     text: `Bonjour,\n\nVotre paiement de ${amount} € a été effectué avec succès le ${payment_date}. Merci de votre commande !\n\nCordialement,\nL'équipe.`,
-    // };
-    // console.log("Tentative d'envoi de l'email...");
-  
-    // // Envoyer l'email
-    // transporter.sendMail(mailOptions, (error, info) => {
-    //     if (error) {
-    //         console.error("Erreur lors de l'envoi de l'e-mail :", error);
-    //     } else {
-    //         console.log("E-mail envoyé avec succès :", info.response);
-    //     }
-    // });
-  
+      // Configurez le transporteur `nodemailer`
+      const transporter = nodemailer.createTransport({
+          service: "gmail",
+          auth: {
+              user: process.env.EMAIL_USER,
+              pass: process.env.EMAIL_PASS,
+          },
+      });
+
+      // Options de l'e-mail
+      const mailOptions = {
+          from: process.env.EMAIL_USER,
+          to: email, // Utilisez l'adresse e-mail récupérée
+          subject: "Confirmation de votre paiement",
+          text: `Bonjour,\n\nVotre paiement de ${amount / 100} € a été initié avec succès. Voici votre identifiant de paiement : ${paymentIntent.id}.\n\nMerci pour votre commande !\n\nCordialement,\nL'équipe.`,
+      };
+
+      // Envoyez l'e-mail
+      transporter.sendMail(mailOptions, (error, info) => {
+          if (error) {
+              console.error("Erreur lors de l'envoi de l'e-mail :", error);
+          } else {
+              console.log("E-mail envoyé avec succès :", info.response);
+          }
+      });
+
+      // Réponse avec le client_secret
       res.send({
-        clientSecret: paymentIntent.client_secret, // Renvoyer le client_secret au frontend
-      });
-    } catch (error) {
-      console.error("Erreur lors de la création du PaymentIntent :", error);
-      res.status(500).send("Erreur lors de la création du PaymentIntent");
-    }
-  });
+        clientSecret: paymentIntent.client_secret,
+    });
+} catch (error) {
+    console.error("Erreur lors de la création du PaymentIntent :", error);
+    res.status(500).send("Erreur lors de la création du PaymentIntent");
+}
+});
+
   
 // Middleware pour logger les requêtes
   app.use((req, res, next) => {

@@ -1,6 +1,7 @@
 
 const nodemailer= require("nodemailer");
 
+
 const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
@@ -9,7 +10,7 @@ const transporter = nodemailer.createTransport({
     },
 });
 
-function SendPaymentEmail(to) {
+function sendPaymentEmail(to) {
 const mailOptions = {
     from: process.env.EMAIL_USER,
     to: to,
@@ -28,4 +29,4 @@ transporter.sendMail(mailOptions, (error, info) => {
 });
 }
 
-module.exports= SendPaymentEmail;
+module.exports= sendPaymentEmail;
