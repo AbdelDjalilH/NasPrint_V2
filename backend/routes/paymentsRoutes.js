@@ -35,28 +35,11 @@ router.post("/", async (req, res) => {
     }
 
     try {
-        // Insérer le paiement dans la base de données
         const [result] = await pool.execute(
             "INSERT INTO payments (rising, payment_date, payment_mean, payment_status, user_id) VALUES (?, ?, ?, ?, ?)",
             [rising, payment_date, payment_mean, payment_status, user_id]
         );
-
-        // Récupérer les informations de l'utilisateur (email) pour envoyer la confirmation
-        const [user] = await pool.execute("SELECT email FROM users WHERE id = ?", [user_id]);
-
-        // Vérifier que l'utilisateur existe
-        if (user.length === 0) {
-            return res.status(404).json({ message: "Utilisateur non trouvé" });
-        }
-
-        // Récupérer l'adresse e-mail de l'utilisateur associé à user_id
-
-        // const email = user[0].email;
-
-        // Configurer le transporteur Nodemailer
-        
-        // Réponse de succès après création du paiement
-        res.status(201).json({ message: "Paiement créé et email envoyé", id: result.insertId });
+        res.status(201).json({ message: "paiement créé", id: result.insertId });
     } catch (err) {
         console.error("Erreur lors de la création du paiement :", err);  // Affiche l'erreur dans la console
         res.status(500).json({ error: "Erreur lors de la création du paiement" });

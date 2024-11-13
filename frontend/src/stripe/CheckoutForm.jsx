@@ -9,12 +9,10 @@ const CheckoutForm = ({ totalRising }) => {
   const elements = useElements();
   const navigate = useNavigate();
   const [clientSecret, setClientSecret] = useState("");
-  const [loading, setLoading] = useState(false); // Pour indiquer si l'on est en train de charger ou d'envoyer le paiement
 
   useEffect(() => {
     const createPaymentIntent = async () => {
       try {
-        setLoading(true); // Indiquer que le paiement est en cours de préparation
         const response = await axios.post(
           `${import.meta.env.VITE_API_URL}/create-payment-intent`,
           { amount: totalRising * 100 } // Montant en centimes
@@ -22,14 +20,10 @@ const CheckoutForm = ({ totalRising }) => {
         setClientSecret(response.data.clientSecret);
       } catch (error) {
         console.error("Erreur lors de la création du PaymentIntent :", error);
-      } finally {
-        setLoading(false); // Fin du chargement
       }
     };
 
-    if (totalRising > 0) {
-      createPaymentIntent();
-    }
+    createPaymentIntent();
   }, [totalRising]);
 
   const handleSubmit = async (event) => {
@@ -40,8 +34,6 @@ const CheckoutForm = ({ totalRising }) => {
     }
 
     try {
-      setLoading(true); // Démarrer le chargement du paiement
-
       const { error, paymentIntent } = await stripe.confirmCardPayment(
         clientSecret,
         {
@@ -59,8 +51,6 @@ const CheckoutForm = ({ totalRising }) => {
       }
     } catch (err) {
       console.error("Erreur lors de la confirmation du paiement :", err);
-    } finally {
-      setLoading(false); // Fin du chargement
     }
   };
 
@@ -83,10 +73,11 @@ const CheckoutForm = ({ totalRising }) => {
   return (
     <form onSubmit={handleSubmit}>
       <div className="card-element-container">
+        {/* Correction de la syntaxe de CardElement */}
         <CardElement
           options={{
             hidePostalCode: true,
-            style: cardStyle,
+            style: cardStyle, // Ajout correct de l'objet cardStyle
           }}
           className="stripe-card-element"
         />
@@ -94,9 +85,9 @@ const CheckoutForm = ({ totalRising }) => {
       <button
         className="payment-btn"
         type="submit"
-        disabled={!stripe || !clientSecret || loading}
+        disabled={!stripe || !clientSecret}
       >
-        {loading ? "Chargement..." : `Payer ${totalRising} €`}
+        Payer {totalRising} €
       </button>
     </form>
   );
