@@ -171,7 +171,7 @@ export default function CartModal({ isOpen, onClose, productDetails }) {
         <hr />
 
         {items.length > 0 ? (
-          <div>
+          <div className="center-cart">
             {items.map((item) => {
               const itemQuantity = quantityById[item.id] || item.quantity;
               const subtotal = item.price * itemQuantity;
@@ -187,6 +187,7 @@ export default function CartModal({ isOpen, onClose, productDetails }) {
                   <p>Prix unitaire : {item.price} €</p>
                   <p>Quantité : {itemQuantity}</p>
                   <p>Sous-total : {subtotal} €</p>
+
                   <button
                     className="remove-btn"
                     onClick={() => handleRemove(item.id)}
@@ -197,19 +198,20 @@ export default function CartModal({ isOpen, onClose, productDetails }) {
                 </div>
               );
             })}
-            <h3>Total : {totalPrice} €</h3>
+            {/* <div className="center-cart"></div> */}
+            <h3 className="h3-title">Total : {totalPrice} €</h3>
           </div>
         ) : (
           <p>Votre panier est vide.</p>
         )}
 
-        <button className="confirm-order-btn" onClick={createOrderAndPayment}>
-          Confirmer la commande
+        <button className="add-to-cart-btn" onClick={handleConfirm}>
+          Ajouter au panier
         </button>
 
         {productDetails && (
           <div>
-            <h4>Ajouter un autre produit</h4>
+            <h4 className="h4-title">Ajouter un autre produit</h4>
             <div>
               <label>Quantité : </label>
               <input
@@ -218,8 +220,12 @@ export default function CartModal({ isOpen, onClose, productDetails }) {
                 onChange={(e) => setQuantity(Number(e.target.value))}
               />
             </div>
-            <button className="add-to-cart-btn" onClick={handleConfirm}>
-              Ajouter au panier
+
+            <button
+              className="confirm-order-btn"
+              onClick={createOrderAndPayment}
+            >
+              Confirmer la commande
             </button>
           </div>
         )}

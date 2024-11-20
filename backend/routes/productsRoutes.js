@@ -70,27 +70,40 @@ router.post("/", upload.single('image'), async (req, res) => {
 // Route pour mettre à jour un produit
 // Route pour mettre à jour un produit
 router.put("/:id", async (req, res) => {
+    console.log("Requête PUT reçue pour le produit avec ID :", req.params.id);
+    
     const { product_name, product_description, price, quantity_available, image_url, height, length, weight } = req.body;
+    
+    // Loggez le corps de la requête
+    console.log("Données de la requête :", req.body);
 
-    // Vérification que tous les champs nécessaires sont présents
+    // Vérification des champs
     if (!product_name || !product_description || !price || !quantity_available || !image_url || !height || !length || !weight) {
+        console.log("Champs manquants dans la requête.");
         return res.status(400).json({ message: "Tous les champs sont requis" });
     }
 
     try {
-        // Vérifier si le produit existe
-        const [products] = await pool.execute("SELECT * FROM products WHERE id = ?", [req.params.id]);
+        // Log avant la requête SQL pour vérifier que cette partie est atteinte
+        console.log("Exécution de la requête SELECT pour vérifier si le produit existe...");
 
+        const [products] = await pool.execute("SELECT * FROM products WHERE id = ?", [req.params.id]);
+        
+        // Vérifiez si un produit a été trouvé
         if (products.length === 0) {
+            console.log("Produit non trouvé avec l'ID :", req.params.id);
             return res.status(404).json({ message: "Produit non trouvé" });
         }
 
-        // Mettre à jour le produit
+        console.log("Produit trouvé, exécution de la requête UPDATE...");
+
+        // Exécution de la mise à jour
         await pool.execute(
             "UPDATE products SET product_name = ?, product_description = ?, price = ?, quantity_available = ?, image_url = ?, height = ?, length = ?, weight = ? WHERE id = ?",
             [product_name, product_description, price, quantity_available, image_url, height, length, weight, req.params.id]
         );
 
+        console.log("Mise à jour réussie pour le produit avec ID :", req.params.id);
         res.json({ message: "Produit mis à jour" });
     } catch (err) {
         console.error("Erreur lors de la mise à jour :", err);
@@ -99,20 +112,33 @@ router.put("/:id", async (req, res) => {
 });
 
 
+
 // Route pour supprimer un produit
 router.delete("/:id", async (req, res) => {
     try {
-        const [products] = await pool.execute("SELECT * FROM products WHERE id = ?", [req.params.id]);
+        console.log("Requête DELETE reçue pour le produit avec ID :", req.params.id);
 
+        // Vérifiez si le produit existe
+        const [products] = await pool.execute("SELECT * FROM products WHERE id = ?", [req.params.id]);
         if (products.length === 0) {
-            return res.status(404).json({ message: "produit non trouvé" });
+            return res.status(404).json({ message: "Produit non trouvé" });
         }
 
+        console.log("Produit trouvé. Suppression des dépendances...");
+        // Supprimez les entrées liées dans cart_products
+        await pool.execute("DELETE FROM cart_products WHERE product_id = ?", [req.params.id]);
+
+        console.log("Dépendances supprimées. Suppression du produit...");
+        // Supprimez le produit
         await pool.execute("DELETE FROM products WHERE id = ?", [req.params.id]);
-        res.json({ message: "produit supprimé" });
+
+        res.json({ message: "Produit supprimé avec succès." });
     } catch (err) {
+        console.error("Erreur lors de la suppression :", err);
         res.status(500).json({ error: "Erreur lors de la suppression du produit" });
     }
 });
+
+
 
 module.exports = router;

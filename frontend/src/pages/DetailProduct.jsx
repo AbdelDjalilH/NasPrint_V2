@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useOutletContext, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../styles/detailproduct.css";
+import SliderProducts from "../components/SliderProducts";
 
 export default function DetailProduct() {
   const { id } = useParams();
@@ -13,7 +14,6 @@ export default function DetailProduct() {
   const [productList, setProductList] = useState([]); // Liste de tous les produits
 
   const next = "|  Suivant  >";
-
   const previous = "<  Précédent  ";
 
   useEffect(() => {
@@ -84,18 +84,21 @@ export default function DetailProduct() {
         <button onClick={handlePrevious}>{previous}</button>
         <button onClick={handleNext}>{next}</button>
       </nav>
-      <section className="row-section">
-        <img
-          className="detail-product-main-img"
-          src={product.image_url}
-          alt={product.product_name}
-        />
-        <section className="column-section1">
-          <h1 className="detail-product-name">{product.product_name}</h1>
-          <p className="detail-product-price">Prix: {product.price} €</p>
-          <button onClick={handleAddToCart} className="add-to-cart-button">
-            Ajouter au panier
-          </button>
+      <section className="img-container-row-section">
+        <section className="img-container">
+          <SliderProducts id={id} />
+        </section>
+
+        <section className="row-section">
+          {/* Retiré l'image actuelle et remplacé par le slider */}
+          <section className="column-section1">
+            <h1 className="detail-product-name">{product.product_name}</h1>
+
+            <p className="detail-product-price">Prix: {product.price} €</p>
+            <button onClick={handleAddToCart} className="add-to-cart-button">
+              Ajouter au panier
+            </button>
+          </section>
         </section>
       </section>
 

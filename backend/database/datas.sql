@@ -1,4 +1,3 @@
--- Suppression des tables existantes
 DROP TABLE IF EXISTS cart_products;
 
 DROP TABLE IF EXISTS cart;
@@ -40,7 +39,7 @@ CREATE TABLE products (
     product_name VARCHAR(100) NOT NULL,
     product_description VARCHAR(1000) NOT NULL,
     category_id INT UNSIGNED,
-    price DECIMAL(10, 2) NOT NULL, -- Changed to DECIMAL for price
+    price DECIMAL(10, 2) NOT NULL,
     quantity_available INT,
     image_url VARCHAR(255) NOT NULL DEFAULT 'default.png',
     height DECIMAL(10, 2) NOT NULL,
@@ -57,11 +56,10 @@ CREATE TABLE images (
     third_image VARCHAR(255) DEFAULT 'default.png',
     four_image VARCHAR(255) DEFAULT 'default.png',
     five_image VARCHAR(255) DEFAULT 'default.png',
-    FOREIGN KEY (product_id) REFERENCES products (id)
+    FOREIGN KEY (product_id) REFERENCES products (id) ON DELETE CASCADE
 );
 
-CREATE TABLE payments ( 
-
+CREATE TABLE payments (
     id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT NOT NULL,
     user_id INT UNSIGNED NOT NULL,
     rising INT NOT NULL,
@@ -94,7 +92,7 @@ CREATE TABLE cart_products (
     product_id INT UNSIGNED NOT NULL,
     quantity INT NOT NULL,
     FOREIGN KEY (cart_id) REFERENCES cart (id) ON DELETE CASCADE,
-    FOREIGN KEY (product_id) REFERENCES products (id)
+    FOREIGN KEY (product_id) REFERENCES products (id) ON DELETE CASCADE
 );
 
 CREATE TABLE notices (
@@ -104,8 +102,8 @@ CREATE TABLE notices (
     commentary VARCHAR(250) NOT NULL,
     mark INT NOT NULL,
     date_opinion DATE NOT NULL,
-    FOREIGN KEY (product_id) REFERENCES products (id),
-    FOREIGN KEY (user_id) REFERENCES users (id)
+    FOREIGN KEY (product_id) REFERENCES products (id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
 
 CREATE TABLE orders (
@@ -117,8 +115,8 @@ CREATE TABLE orders (
     order_status VARCHAR(50) NOT NULL,
     total_rising INT NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
-    FOREIGN KEY (payment_id) REFERENCES payments (id),
-    FOREIGN KEY (address_id) REFERENCES adresses (id)
+    FOREIGN KEY (payment_id) REFERENCES payments (id) ON DELETE CASCADE,
+    FOREIGN KEY (address_id) REFERENCES adresses (id) ON DELETE CASCADE
 );
 
 -- Insertion des catégories
@@ -160,19 +158,19 @@ INSERT INTO
 VALUES (
         "adj.hamzaoui@gmail.com",
         "adj",
-        "$argon2id$v=19$m=65536,t=3,p=4$nL93G4/31nGyD/wk9YETeA$DJYth4BLLOKgwvUs5OxmS/KAAPyisBNMDLZD5PqaV1w",
+        "$argon2id$hash",
         "Administrateur",
         "2024-10-20"
     ),
     (
         "adjo@adjo.dz",
         "adjo",
-        "$argon2id$v=19$m=65536,t=3,p=4$pHNxg54365gOoQ/iBJ8DeQ$6CeMc+KJD41qBcUiEFSJW1OSjzcMxREDCvh4PIl8SzE",
+        "$argon2id$hash",
         "Utilisateur",
         "2024-10-21"
     );
 
--- Insertion des produits (assurez-vous que category_id correspond à une catégorie existante)
+-- Insertion des produits
 INSERT INTO
     products (
         product_name,
@@ -263,9 +261,72 @@ VALUES (
         5
     );
 
--- Insertion des paiements
+INSERT INTO
+    images (
+        product_id,
+        first_image,
+        second_image,
+        third_image,
+        four_image,
+        five_image
+    )
+VALUES (
+        1,
+        "https://static.wixstatic.com/media/3f698e_1b05553948c443e0a76d3d41e51e0198~mv2.jpg/v1/fill/w_787,h_785,al_c,q_85,usm_0.66_1.00_0.01/3f698e_1b05553948c443e0a76d3d41e51e0198~mv2.jpg",
+        "https://static.wixstatic.com/media/3f698e_2d9f8354819248378829c0c85f08837f~mv2.png/v1/fill/w_500,h_500,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/3f698e_2d9f8354819248378829c0c85f08837f~mv2.png",
+        "",
+        "",
+        ""
+    ),
+    (
+        2,
+        "https://static.wixstatic.com/media/3f698e_c3a01e021fe949598576307b67224b5f~mv2.jpg/v1/fill/w_500,h_501,al_c,q_80,usm_0.66_1.00_0.01,enc_auto/3f698e_c3a01e021fe949598576307b67224b5f~mv2.jpg",
+        "https://static.wixstatic.com/media/3f698e_900ca363270743d08a6351de1f8ee2b8~mv2.jpg/v1/fill/w_500,h_500,al_c,q_80,usm_0.66_1.00_0.01,enc_auto/3f698e_900ca363270743d08a6351de1f8ee2b8~mv2.jpg",
+        "https://static.wixstatic.com/media/3f698e_f808dc66fa2c446595ffb94b906efc5e~mv2.jpg/v1/fill/w_500,h_500,al_c,q_80,usm_0.66_1.00_0.01,enc_auto/3f698e_f808dc66fa2c446595ffb94b906efc5e~mv2.jpg",
+        "",
+        ""
+    ),
+    (
+        3,
+        "https://static.wixstatic.com/media/3f698e_fc149d4a10004ba984ae220a6ecdad2d~mv2.jpg/v1/fill/w_500,h_497,al_c,q_80,usm_0.66_1.00_0.01,enc_auto/3f698e_fc149d4a10004ba984ae220a6ecdad2d~mv2.jpg",
+        "https://static.wixstatic.com/media/3f698e_80c770740a534763b0159d73602f78ce~mv2.png/v1/fill/w_500,h_500,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/3f698e_80c770740a534763b0159d73602f78ce~mv2.png",
+        "https://static.wixstatic.com/media/3f698e_37832299da77465ea8462335a0eb5651~mv2.png/v1/fill/w_500,h_500,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/3f698e_37832299da77465ea8462335a0eb5651~mv2.png",
+        "https://static.wixstatic.com/media/3f698e_be62e457ce564661abd859e776b76e69~mv2.png/v1/fill/w_500,h_500,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/3f698e_be62e457ce564661abd859e776b76e69~mv2.png",
+        ""
+    ),
+    (
+        4,
+        "https://static.wixstatic.com/media/3f698e_b153cda824834ce1b158c0610f594bec~mv2.jpg/v1/fill/w_500,h_501,al_c,q_80,usm_0.66_1.00_0.01,enc_auto/3f698e_b153cda824834ce1b158c0610f594bec~mv2.jpg",
+        "https://static.wixstatic.com/media/3f698e_cf737cdc7e524a4d8ea0cad89af0ba62~mv2.png/v1/fill/w_500,h_500,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/3f698e_cf737cdc7e524a4d8ea0cad89af0ba62~mv2.png",
+        "",
+        "",
+        ""
+    ),
+    (
+        5,
+        "https://static.wixstatic.com/media/3f698e_306db7e6ad23435488c2703dbbe14ca8~mv2.jpg/v1/fill/w_500,h_502,al_c,q_80,usm_0.66_1.00_0.01,enc_auto/3f698e_306db7e6ad23435488c2703dbbe14ca8~mv2.jpg",
+        "https://static.wixstatic.com/media/3f698e_a5f4603f34f84556a608ab2ac8622ecc~mv2.jpg/v1/fill/w_500,h_500,al_c,q_80,usm_0.66_1.00_0.01,enc_auto/3f698e_a5f4603f34f84556a608ab2ac8622ecc~mv2.jpg",
+        "",
+        "",
+        ""
+    ),
+    (
+        6,
+        "https://static.wixstatic.com/media/3f698e_b4b5e811899c4c1f88c28d972f8760b8~mv2.jpg/v1/fill/w_500,h_499,al_c,q_80,usm_0.66_1.00_0.01,enc_auto/3f698e_b4b5e811899c4c1f88c28d972f8760b8~mv2.jpg",
+        "https://static.wixstatic.com/media/3f698e_6a023b552e01442facd69d50bebfb4ea~mv2.jpg/v1/fill/w_500,h_500,al_c,q_80,usm_0.66_1.00_0.01,enc_auto/3f698e_6a023b552e01442facd69d50bebfb4ea~mv2.jpg",
+        "https://static.wixstatic.com/media/3f698e_f800396c35464003b27c64528afd2a54~mv2.jpg/v1/fill/w_500,h_500,al_c,q_80,usm_0.66_1.00_0.01,enc_auto/3f698e_f800396c35464003b27c64528afd2a54~mv2.jpg",
+        "",
+        ""
+    ),
+    (
+        7,
+        "https://static.wixstatic.com/media/3f698e_5b1f79c592e842389b2271c16819ca26~mv2.jpg/v1/fill/w_500,h_501,al_c,q_80,usm_0.66_1.00_0.01,enc_auto/3f698e_5b1f79c592e842389b2271c16819ca26~mv2.jpg",
+        "https://static.wixstatic.com/media/3f698e_25bd327c462542bfa60e284b3e4e98ba~mv2.jpg/v1/fill/w_500,h_500,al_c,q_80,usm_0.66_1.00_0.01,enc_auto/3f698e_25bd327c462542bfa60e284b3e4e98ba~mv2.jpg",
+        "https://static.wixstatic.com/media/3f698e_60d9bcbcaef64697a8273536e899c861~mv2.jpg/v1/fill/w_500,h_500,al_c,q_80,usm_0.66_1.00_0.01,enc_auto/3f698e_60d9bcbcaef64697a8273536e899c861~mv2.jpg",
+        "",
+        ""
+    );
 
--- Insertion des adresses
 INSERT INTO
     adresses (
         user_id,
@@ -298,13 +359,13 @@ INSERT INTO
 VALUES (1, "2023-01-12"),
     (2, "2023-01-15");
 
--- Insertion des produits dans les pani
-
+-- Insertion des produits dans les paniers
 INSERT INTO
     cart_products (cart_id, product_id, quantity)
 VALUES (1, 1, 5),
     (2, 2, 6);
 
+-- Insertion des notices
 INSERT INTO
     notices (
         product_id,
