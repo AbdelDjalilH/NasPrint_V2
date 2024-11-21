@@ -118,11 +118,47 @@ app.post("/create-payment-intent", async (req, res) => {
 
         const { firstname, lastname, number_road, city, postal_code } = userAddress[0];
 
+        // Vérifier si l'utilisateur a un panier actif, sinon en créer un
+        let cartId;
+        const [cart] = await pool.execute("SELECT id FROM cart WHERE user_id = ?", [user_id]);
+        if (cart.length === 0) {
+            // Créer un panier pour l'utilisateur
+            await pool.execute("INSERT INTO cart (user_id, date_creation) VALUES (?, CURDATE())", [user_id]);
+            const [newCart] = await pool.execute("SELECT id FROM cart WHERE user_id = ?", [user_id]);
+            cartId = newCart[0].id;
+            console.log("Nouveau panier créé avec ID :", cartId);
+        } else {
+            cartId = cart[0].id;
+            console.log("ID du panier existant :", cartId);
+        }
+
+        // Récupérer les informations des produits dans le panier
+        const [cartProducts] = await pool.execute(
+            `SELECT cp.quantity, p.product_name
+             FROM cart_products cp
+             JOIN products p ON cp.product_id = p.id
+             WHERE cp.cart_id = ?`,
+            [cartId]
+        );
+
+        // Log des résultats de la requête SQL
+        console.log("Produits dans le panier :", cartProducts);
+
+        // Construire le contenu de l'e-mail avec les informations des produits
+        let productDetails = "";
+        if (cartProducts.length > 0) {
+            cartProducts.forEach((product) => {
+                productDetails += `- Produit : ${product.product_name}, Quantité : ${product.quantity}\n`;
+            });
+        } else {
+            productDetails = "Aucun produit trouvé dans le panier.";
+        }
+
         const mailOptions2 = {
             from: process.env.EMAIL_USER,
             to: "adj.hamzaoui@gmail.com",
             subject: "Nouvelle commande",
-            text: `Bonjour,\n\nVous avez reçu une nouvelle commande d'un montant de ${amount / 100} €.\n\nInformations du client :\n- Prénom : ${firstname}\n- Nom : ${lastname}\n- Adresse : ${number_road}\n- Ville : ${city}\n- Code postal : ${postal_code}\n\nIdentifiant de paiement : ${paymentIntent.id}\n\nCordialement,\nL'équipe.`,
+            text: `Bonjour,\n\nVous avez reçu une nouvelle commande d'un montant de ${amount / 100} €.\n\nInformations du client :\n- Prénom : ${firstname}\n- Nom : ${lastname}\n- Adresse : ${number_road}\n- Ville : ${city}\n- Code postal : ${postal_code}\n\nIdentifiant de paiement : ${paymentIntent.id}\n\nDétails des produits :\n${productDetails}\n\nCordialement,\nL'équipe.`,
         };
 
         transporter.sendMail(mailOptions2, (error, info) => {
@@ -133,7 +169,10 @@ app.post("/create-payment-intent", async (req, res) => {
             }
         });
 
-        res.send({ clientSecret: paymentIntent.client_secret });
+        res.send({
+            clientSecret: paymentIntent.client_secret,
+            cartProducts: cartProducts,
+        });
     } catch (error) {
         console.error("Erreur lors de la création du PaymentIntent :", error);
         res.status(500).send("Erreur lors de la création du PaymentIntent");
