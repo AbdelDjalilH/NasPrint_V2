@@ -8,7 +8,6 @@ function ProductInfo() {
   const [editProductData, setEditProductData] = useState({
     product_name: "",
     product_description: "",
-    category_id: "",
     price: "",
     quantity_available: "",
     image_url: "default.png",
@@ -47,7 +46,7 @@ function ProductInfo() {
     setEditProductData({
       product_name: product.product_name,
       product_description: product.product_description,
-      category_id: product.category_id || "",
+
       price: product.price,
       quantity_available: product.quantity_available || "",
       image_url: product.image_url || "default.png",
@@ -150,7 +149,7 @@ function ProductInfo() {
     setEditProductData({
       product_name: "",
       product_description: "",
-      category_id: "",
+
       price: "",
       quantity_available: "",
       image_url: "default.png",
@@ -169,6 +168,7 @@ function ProductInfo() {
             <div key={product.id} className="card">
               {editProductId === product.id ? (
                 <div>
+                  <label>Nom du produit</label>
                   <input
                     type="text"
                     name="product_name"
@@ -177,6 +177,7 @@ function ProductInfo() {
                     className="input"
                     placeholder="Nom du produit"
                   />
+                  <label htmlFor="">Description</label>
                   <textarea
                     name="product_description"
                     value={editProductData.product_description}
@@ -184,14 +185,7 @@ function ProductInfo() {
                     className="input"
                     placeholder="Description du produit"
                   ></textarea>
-                  <input
-                    type="number"
-                    name="category_id"
-                    value={editProductData.category_id}
-                    onChange={handleInputChange}
-                    className="input"
-                    placeholder="ID de la catégorie"
-                  />
+                  <label htmlFor="">Prix</label>
                   <input
                     type="number"
                     name="price"
@@ -200,6 +194,7 @@ function ProductInfo() {
                     className="input"
                     placeholder="Prix"
                   />
+                  <label htmlFor="">Quantité disponible</label>
                   <input
                     type="number"
                     name="quantity_available"
@@ -208,6 +203,7 @@ function ProductInfo() {
                     className="input"
                     placeholder="Quantité disponible"
                   />
+                  <label htmlFor="">Image principale</label>
                   <input
                     type="text"
                     name="image_url"
@@ -216,6 +212,7 @@ function ProductInfo() {
                     className="input"
                     placeholder="URL de l'image"
                   />
+                  <label htmlFor="">Hauteur</label>
                   <input
                     type="number"
                     name="height"
@@ -224,6 +221,7 @@ function ProductInfo() {
                     className="input"
                     placeholder="Hauteur"
                   />
+                  <label htmlFor="">Longueur</label>
                   <input
                     type="number"
                     name="length"
@@ -232,6 +230,7 @@ function ProductInfo() {
                     className="input"
                     placeholder="Longueur"
                   />
+                  <label htmlFor="">Poids</label>
                   <input
                     type="number"
                     name="weight"
