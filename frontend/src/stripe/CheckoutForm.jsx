@@ -5,11 +5,12 @@ import { useNavigate } from "react-router-dom";
 import "../styles/checkoutForm.css"; // Assurez-vous d'avoir un fichier CSS pour styliser le formulaire
 
 const CheckoutForm = ({ totalRising, userId }) => {
-  // Ajoutez `userId` comme prop
   const stripe = useStripe();
   const elements = useElements();
   const navigate = useNavigate();
   const [clientSecret, setClientSecret] = useState("");
+  const [errorMessage, setErrorMessage] = useState(""); // Pour afficher les erreurs
+  const [isLoading, setIsLoading] = useState(false); // Gestion du chargement
 
   useEffect(() => {
     const createPaymentIntent = async () => {
@@ -24,6 +25,9 @@ const CheckoutForm = ({ totalRising, userId }) => {
         setClientSecret(response.data.clientSecret);
       } catch (error) {
         console.error("Erreur lors de la création du PaymentIntent :", error);
+        setErrorMessage(
+          "Une erreur est survenue lors de la création du paiement. Veuillez réessayer."
+        );
       }
     };
 
@@ -37,6 +41,9 @@ const CheckoutForm = ({ totalRising, userId }) => {
       return;
     }
 
+    setIsLoading(true); // Démarre le chargement
+    setErrorMessage(""); // Réinitialise les messages d'erreur
+
     try {
       const { error, paymentIntent } = await stripe.confirmCardPayment(
         clientSecret,
@@ -49,12 +56,20 @@ const CheckoutForm = ({ totalRising, userId }) => {
 
       if (error) {
         console.error("Erreur de paiement :", error);
+        setErrorMessage(
+          "Le paiement a échoué. Veuillez vérifier vos informations."
+        );
       } else {
         console.log("Paiement réussi :", paymentIntent);
         navigate("/payment-complete");
       }
     } catch (err) {
       console.error("Erreur lors de la confirmation du paiement :", err);
+      setErrorMessage(
+        "Une erreur inattendue s'est produite. Veuillez réessayer."
+      );
+    } finally {
+      setIsLoading(false); // Arrête le chargement
     }
   };
 
@@ -75,7 +90,7 @@ const CheckoutForm = ({ totalRising, userId }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className="checkout-form">
       <div className="card-element-container">
         <CardElement
           options={{
@@ -85,12 +100,21 @@ const CheckoutForm = ({ totalRising, userId }) => {
           className="stripe-card-element"
         />
       </div>
+
+      {/* Affichage des erreurs ou messages d'état */}
+      {errorMessage && (
+        <div className="error-message" aria-live="polite">
+          {errorMessage}
+        </div>
+      )}
+
+      {/* Bouton de paiement avec gestion du chargement */}
       <button
         className="payment-btn"
         type="submit"
-        disabled={!stripe || !clientSecret}
+        disabled={!stripe || !clientSecret || isLoading}
       >
-        Payer {totalRising} €
+        {isLoading ? "Traitement en cours..." : `Payer ${totalRising} €`}
       </button>
     </form>
   );
