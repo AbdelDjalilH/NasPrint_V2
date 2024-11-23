@@ -35,94 +35,51 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // Route de paiement Stripe
-app.post("/stripe/charge", async (req, res) => {
-    const { amount, id } = req.body;
-    console.log("amount & id :", amount, id);
-    try {
-        const paymentIntent = await stripe.paymentIntents.create({
-            amount: amount, // montant en centimes
-            currency: "EUR", // devise
-            description: "Votre description de l'entreprise",
-            payment_method: id,
-            confirm: true,
-            return_url: process.env.RETURN_URL, // URL de retour
-        });
-
-        res.json({
-            message: "Paiement réussi",
-            success: true,
-            returnUrl: process.env.RETURN_URL, // URL de retour au frontend
-        });
-    } catch (error) {
-        console.log("Erreur lors du paiement:", error);
-        res.json({ message: "Le paiement a échoué", success: false });
-    }
-});
-
 app.post("/create-payment-intent", async (req, res) => {
     try {
-        console.log("Corps de la requête reçu :", req.body);
+        console.log("Requête reçue :", req.body);
         const { amount, user_id } = req.body;
 
+        // Vérification des paramètres
         if (!amount || !user_id) {
-            return res.status(400).send("Le montant et l'user_id sont requis");
+            return res.status(400).send("Le montant et l'ID utilisateur sont requis.");
         }
 
         if (typeof amount !== "number" || amount <= 0) {
-            return res.status(400).send("Le montant doit être un entier positif");
+            return res.status(400).send("Le montant doit être un entier positif.");
         }
 
+        // Récupérer l'e-mail de l'utilisateur
         const [user] = await pool.execute("SELECT email FROM users WHERE id = ?", [user_id]);
         if (user.length === 0) {
-            return res.status(404).send("Utilisateur non trouvé");
+            return res.status(404).send("Utilisateur non trouvé.");
         }
         const email = user[0].email;
         console.log("Adresse e-mail de l'utilisateur :", email);
 
+        // Créer un PaymentIntent avec Stripe
         const paymentIntent = await stripe.paymentIntents.create({
             amount: amount, // Montant en centimes
             currency: "eur",
         });
 
+        // Récupérer l'adresse de l'utilisateur
         const [userAddress] = await pool.execute(
             "SELECT lastname, firstname, number_road, city, postal_code FROM adresses WHERE user_id = ?",
             [user_id]
         );
 
         if (userAddress.length === 0) {
-            return res.status(404).send("Adresse de l'utilisateur non trouvée");
+            return res.status(404).send("Adresse de l'utilisateur non trouvée.");
         }
-
-        const transporter = nodemailer.createTransport({
-            service: "gmail",
-            auth: {
-                user: process.env.EMAIL_USER,
-                pass: process.env.EMAIL_PASS,
-            },
-        });
-
-        const mailOptions = {
-            from: process.env.EMAIL_USER,
-            to: email,
-            subject: "Confirmation de votre paiement",
-            text: `Bonjour,\n\nVotre paiement de ${amount / 100} € a été initié avec succès. Voici votre identifiant de paiement : ${paymentIntent.id}.\n\nMerci pour votre commande !\n\nCordialement,\nL'équipe.`,
-        };
-
-        transporter.sendMail(mailOptions, (error, info) => {
-            if (error) {
-                console.error("Erreur lors de l'envoi de l'e-mail :", error);
-            } else {
-                console.log("E-mail envoyé avec succès :", info.response);
-            }
-        });
 
         const { firstname, lastname, number_road, city, postal_code } = userAddress[0];
 
-        // Vérifier si l'utilisateur a un panier actif, sinon en créer un
+        // Vérifier ou créer un panier actif pour l'utilisateur
         let cartId;
         const [cart] = await pool.execute("SELECT id FROM cart WHERE user_id = ?", [user_id]);
         if (cart.length === 0) {
-            // Créer un panier pour l'utilisateur
+            // Si aucun panier n'existe, en créer un
             await pool.execute("INSERT INTO cart (user_id, date_creation) VALUES (?, CURDATE())", [user_id]);
             const [newCart] = await pool.execute("SELECT id FROM cart WHERE user_id = ?", [user_id]);
             cartId = newCart[0].id;
@@ -132,19 +89,23 @@ app.post("/create-payment-intent", async (req, res) => {
             console.log("ID du panier existant :", cartId);
         }
 
-        // Récupérer les informations des produits dans le panier
-        const [cartProducts] = await pool.execute(
-            `SELECT cp.quantity, p.product_name
-             FROM cart_products cp
-             JOIN products p ON cp.product_id = p.id
-             WHERE cp.cart_id = ?`,
-            [cartId]
-        );
+        // Récupérer les produits du panier
+        let cartProducts = [];
+        try {
+            const [results] = await pool.execute(
+                `SELECT cp.quantity, p.product_name
+                 FROM cart_products cp
+                 JOIN products p ON cp.product_id = p.id
+                 WHERE cp.cart_id = ?`,
+                [cartId]
+            );
+            cartProducts = results;
+            console.log("Produits récupérés pour le panier :", cartProducts);
+        } catch (error) {
+            console.error("Erreur lors de la récupération des produits du panier :", error);
+        }
 
-        // Log des résultats de la requête SQL
-        console.log("Produits dans le panier :", cartProducts);
-
-        // Construire le contenu de l'e-mail avec les informations des produits
+        // Construire les détails des produits pour l'email
         let productDetails = "";
         if (cartProducts.length > 0) {
             cartProducts.forEach((product) => {
@@ -153,22 +114,49 @@ app.post("/create-payment-intent", async (req, res) => {
         } else {
             productDetails = "Aucun produit trouvé dans le panier.";
         }
+        console.log("Détails des produits pour l'email :", productDetails);
 
-        const mailOptions2 = {
+        // Envoyer un e-mail de confirmation à l'utilisateur
+        const transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASS,
+            },
+        });
+
+        const mailOptionsUser = {
+            from: process.env.EMAIL_USER,
+            to: email,
+            subject: "Confirmation de votre paiement",
+            text: `Bonjour ${firstname},\n\nVotre paiement de ${amount / 100} € a été initié avec succès. Voici votre identifiant de paiement : ${paymentIntent.id}.\n\nMerci pour votre commande !\n\nCordialement,\nL'équipe.`,
+        };
+
+        transporter.sendMail(mailOptionsUser, (error, info) => {
+            if (error) {
+                console.error("Erreur lors de l'envoi de l'e-mail utilisateur :", error);
+            } else {
+                console.log("E-mail utilisateur envoyé avec succès :", info.response);
+            }
+        });
+
+        // Envoyer un e-mail de notification à l'administrateur
+        const mailOptionsAdmin = {
             from: process.env.EMAIL_USER,
             to: "adj.hamzaoui@gmail.com",
             subject: "Nouvelle commande",
             text: `Bonjour,\n\nVous avez reçu une nouvelle commande d'un montant de ${amount / 100} €.\n\nInformations du client :\n- Prénom : ${firstname}\n- Nom : ${lastname}\n- Adresse : ${number_road}\n- Ville : ${city}\n- Code postal : ${postal_code}\n\nIdentifiant de paiement : ${paymentIntent.id}\n\nDétails des produits :\n${productDetails}\n\nCordialement,\nL'équipe.`,
         };
 
-        transporter.sendMail(mailOptions2, (error, info) => {
+        transporter.sendMail(mailOptionsAdmin, (error, info) => {
             if (error) {
-                console.error("Erreur lors de l'envoi de l'e-mail :", error);
+                console.error("Erreur lors de l'envoi de l'e-mail administrateur :", error);
             } else {
-                console.log("E-mail envoyé avec succès :", info.response);
+                console.log("E-mail administrateur envoyé avec succès :", info.response);
             }
         });
 
+        // Réponse au client
         res.send({
             clientSecret: paymentIntent.client_secret,
             cartProducts: cartProducts,
@@ -178,6 +166,7 @@ app.post("/create-payment-intent", async (req, res) => {
         res.status(500).send("Erreur lors de la création du PaymentIntent");
     }
 });
+
 
 // Middleware pour logger les requêtes
 app.use((req, res, next) => {
