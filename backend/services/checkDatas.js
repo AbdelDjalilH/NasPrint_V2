@@ -5,6 +5,7 @@ const checkRegisterDatas = (req, res, next) => {
         email: Joi.string().email().required(),
         username: Joi.string().min(2).required(),
         password: Joi.string().min(8).max(20).required(),
+        verified: {type: Boolean, default: false}
     }).validate(req.body, { abortEarly: false });
 
     if (!error) {

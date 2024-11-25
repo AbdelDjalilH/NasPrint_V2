@@ -28,11 +28,6 @@ router.get("/:cart_id/:product_id", async (req, res) => {
     }
 });
 
-// Route pour créer un nouveau cart-product
-// Route pour créer un nouveau cart-product
-// Route pour créer un nouveau cart-product
-// Route pour créer un nouveau cart-product
-// Exemple de route POST dans cart_productRoutes.js
 router.post("/", async (req, res) => {
     const { cart_id, product_id, quantity } = req.body;
 

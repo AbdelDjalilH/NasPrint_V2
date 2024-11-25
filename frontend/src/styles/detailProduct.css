@@ -1,6 +1,9 @@
-.detail-product-container {
+.img-container-row-section {
+  display: flex;
+  justify-content: center;
+  margin-top: 3rem;
+  gap: 9rem;
 }
-
 .detail-product-main-img {
   width: 25rem;
 }
@@ -54,4 +57,17 @@
 .navigation-buttons > button {
   border: none;
   background: none;
+  font-size: 1rem;
+}
+
+.add-to-cart-button {
+  margin-top: 3rem;
+  background-color: rgb(255, 216, 20);
+  border: none;
+  border-radius: 30px;
+  height: 3rem;
+  width: 15rem;
+}
+button {
+  cursor: pointer;
 }

@@ -4,6 +4,8 @@ const { pool } = require("../database/db-connection");
 const jwt = require("jsonwebtoken");
 const adminOnly = require("../services/adminOnly"); // Middleware pour les accès admin
 const verifyToken = require("../services/authMiddleware");
+
+
 // Route pour récupérer tous les utilisateurs (admin seulement)
 router.get("/", verifyToken, adminOnly, async (req, res) => {
     try {

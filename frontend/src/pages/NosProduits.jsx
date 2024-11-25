@@ -65,7 +65,7 @@ export default function NosProduits() {
 
       <div className="products-container">
         {filteredProducts.map((product) => (
-          <Product key={product.id} product={product} />
+          <Product key={product.id} product={product} id={product.id} />
         ))}
       </div>
     </div>

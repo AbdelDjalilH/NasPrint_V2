@@ -4,10 +4,10 @@
   color: #eee;
   position: fixed;
   inset: 0 0 0 auto;
-  height: 100vh; /* Hauteur fixe pour le conteneur */
-  overflow-y: auto; /* Activer la barre de défilement verticale si nécessaire */
+  height: 100vh;
+  overflow-y: auto;
   padding: 1rem;
-  border-radius: 8px; /* Bordures arrondies pour un meilleur style */
+  border-radius: 8px;
 }
 hr {
   width: 100%;
@@ -35,16 +35,47 @@ h2 {
   border: none;
   background: none;
   cursor: pointer;
+  color: #eee;
+  font-size: 1.5rem;
 }
 
 .img-product-modal {
   width: 3rem;
 }
 
-.validate-btn {
+.add-to-cart-btn {
   background-color: rgb(47, 88, 47);
   color: white;
   border: none;
+  border-radius: 30px;
   padding: 0.5rem 1rem;
   cursor: pointer;
+  margin-top: 1rem;
+  width: 10rem;
+}
+.confirm-order-btn {
+  background-color: rgb(255, 216, 20);
+  margin-top: 2rem;
+  border: none;
+  width: 10rem;
+  height: 2rem;
+  border-radius: 30px;
+  color: black;
+}
+.h4-title {
+  margin-top: 1rem;
+}
+.h3-title {
+  margin-top: 0.5rem;
+}
+.remove-btn {
+  background-color: red;
+  border: none;
+  color: #eee;
+  border-radius: 30px;
+  width: 5rem;
+  height: 2rem;
+}
+hr {
+  margin-top: 0.5rem;
 }

@@ -1,0 +1,26 @@
+.client-info-principale {
+  margin-top: 5rem;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+.info-form {
+  margin-top: 3rem;
+  display: flex;
+  flex-direction: column;
+  width: 400px;
+  font-size: 16px;
+  gap: 1.5rem;
+  align-items: center;
+}
+.info-title {
+  margin-top: 2rem;
+}
+.hello-title {
+  margin-top: 1rem;
+}
+
+.info-btn {
+  width: 10rem;
+  text-align: center;
+}

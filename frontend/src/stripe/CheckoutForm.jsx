@@ -4,27 +4,35 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "../styles/checkoutForm.css"; // Assurez-vous d'avoir un fichier CSS pour styliser le formulaire
 
-const CheckoutForm = ({ totalRising }) => {
+const CheckoutForm = ({ totalRising, userId }) => {
   const stripe = useStripe();
   const elements = useElements();
   const navigate = useNavigate();
   const [clientSecret, setClientSecret] = useState("");
+  const [errorMessage, setErrorMessage] = useState(""); // Pour afficher les erreurs
+  const [isLoading, setIsLoading] = useState(false); // Gestion du chargement
 
   useEffect(() => {
     const createPaymentIntent = async () => {
       try {
         const response = await axios.post(
           `${import.meta.env.VITE_API_URL}/create-payment-intent`,
-          { amount: totalRising * 100 } // Montant en centimes
+          {
+            amount: totalRising * 100, // Montant en centimes
+            user_id: userId, // Ajoutez `user_id` ici
+          }
         );
         setClientSecret(response.data.clientSecret);
       } catch (error) {
         console.error("Erreur lors de la création du PaymentIntent :", error);
+        setErrorMessage(
+          "Une erreur est survenue lors de la création du paiement. Veuillez réessayer."
+        );
       }
     };
 
     createPaymentIntent();
-  }, [totalRising]);
+  }, [totalRising, userId]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -32,6 +40,9 @@ const CheckoutForm = ({ totalRising }) => {
     if (!stripe || !elements || !clientSecret) {
       return;
     }
+
+    setIsLoading(true); // Démarre le chargement
+    setErrorMessage(""); // Réinitialise les messages d'erreur
 
     try {
       const { error, paymentIntent } = await stripe.confirmCardPayment(
@@ -45,12 +56,20 @@ const CheckoutForm = ({ totalRising }) => {
 
       if (error) {
         console.error("Erreur de paiement :", error);
+        setErrorMessage(
+          "Le paiement a échoué. Veuillez vérifier vos informations."
+        );
       } else {
         console.log("Paiement réussi :", paymentIntent);
         navigate("/payment-complete");
       }
     } catch (err) {
       console.error("Erreur lors de la confirmation du paiement :", err);
+      setErrorMessage(
+        "Une erreur inattendue s'est produite. Veuillez réessayer."
+      );
+    } finally {
+      setIsLoading(false); // Arrête le chargement
     }
   };
 
@@ -71,23 +90,31 @@ const CheckoutForm = ({ totalRising }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className="checkout-form">
       <div className="card-element-container">
-        {/* Correction de la syntaxe de CardElement */}
         <CardElement
           options={{
             hidePostalCode: true,
-            style: cardStyle, // Ajout correct de l'objet cardStyle
+            style: cardStyle,
           }}
           className="stripe-card-element"
         />
       </div>
+
+      {/* Affichage des erreurs ou messages d'état */}
+      {errorMessage && (
+        <div className="error-message" aria-live="polite">
+          {errorMessage}
+        </div>
+      )}
+
+      {/* Bouton de paiement avec gestion du chargement */}
       <button
         className="payment-btn"
         type="submit"
-        disabled={!stripe || !clientSecret}
+        disabled={!stripe || !clientSecret || isLoading}
       >
-        Payer {totalRising} €
+        {isLoading ? "Traitement en cours..." : `Payer ${totalRising} €`}
       </button>
     </form>
   );

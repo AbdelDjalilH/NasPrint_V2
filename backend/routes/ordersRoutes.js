@@ -51,6 +51,7 @@ router.post("/", async (req, res) => {
             [user_id, payment_id, address_id, order_date, order_status, total_rising]
         );
         res.status(201).json({ message: "Commande créée", id: result.insertId });
+        
     } catch (err) {
         console.error("Erreur lors de la création de la commande :", err);
         res.status(500).json({ error: "Erreur lors de la création de la commande" });

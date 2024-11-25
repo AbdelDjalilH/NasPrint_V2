@@ -29,9 +29,9 @@ const initializeDatabase = async () => {
         console.log("Base de données initialisée avec succès.");
 
         // Ajout des utilisateurs par défaut
-        await addUserOrUpdate("adj@adj.com", "adj", "Iamthebest");
-        await addUserOrUpdate("adjo@adjo.dz", "adjo", "Youarethebest");
-        await addUserOrUpdate("adji@adji.dz", "adji", "Heisthebest");
+        await addUserOrUpdate("adj.hamzaoui@gmail.com", "adj", "Iamthebest","Administrateur","2024-10-20");
+        await addUserOrUpdate("adjo@adjo.dz", "adjo", "Youarethebest","Utilisateur","2024-10-21");
+       
 
         // Valider la transaction
         await connection.commit();
