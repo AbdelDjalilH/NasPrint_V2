@@ -15,6 +15,12 @@ function ProductInfo() {
     length: "",
     weight: "",
   });
+  const [file, setFile] = useState();
+
+  function handleFile(event) {
+    setFile(event.target.files[0]);
+    console.log(file);
+  }
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -212,6 +218,7 @@ function ProductInfo() {
                     className="input"
                     placeholder="URL de l'image"
                   />
+                  <input type="file" name="file" onChange={handleFile} />
                   <label htmlFor="">Hauteur</label>
                   <input
                     type="number"
