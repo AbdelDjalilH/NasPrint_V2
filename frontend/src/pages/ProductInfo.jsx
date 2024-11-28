@@ -219,10 +219,9 @@ function ProductInfo() {
                   />
                   <label htmlFor="">Image principale</label>
                   <input
-                    type="text"
+                    type="file"
                     name="image_url"
-                    value={editProductData.image_url}
-                    onChange={handleInputChange}
+                    onChange={() => setFile(event.target.files[0])}
                     className="input"
                     placeholder="URL de l'image"
                   />

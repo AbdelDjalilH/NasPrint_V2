@@ -83,7 +83,7 @@ router.post("/", async (req, res) => {
     const { product_name, product_description, category_id, price, quantity_available, height, length, weight } = req.body;
 
     // Définir une URL par défaut si aucun fichier n'est téléchargé
-    const imageUrl = req.file ? req.file.path : ".."; // Remplacez par le chemin de votre image par défaut
+    const imageUrl = req.file ? req.file.path : "../uploads"; // Remplacez par le chemin de votre image par défaut
 
     // Vérification des champs obligatoires
     if (!product_name || !product_description || !category_id || !price || !quantity_available || !height || !length || !weight) {

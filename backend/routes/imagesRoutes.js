@@ -72,7 +72,7 @@ router.post("/", async (req, res) => {
     const { product_id,first_image, second_image, third_image, four_image, five_image } = req.body;
 
     // Définir une URL par défaut si aucun fichier n'est t../uploads/1732821788016_salade.pngéléchargé
-    const imageUrl = req.file ? req.file.path : "..."; // Remplacez par le chemin de votre image par défaut
+    // const imageUrl = req.file ? req.file.path : "..."; // Remplacez par le chemin de votre image par défaut
 
     // Vérification des champs obligatoires
     if (!product_id || !first_image || !second_image || !third_image || !four_image || !five_image) {
