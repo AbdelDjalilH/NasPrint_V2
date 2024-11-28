@@ -1,19 +1,21 @@
-const router = require("express").Router();
-const { pool } = require("../database/db-connection"); // Import correct du pool
+const express = require("express");
 const multer = require("multer");
 const path = require("path");
+const { pool } = require("../database/db-connection"); // Import de la DB
 
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'uploads'); // Assurez-vous que le dossier 'uploads' existe dans votre projet
-    },
-    filename: (req, file, cb) => {
-        cb(null, file.fieldname + "_" + Date.now() + path.extname(file.originalname));
-    }
-});
+const router = express.Router();
 
-const upload = multer({ storage: storage });
+// // Configuration Multer
+// const storage = multer.diskStorage({
+//   destination: (req, file, cb) => {
+//     cb(null, path.resolve(__dirname, "../uploads")); // Dossier de stockage
+//   },
+//   filename: (req, file, cb) => {
+//     cb(null, `${Date.now()}_${file.originalname}`); // Nom unique pour chaque fichier
+//   },
+// });
 
+// const upload = multer({ storage });
 // Route pour récupérer tous les produits
 router.get("/", async (req, res) => {
     try {
@@ -38,7 +40,42 @@ router.get("/:id", async (req, res) => {
 });
 
 // Route pour créer un nouvel produit
-router.post("/", upload.single('image'), async (req, res) => {
+// router.post("/upload", upload.single("file"), async (req, res) => {
+//     if (!req.file) {
+//       return res.status(400).json({ error: "Aucun fichier téléchargé" });
+//     }
+  
+//     const { productId } = req.body;
+//     const imageUrl = `/uploads/${req.file.filename}`;
+  
+//     try {
+//       // Mettre à jour la table `images`
+//       const [updateResult] = await pool.execute(
+//         "UPDATE images SET first_image = ? WHERE product_id = ?",
+//         [imageUrl, productId]
+//       );
+  
+//       if (updateResult.affectedRows === 0) {
+//         return res.status(404).json({ error: "Produit non trouvé" });
+//       }
+  
+//       // Récupérer le produit mis à jour pour le renvoyer
+//       const [productResult] = await pool.execute(
+//         "SELECT * FROM products WHERE id = ?",
+//         [productId]
+//       );
+  
+//       res.status(200).json({
+//         message: "Image mise à jour avec succès",
+//         product: productResult[0],
+//       });
+//     } catch (error) {
+//       console.error("Erreur lors de la mise à jour de l'image :", error);
+//       res.status(500).json({ error: "Erreur interne du serveur" });
+//     }
+//   });
+
+router.post("/", async (req, res) => {
     console.log(req.file); // Vérifier le fichier dans la console
     console.log(req.body); // Vérifier les données du corps
 
@@ -46,7 +83,7 @@ router.post("/", upload.single('image'), async (req, res) => {
     const { product_name, product_description, category_id, price, quantity_available, height, length, weight } = req.body;
 
     // Définir une URL par défaut si aucun fichier n'est téléchargé
-    const imageUrl = req.file ? req.file.path : "path/to/default/image.jpg"; // Remplacez par le chemin de votre image par défaut
+    const imageUrl = req.file ? req.file.path : ".."; // Remplacez par le chemin de votre image par défaut
 
     // Vérification des champs obligatoires
     if (!product_name || !product_description || !category_id || !price || !quantity_available || !height || !length || !weight) {

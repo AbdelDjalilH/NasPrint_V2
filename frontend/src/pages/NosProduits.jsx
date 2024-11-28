@@ -43,7 +43,7 @@ export default function NosProduits() {
         )
       );
     }
-  }, [category, products]);
+  }, [category, products]); // products dépend aussi du nouvel upload
 
   return (
     <div className="nosProduits-container">

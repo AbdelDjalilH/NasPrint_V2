@@ -16,6 +16,14 @@ function ProductInfo() {
     weight: "",
   });
   const [file, setFile] = useState();
+  const upload = () => {
+    const formData = new FormData();
+    formData.append("file", file);
+    axios
+      .post(`${import.meta.env.VITE_API_URL}/upload`, formData)
+      .then((res) => {})
+      .catch((er) => console.log(er));
+  };
 
   function handleFile(event) {
     setFile(event.target.files[0]);
@@ -307,7 +315,7 @@ function ProductInfo() {
             </div>
           ))}
         </div>
-        <div className="mt-4">
+        <form className="mt-4">
           <h3 className="title">Créer un produit</h3>
           <input
             type="text"
@@ -349,13 +357,15 @@ function ProductInfo() {
             placeholder="Quantité disponible"
           />
           <input
-            type="text"
+            type="file"
             name="image_url"
-            value={editProductData.image_url}
-            onChange={handleInputChange}
+            onChange={() => setFile(event.target.files[0])}
             className="input"
             placeholder="URL de l'image"
           />
+          <button type="button" onClick={upload}>
+            Upload
+          </button>
           <input
             type="number"
             name="height"
@@ -387,7 +397,7 @@ function ProductInfo() {
           >
             Ajouter
           </button>
-        </div>
+        </form>
       </div>
     </div>
   );

@@ -20,6 +20,7 @@ const cartProductRouter = require("./routes/cart_productRoutes");
 const noticesRouter = require("./routes/noticesRoutes");
 const ordersRouter = require("./routes/ordersRoutes");
 const imagesRouter = require("./routes/imagesRoutes");
+const uploadRouter= require("./routes/uploadRoutes")
 
 const app = express();
 
@@ -192,7 +193,7 @@ app.use("/cart_product", cartProductRouter);
 app.use("/notices", noticesRouter);
 app.use("/orders", ordersRouter);
 app.use("/images", imagesRouter);
-
+app.use("/upload", uploadRouter);
 // Gestion des erreurs
 app.use((err, req, res, next) => {
     console.error("Erreur serveur:", err.stack);

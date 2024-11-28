@@ -1,19 +1,21 @@
-const router = require("express").Router();
-const { pool } = require("../database/db-connection"); // Import correct du pool
+const express = require("express");
 const multer = require("multer");
 const path = require("path");
+const { pool } = require("../database/db-connection"); // Import de la DB
 
+const router = express.Router();
+
+// Configuration Multer
 const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'uploads'); // Assurez-vous que le dossier 'uploads' existe dans votre projet
-    },
-    filename: (req, file, cb) => {
-        cb(null, file.fieldname + "_" + Date.now() + path.extname(file.originalname));
-    }
+  destination: (req, file, cb) => {
+    cb(null, path.resolve(__dirname, "../uploads")); // Dossier de stockage
+  },
+  filename: (req, file, cb) => {
+    cb(null, `${Date.now()}_${file.originalname}`); // Nom unique pour chaque fichier
+  },
 });
 
-const upload = multer({ storage: storage });
-
+const upload = multer({ storage });
 // Route pour récupérer tous les images
 router.get("/", async (req, res) => {
     try {
@@ -38,15 +40,39 @@ router.get("/:id", async (req, res) => {
 });
 
 // Route pour créer un nouvel image
-router.post("/", upload.single('image'), async (req, res) => {
+router.post("/upload", upload.single("file"), async (req, res) => {
+    if (!req.file) {
+      return res.status(400).json({ error: "Aucun fichier téléchargé" });
+    }
+  
+    const { productId } = req.body;
+    const imageUrl = `/uploads/${req.file.filename}`;
+  
+    try {
+      const [result] = await pool.execute(
+        "UPDATE products SET first_image = ? WHERE id = ?",
+          [imageUrl, productId]
+        );
+  
+      if (result.affectedRows > 0) {
+        res.status(200).json({ message: "Image téléchargée et mise à jour avec succès", imageUrl });
+      } else {
+        res.status(404).json({ error: "Produit non trouvé" });
+      }
+    } catch (error) {
+      console.error("Erreur lors de la mise à jour de l'URL de l'image :", error);
+      res.status(500).json({ error: "Erreur interne du serveur" });
+    }
+  });
+router.post("/", async (req, res) => {
     console.log(req.file); // Vérifier le fichier dans la console
     console.log(req.body); // Vérifier les données du corps
 
     // Récupération des champs depuis req.body
     const { product_id,first_image, second_image, third_image, four_image, five_image } = req.body;
 
-    // Définir une URL par défaut si aucun fichier n'est téléchargé
-    const imageUrl = req.file ? req.file.path : "path/to/default/image.jpg"; // Remplacez par le chemin de votre image par défaut
+    // Définir une URL par défaut si aucun fichier n'est t../uploads/1732821788016_salade.pngéléchargé
+    const imageUrl = req.file ? req.file.path : "..."; // Remplacez par le chemin de votre image par défaut
 
     // Vérification des champs obligatoires
     if (!product_id || !first_image || !second_image || !third_image || !four_image || !five_image) {
