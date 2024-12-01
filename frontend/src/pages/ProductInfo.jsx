@@ -130,6 +130,35 @@ function ProductInfo() {
 
   const handleCreateProduct = async () => {
     const token = localStorage.getItem("token");
+    let imageUrl = "default.png";
+    if (file) {
+      try {
+        const formData = new FormData();
+        formData.append("image", file);
+
+        const uploadResponse = await axios.post(
+          `${import.meta.env.VITE_API_URL}/images`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (uploadResponse.data) {
+          imageUrl = uploadResponse.data.imageUrl || "default.png";
+        }
+      } catch (error) {
+        console.error("Erreur lors de l'upload de l'image :", error);
+        return;
+      }
+    } else {
+      console.error("Aucun fichier sélectionné !");
+      return;
+    }
+
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/products`,
