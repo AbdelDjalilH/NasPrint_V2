@@ -5,18 +5,7 @@ const { pool } = require("../database/db-connection"); // Import de la DB
 
 const router = express.Router();
 
-// // Configuration Multer
-// const storage = multer.diskStorage({
-//   destination: (req, file, cb) => {
-//     cb(null, path.resolve(__dirname, "../uploads")); // Dossier de stockage
-//   },
-//   filename: (req, file, cb) => {
-//     cb(null, `${Date.now()}_${file.originalname}`); // Nom unique pour chaque fichier
-//   },
-// });
 
-// const upload = multer({ storage });
-// Route pour récupérer tous les produits
 router.get("/", async (req, res) => {
     try {
         const [products] = await pool.execute("SELECT * FROM products"); // Utilise execute()
