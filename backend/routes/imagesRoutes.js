@@ -24,6 +24,8 @@ router.get("/", async (req, res) => {
     }
 });
 
+
+
 // Route pour récupérer un image par ID
 router.get("/:id", async (req, res) => {
     try {

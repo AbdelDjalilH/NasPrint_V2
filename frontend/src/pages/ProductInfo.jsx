@@ -21,7 +21,7 @@ function ProductInfo() {
     formData.append("file", file);
     axios
       .post(`${import.meta.env.VITE_API_URL}/upload`, formData)
-      .then((res) => {})
+      .then((res) => console.log(res))
       .catch((er) => console.log(er));
   };
 
