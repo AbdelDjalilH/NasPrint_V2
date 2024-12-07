@@ -57,7 +57,10 @@ export default function Product({ product, id }) {
       <div className="product-container">
         <img
           className="product-image"
-          src={images.first_image || "/path/to/default-image.jpg"} // Affiche une image par défaut si first_image est manquant
+          src={
+            `http://localhost:3335/images/` + images.first_image ||
+            "/path/to/default-image.jpg"
+          } // Affiche une image par défaut si first_image est manquant
           alt={product.product_name || "Produit"}
         />
         <ul className="product-info">

@@ -34,7 +34,7 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use(express.static('images'));
+app.use(express.static('public'));
 
 // Route de paiement Stripe
 app.post("/create-payment-intent", async (req, res) => {
@@ -195,7 +195,7 @@ app.use("/notices", noticesRouter);
 app.use("/orders", ordersRouter);
 app.use("/images", imagesRouter);
 
-// app.use("/upload", uploadRouter);
+app.use("/upload", uploadRouter);
 
 // Gestion des erreurs
 app.use((err, req, res, next) => {
