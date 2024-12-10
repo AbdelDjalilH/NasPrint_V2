@@ -51,11 +51,11 @@ CREATE TABLE products (
 CREATE TABLE images (
     id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT NOT NULL,
     product_id INT UNSIGNED NOT NULL,
-    first_image VARCHAR(255) DEFAULT 'default.png',
-    second_image VARCHAR(255) DEFAULT 'default.png',
-    third_image VARCHAR(255) DEFAULT 'default.png',
-    four_image VARCHAR(255) DEFAULT 'default.png',
-    five_image VARCHAR(255) DEFAULT 'default.png',
+    first_image VARCHAR(255) DEFAULT NULL,
+    second_image VARCHAR(255) DEFAULT NULL,
+    third_image VARCHAR(255) DEFAULT NULL,
+    fourth_image VARCHAR(255) DEFAULT NULL,
+    fifth_image VARCHAR(255) DEFAULT NULL,
     FOREIGN KEY (product_id) REFERENCES products (id) ON DELETE CASCADE
 );
 
@@ -274,8 +274,8 @@ INSERT INTO
         first_image,
         second_image,
         third_image,
-        four_image,
-        five_image
+        fourth_image,
+        fifth_image
     )
 VALUES (
         1,

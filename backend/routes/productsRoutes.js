@@ -92,9 +92,6 @@ router.post("/", async (req, res) => {
     }
 });
 
-
-// Route pour mettre à jour un produit
-// Route pour mettre à jour un produit
 router.put("/:id", async (req, res) => {
     console.log("Requête PUT reçue pour le produit avec ID :", req.params.id);
     

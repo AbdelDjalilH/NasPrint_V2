@@ -16,19 +16,30 @@ function ProductInfo() {
     weight: "",
   });
   const [file, setFile] = useState();
-  const upload = () => {
-    const formData = new FormData();
-    formData.append("file", file);
-    axios
-      .post(`${import.meta.env.VITE_API_URL}/upload`, formData)
-      .then((res) => console.log(res))
-      .catch((er) => console.log(er));
+  const upload = async (file) => {
+    try {
+      const formData = new FormData();
+      formData.append("file", file); // Ajoutez le fichier au formulaire
+
+      const response = await axios.post(
+        "http://localhost:3335/upload",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data", // Indiquez le type de contenu
+          },
+        }
+      );
+
+      console.log("Réponse du serveur :", response.data);
+    } catch (error) {
+      console.error("Erreur lors de l'upload de l'image :", error);
+    }
   };
 
-  function handleFile(event) {
+  const handleFile = (event) => {
     setFile(event.target.files[0]);
-    console.log(file);
-  }
+  };
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -130,7 +141,9 @@ function ProductInfo() {
 
   const handleCreateProduct = async () => {
     const token = localStorage.getItem("token");
-    let imageUrl = "default.png";
+    let imageUrl = "default.png"; // URL par défaut si aucune image n'est téléchargée.
+
+    // Vérification si un fichier est sélectionné.
     if (file) {
       try {
         const formData = new FormData();
@@ -148,21 +161,24 @@ function ProductInfo() {
         );
 
         if (uploadResponse.data) {
-          imageUrl = uploadResponse.data.imageUrl || "default.png";
+          imageUrl = uploadResponse.data.imageUrl || "default.png"; // Si une image a été téléchargée, récupérer son URL.
         }
       } catch (error) {
         console.error("Erreur lors de l'upload de l'image :", error);
-        return;
+        return; // Si l'upload échoue, on ne continue pas la création du produit.
       }
-    } else {
-      console.error("Aucun fichier sélectionné !");
-      return;
     }
+
+    // Ajout de l'URL de l'image à l'objet de données du produit.
+    const productData = {
+      ...editProductData,
+      image_url: imageUrl, // Assurez-vous que l'URL de l'image est bien incluse ici
+    };
 
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/products`,
-        editProductData,
+        productData, // Envoie des données avec l'URL de l'image incluse.
         {
           headers: {
             "Content-Type": "application/json",
