@@ -5,7 +5,7 @@ const path = require("path");
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'public/images'); 
+        cb(null, 'uploads'); // Assurez-vous que le dossier 'uploads' existe dans votre projet
     },
     filename: (req, file, cb) => {
         cb(null, file.fieldname + "_" + Date.now() + path.extname(file.originalname));
@@ -14,6 +14,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
+// Route pour récupérer tous les images
 router.get("/", async (req, res) => {
     try {
         const [images] = await pool.execute("SELECT * FROM images"); // Utilise execute()
@@ -23,6 +24,7 @@ router.get("/", async (req, res) => {
     }
 });
 
+// Route pour récupérer un image par ID
 router.get("/:id", async (req, res) => {
     try {
         const [images] = await pool.execute("SELECT * FROM images WHERE id = ?", [req.params.id]);
@@ -35,62 +37,48 @@ router.get("/:id", async (req, res) => {
     }
 });
 
+// Route pour créer un nouvel image
 router.post("/", upload.single('image'), async (req, res) => {
+    console.log(req.file); // Vérifier le fichier dans la console
+    console.log(req.body); // Vérifier les données du corps
+
+    // Récupération des champs depuis req.body
+    const { product_id,first_image, second_image, third_image, four_image, five_image } = req.body;
+
+    // Définir une URL par défaut si aucun fichier n'est téléchargé
+    const imageUrl = req.file ? req.file.path : "path/to/default/image.jpg"; // Remplacez par le chemin de votre image par défaut
+
+    // Vérification des champs obligatoires
+    if (!product_id || !first_image || !second_image || !third_image || !four_image || !five_image) {
+        return res.status(400).json({ message: "Les champs ne sont pas correctement renseignés" });
+    }
+
     try {
-        if (!req.file) {
-            return res.status(400).json({ error: "Aucun fichier reçu." });
-        }
-
-        // Récupérer le nom du fichier pour le premier champ image
-        const firstImage = req.file.filename;
-
-        // Vérifiez les autres images envoyées et remplacez par NULL si elles ne sont pas présentes
-        const secondImage = req.body.second_image || null;
-        const thirdImage = req.body.third_image || null;
-        const fourthImage = req.body.fourth_image || null;
-        const fifthImage = req.body.fifth_image || null;
-
-        // Tableau des valeurs à insérer
-        const values = [firstImage, secondImage, thirdImage, fourthImage, fifthImage];
-
-        // Vérifiez que toutes les valeurs sont présentes (y compris product_id)
-        const productId = req.body.product_id;
-
-        if (!productId) {
-            return res.status(400).json({ error: "Le product_id est requis" });
-        }
-
-        // Logique de la requête SQL avec les paramètres
-        const sql = 'INSERT INTO images (product_id, first_image, second_image, third_image, fourth_image, fifth_image) VALUES (?, ?, ?, ?, ?, ?) id = ?';
-
-        pool.query(sql, [productId, ...values], (err, result) => {
-            if (err) {
-                console.error(err);  // Affichage de l'erreur dans la console
-                return res.status(500).json({ message: "Erreur lors de l'insertion de l'image" });
-            }
-
-            return res.status(201).json({ status: "Success", imageId: result.insertId });
-        });
-
+        // Requête SQL pour insérer les données dans la base
+        const [result] = await pool.execute(
+            "INSERT INTO images (product_id, first_image, second_image, third_image, four_image, five_image) VALUES (?, ?, ?, ?, ?, ?)",
+            [product_id,first_image, second_image, third_image, four_image, five_image]
+        );
+        res.status(201).json({ message: "image créé", id: result.insertId });
     } catch (err) {
-        console.error("Erreur lors de l'upload :", err);
-
-        if (!res.headersSent) {
-            res.status(500).json({ error: "Erreur serveur lors de l'upload" });
-        }
+        console.error("Erreur lors de la création :", err);
+        res.status(500).json({ error: "Erreur lors de la création du image" });
     }
 });
 
 
-
+// Route pour mettre à jour un image
+// Route pour mettre à jour un image
 router.put("/:id", async (req, res) => {
-    const { product_id,first_image, second_image, third_image, fourth_image, fifth_image } = req.body;
+    const { product_id,first_image, second_image, third_image, four_image, five_image } = req.body;
 
-       if (!product_id || !first_image || !second_image || !third_image || !fourth_image || !fifth_image) {
+    // Vérification que tous les champs nécessaires sont présents
+    if (!product_id || !first_image || !second_image || !third_image || !four_image || !five_image) {
         return res.status(400).json({ message: "Tous les champs sont requis" });
     }
 
     try {
+        // Vérifier si le image existe
         const [images] = await pool.execute("SELECT * FROM images WHERE id = ?", [req.params.id]);
 
         if (images.length === 0) {
@@ -99,8 +87,8 @@ router.put("/:id", async (req, res) => {
 
         // Mettre à jour le image
         await pool.execute(
-            "UPDATE images SET product_id = ?, first_image = ?, second_image = ?, third_image = ?, fourth_image = ?, fifth_image = ? WHERE id = ?",
-            [product_id,first_image, second_image, third_image, fourth_image, fifth_image, req.params.id]
+            "UPDATE images SET product_id = ?, first_image = ?, second_image = ?, third_image = ?, four_image = ?, five_image = ? WHERE id = ?",
+            [product_id,first_image, second_image, third_image, four_image, five_image, req.params.id]
         );
 
         res.json({ message: "image mis à jour" });
