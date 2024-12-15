@@ -40,9 +40,9 @@ export default function SliderProducts({ id }) {
             getImageSrc(data.first_image),
             getImageSrc(data.second_image),
             getImageSrc(data.third_image),
-            getImageSrc(data.fourth_image), // Correction du nom
-            getImageSrc(data.fifth_image), // Correction du nom
-          ].filter((url) => url); // Filtre les valeurs nulles ou vides
+            getImageSrc(data.fourth_image),
+            getImageSrc(data.fifth_image),
+          ].filter((url) => url);
 
           setImages(imageUrls);
         } else {

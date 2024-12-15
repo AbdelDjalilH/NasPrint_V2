@@ -7,14 +7,25 @@ const router = express.Router();
 
 // Configuration de Multer
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "public/images"); // Dossier où les images sont stockées
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname)); // Nom unique
-  },
-});
-const upload = multer({ storage: storage });
+    destination: (req, file, cb) => {
+      cb(null, "public/images");
+    },
+    filename: (req, file, cb) => {
+      cb(null, Date.now() + path.extname(file.originalname));
+    },
+  });
+  
+  const upload = multer({ storage: storage });
+  
+  // Configuration pour gérer plusieurs champs
+  const uploadFields = upload.fields([
+    { name: "first_image", maxCount: 1 },
+    { name: "second_image", maxCount: 1 },
+    { name: "third_image", maxCount: 1 },
+    { name: "fourth_image", maxCount: 1 },
+    { name: "fifth_image", maxCount: 1 },
+  ]);
+  
 
 
 router.get("/", async (req, res) => {
@@ -41,7 +52,7 @@ router.get("/:id", async (req, res) => {
 
 
 
-router.post("/", upload.single("image"), async (req, res) => {
+router.post("/", uploadFields, async (req, res) => {
     const {
       product_name,
       product_description,
@@ -82,23 +93,28 @@ router.post("/", upload.single("image"), async (req, res) => {
         ]
       );
   
-      const productId = productResult.insertId; // ID du produit créé
+      const productId = productResult.insertId;
   
-      // Étape 2 : Ajouter l'image dans la table `images`
-      if (req.file) {
-        const firstImagePath = `/images/${req.file.filename}`;
-        await pool.execute(
-          "INSERT INTO images (product_id, first_image) VALUES (?, ?)",
-          [productId, firstImagePath]
-        );
-      }
+      // Étape 2 : Ajouter les images dans la table `images`
+      const files = req.files;
+      const firstImage = files.first_image ? `/images/${files.first_image[0].filename}` : null;
+      const secondImage = files.second_image ? `/images/${files.second_image[0].filename}` : null;
+      const thirdImage = files.third_image ? `/images/${files.third_image[0].filename}` : null;
+      const fourthImage = files.fourth_image ? `/images/${files.fourth_image[0].filename}` : null;
+      const fifthImage = files.fifth_image ? `/images/${files.fifth_image[0].filename}` : null;
   
-      res.status(201).json({ message: "Produit et image ajoutés avec succès", id: productId });
+      await pool.execute(
+        "INSERT INTO images (product_id, first_image, second_image, third_image, fourth_image, fifth_image) VALUES (?, ?, ?, ?, ?, ?)",
+        [productId, firstImage, secondImage, thirdImage, fourthImage, fifthImage]
+      );
+  
+      res.status(201).json({ message: "Produit et images ajoutés avec succès", id: productId });
     } catch (err) {
-      console.error("Erreur lors de l'ajout du produit et de l'image :", err);
+      console.error("Erreur lors de l'ajout du produit et des images :", err);
       res.status(500).json({ error: "Erreur interne du serveur" });
     }
   });
+  
   
 
 router.put("/:id", upload.single('image'), async (req, res) => {
