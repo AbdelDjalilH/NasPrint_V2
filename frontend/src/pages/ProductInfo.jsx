@@ -141,52 +141,30 @@ function ProductInfo() {
 
   const handleCreateProduct = async () => {
     const token = localStorage.getItem("token");
-    let imageUrl = "default.png"; // URL par défaut si aucune image n'est téléchargée.
 
-    // Vérification si un fichier est sélectionné.
+    const formData = new FormData();
+    Object.keys(editProductData).forEach((key) => {
+      formData.append(key, editProductData[key]);
+    });
+
+    // Ajoutez l'image si elle est sélectionnée
     if (file) {
-      try {
-        const formData = new FormData();
-        formData.append("image", file);
-
-        const uploadResponse = await axios.post(
-          `${import.meta.env.VITE_API_URL}/images`,
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        if (uploadResponse.data) {
-          imageUrl = uploadResponse.data.imageUrl || "default.png"; // Si une image a été téléchargée, récupérer son URL.
-        }
-      } catch (error) {
-        console.error("Erreur lors de l'upload de l'image :", error);
-        return; // Si l'upload échoue, on ne continue pas la création du produit.
-      }
+      formData.append("image", file);
     }
-
-    // Ajout de l'URL de l'image à l'objet de données du produit.
-    const productData = {
-      ...editProductData,
-      image_url: imageUrl, // Assurez-vous que l'URL de l'image est bien incluse ici
-    };
 
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/products`,
-        productData, // Envoie des données avec l'URL de l'image incluse.
+        formData,
         {
           headers: {
-            "Content-Type": "application/json",
+            "Content-Type": "multipart/form-data",
             Authorization: `Bearer ${token}`,
           },
         }
       );
-      console.log("Nouveau produit créé:", response.data);
+
+      console.log("Produit et image créés :", response.data);
       await ReFetchProducts();
       resetEditForm();
     } catch (error) {

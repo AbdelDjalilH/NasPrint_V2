@@ -48,19 +48,30 @@ export default function Product({ product, id }) {
     }
   }, [id]);
 
-  // Afficher un message de chargement ou d'erreur si nécessaire
   if (loading) return <p>Chargement...</p>;
   if (error) return <p>{error}</p>;
+
+  // Déterminer la source de l'image (lien ou chemin local)
+  const getImageSrc = (imagePath) => {
+    if (!imagePath) {
+      return "/path/to/default-image.jpg"; // Image par défaut
+    }
+
+    // Si l'image commence par "http" ou "https", utilisez-la directement
+    if (imagePath.startsWith("http://") || imagePath.startsWith("https://")) {
+      return imagePath;
+    }
+
+    // Sinon, concaténez avec la base URL locale
+    return `${import.meta.env.VITE_API_URL}${imagePath}`;
+  };
 
   return (
     <NavLink to={`/nos-produits/${product.id}`} className="product-link">
       <div className="product-container">
         <img
           className="product-image"
-          src={
-            (`http://localhost:3335/images/` && images.first_image) ||
-            "/path/to/default-image.jpg"
-          } // Affiche une image par défaut si first_image est manquant
+          src={getImageSrc(images.first_image)} // Appel de la logique pour déterminer la source
           alt={product.product_name || "Produit"}
         />
         <ul className="product-info">
