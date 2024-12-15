@@ -114,7 +114,7 @@ router.put("/:id", upload.single('image'), async (req, res) => {
             return res.status(404).json({ message: "Produit non trouvé" });
         }
 
-        // Si une nouvelle image est téléchargée, utilisez-la
+        
         const imageUrl = req.file ? `/images/${req.file.filename}` : products[0].image_url;
 
         await pool.execute(
@@ -130,25 +130,22 @@ router.put("/:id", upload.single('image'), async (req, res) => {
 });
 
 
-
-
-// Route pour supprimer un produit
 router.delete("/:id", async (req, res) => {
     try {
         console.log("Requête DELETE reçue pour le produit avec ID :", req.params.id);
 
-        // Vérifiez si le produit existe
+        
         const [products] = await pool.execute("SELECT * FROM products WHERE id = ?", [req.params.id]);
         if (products.length === 0) {
             return res.status(404).json({ message: "Produit non trouvé" });
         }
 
         console.log("Produit trouvé. Suppression des dépendances...");
-        // Supprimez les entrées liées dans cart_products
+        
         await pool.execute("DELETE FROM cart_products WHERE product_id = ?", [req.params.id]);
 
         console.log("Dépendances supprimées. Suppression du produit...");
-        // Supprimez le produit
+        
         await pool.execute("DELETE FROM products WHERE id = ?", [req.params.id]);
 
         res.json({ message: "Produit supprimé avec succès." });
