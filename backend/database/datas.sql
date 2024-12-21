@@ -18,6 +18,8 @@ DROP TABLE IF EXISTS categories;
 
 DROP TABLE IF EXISTS users;
 
+DROP TABLE IF EXISTS otps;
+
 -- Création des tables
 CREATE TABLE users (
     id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT NOT NULL,
@@ -117,6 +119,14 @@ CREATE TABLE orders (
     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
     FOREIGN KEY (payment_id) REFERENCES payments (id) ON DELETE CASCADE,
     FOREIGN KEY (address_id) REFERENCES adresses (id) ON DELETE CASCADE
+);
+
+CREATE TABLE otps (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(255) NOT NULL,
+    otp VARCHAR(6) NOT NULL,
+    expires_at DATETIME NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Insertion des catégories

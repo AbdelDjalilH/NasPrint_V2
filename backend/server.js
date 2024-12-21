@@ -20,7 +20,7 @@ const cartProductRouter = require("./routes/cart_productRoutes");
 const noticesRouter = require("./routes/noticesRoutes");
 const ordersRouter = require("./routes/ordersRoutes");
 const imagesRouter = require("./routes/imagesRoutes");
-const uploadRouter= require("./routes/uploadRoutes")
+const uploadRouter = require("./routes/uploadRoutes");
 
 const app = express();
 
@@ -98,7 +98,7 @@ app.post("/create-payment-intent", async (req, res) => {
                 `SELECT cp.quantity, p.product_name
                  FROM cart_products cp
                  JOIN products p ON cp.product_id = p.id
-                 WHERE cp.cart_id = 1`,
+                 WHERE cp.cart_id = ?`,
                 [cartId]
             );
             cartProducts = results;
@@ -157,7 +157,7 @@ app.post("/create-payment-intent", async (req, res) => {
                 console.log("E-mail administrateur envoyé avec succès :", info.response);
             }
         });
-        await pool.execute("DELETE FROM cart_products WHERE cart_id = 1", [cartId]);
+        await pool.execute("DELETE FROM cart_products WHERE cart_id = ?", [cartId]);
         // Réponse au client
         res.send({
             clientSecret: paymentIntent.client_secret,
@@ -181,7 +181,6 @@ app.get("/test-cors", (req, res) => {
     res.json({ message: "CORS fonctionne!" });
 });
 
-// Configurez les routes
 app.use("/users", usersRouter);
 app.use("/auth", authRoutes);
 app.use("/", routes);
@@ -197,13 +196,11 @@ app.use("/images", imagesRouter);
 
 app.use("/upload", uploadRouter);
 
-// Gestion des erreurs
 app.use((err, req, res, next) => {
     console.error("Erreur serveur:", err.stack);
     res.status(500).send("Quelque chose s'est mal passé !");
 });
 
-// Utilisez la variable d'environnement pour le port avec une valeur par défaut
 const PORT = process.env.APP_PORT || 3335;
 
 app.listen(PORT, async () => {

@@ -1,17 +1,51 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useCart } from "react-use-cart";
 import axios from "axios";
 import "../styles/cartModal.css";
-import { useOrder } from "../contexts/OrdersContext"; // Importer useOrder
+import { useOrder } from "../contexts/OrdersContext";
 
-export default function CartModal({ isOpen, onClose, productDetails }) {
+export default function CartModal({ isOpen, onClose, productDetails, id }) {
   const { addItem, removeItem, items } = useCart();
   const [quantity, setQuantity] = useState(1);
   const [quantityById, setQuantityById] = useState({});
-  const [cartId, setCartId] = useState(1); // État dynamique pour cartId
-  const { setOrderId } = useOrder(); // Utiliser setOrderId depuis le contexte
+  const [cartId, setCartId] = useState(1);
+  const { setOrderId } = useOrder();
+  const [mainImage, setMainImage] = useState(null);
 
-  if (!isOpen) return null; // Ne pas afficher le modal s'il est fermé
+  // Récupération de l'image principale
+  useEffect(() => {
+    const fetchMainImage = async () => {
+      if (!id) return;
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL}/images/${id}`
+        );
+        const data = response.data;
+
+        if (data && data.first_image) {
+          const getImageSrc = (imagePath) =>
+            imagePath.startsWith("http://") || imagePath.startsWith("https://")
+              ? imagePath
+              : `http://localhost:3335${imagePath}`;
+
+          const imageUrl = getImageSrc(data.first_image);
+          console.log("Image principale récupérée :", imageUrl);
+          setMainImage(imageUrl);
+        } else {
+          console.warn("Aucune image principale disponible pour l'ID :", id);
+          setMainImage(null);
+        }
+      } catch (err) {
+        console.error(
+          "Erreur lors de la récupération de l'image principale :",
+          err
+        );
+        setMainImage(null);
+      }
+    };
+
+    fetchMainImage();
+  }, [id]);
 
   const handleConfirm = async () => {
     if (productDetails) {
@@ -20,7 +54,7 @@ export default function CartModal({ isOpen, onClose, productDetails }) {
         product_name: productDetails.product_name,
         price: productDetails.price,
         quantity,
-        image_url: productDetails.image_url,
+        image_url: mainImage,
       });
 
       setQuantityById((prevQuantities) => ({
@@ -39,60 +73,6 @@ export default function CartModal({ isOpen, onClose, productDetails }) {
     }
   };
 
-  const removeFromCart = async (cartId, productId) => {
-    try {
-      const response = await axios.delete(
-        `${import.meta.env.VITE_API_URL}/cart_product/${cartId}/${productId}`
-      );
-      console.log("Réponse de suppression :", response.data);
-    } catch (error) {
-      console.error(
-        "Erreur lors de la suppression dans la base de données :",
-        error.response ? error.response.data : error.message
-      );
-      throw new Error(
-        "Erreur lors de la suppression du panier dans la base de données"
-      );
-    }
-  };
-
-  const handleRemove = async (productId) => {
-    removeItem(productId);
-    setQuantityById((prevQuantities) => {
-      const updatedQuantities = { ...prevQuantities };
-      delete updatedQuantities[productId]; // Supprimer la quantité de l'élément
-      return updatedQuantities;
-    });
-
-    try {
-      await removeFromCart(cartId, productId);
-      console.log("Produit supprimé de la base de données.");
-
-      const newTotal = items.reduce(
-        (acc, item) =>
-          item.id !== productId
-            ? acc + item.price * (quantityById[item.id] || item.quantity)
-            : acc,
-        0
-      );
-
-      await updateOrderAndPaymentTotal(newTotal);
-    } catch (error) {
-      console.error("Erreur lors de la suppression du panier :", error);
-    }
-  };
-
-  const updateOrderAndPaymentTotal = async (newTotal) => {
-    try {
-      // Logique de mise à jour de la commande et du paiement (si nécessaire)
-    } catch (error) {
-      console.error(
-        "Erreur lors de la mise à jour du total de la commande :",
-        error
-      );
-    }
-  };
-
   const addToCart = async (productId, quantity) => {
     try {
       const response = await axios.post(
@@ -107,6 +87,35 @@ export default function CartModal({ isOpen, onClose, productDetails }) {
     } catch (error) {
       throw new Error(
         "Erreur lors de l'ajout au panier dans la base de données"
+      );
+    }
+  };
+
+  const handleRemove = async (productId) => {
+    removeItem(productId);
+    setQuantityById((prevQuantities) => {
+      const updatedQuantities = { ...prevQuantities };
+      delete updatedQuantities[productId];
+      return updatedQuantities;
+    });
+
+    try {
+      await removeFromCart(cartId, productId);
+      console.log("Produit supprimé de la base de données.");
+    } catch (error) {
+      console.error("Erreur lors de la suppression du panier :", error);
+    }
+  };
+
+  const removeFromCart = async (cartId, productId) => {
+    try {
+      await axios.delete(
+        `${import.meta.env.VITE_API_URL}/cart_product/${cartId}/${productId}`
+      );
+    } catch (error) {
+      console.error(
+        "Erreur lors de la suppression dans la base de données :",
+        error
       );
     }
   };
@@ -146,7 +155,7 @@ export default function CartModal({ isOpen, onClose, productDetails }) {
         }
       );
 
-      setOrderId(orderResponse.data.id); // Mettre à jour l'orderId dans le contexte
+      setOrderId(orderResponse.data.id);
       console.log("Nouvelle commande et paiement créés.");
     } catch (error) {
       console.error(
@@ -160,6 +169,9 @@ export default function CartModal({ isOpen, onClose, productDetails }) {
     (acc, item) => acc + item.price * (quantityById[item.id] || item.quantity),
     0
   );
+
+  // Si le modal est fermé, affichez null ici
+  if (!isOpen) return null;
 
   return (
     <div className="modal-overlay">
@@ -179,7 +191,7 @@ export default function CartModal({ isOpen, onClose, productDetails }) {
               return (
                 <div key={item.id} className="product-cart-data">
                   <img
-                    src={item.image_url}
+                    src={item.image_url || "https://via.placeholder.com/150"} // Fallback image
                     alt={item.product_name}
                     className="img-product-modal"
                   />
@@ -198,7 +210,6 @@ export default function CartModal({ isOpen, onClose, productDetails }) {
                 </div>
               );
             })}
-            {/* <div className="center-cart"></div> */}
             <h3 className="h3-title">Total : {totalPrice} €</h3>
           </div>
         ) : (

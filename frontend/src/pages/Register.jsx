@@ -12,6 +12,7 @@ export default function Register() {
     password: "",
   });
 
+  const [errorMessage, setErrorMessage] = useState(null); // Pour afficher un message d'erreur
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -25,6 +26,7 @@ export default function Register() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setErrorMessage(null); // Réinitialise le message d'erreur avant de soumettre
 
     try {
       console.log("Données envoyées au backend :", formDatas);
@@ -34,24 +36,24 @@ export default function Register() {
         formDatas
       );
 
-      if (response.status === 201) {
-        // Vérifie que le statut est bien "Created"
+      if (response.status === 200 || response.status === 201) {
         console.info("Données reçues du backend :", response.data);
 
-        const newUser = {
-          username: formDatas.username,
-          email: formDatas.email,
-          password: formDatas.password,
-        };
-
-        navigate(`/connexion`);
+        // Redirige l'utilisateur vers une page pour entrer l'OTP
+        navigate(`/verification-otp`, {
+          state: { email: formDatas.email }, // Passe l'email pour associer l'OTP
+        });
       } else {
         console.error("Erreur lors de l'inscription :", response);
+        setErrorMessage(response.data?.message || "Une erreur est survenue.");
       }
     } catch (error) {
       console.error(
         "Erreur lors de l'enregistrement :",
         error.response ? error.response.data : error.message
+      );
+      setErrorMessage(
+        error.response?.data?.message || "Une erreur interne s'est produite."
       );
     }
   };
@@ -61,6 +63,7 @@ export default function Register() {
       <section className="register-section">
         <form className="register-form" onSubmit={handleSubmit}>
           <h1 className="register-title">Pas inscrit? Inscrivez-vous!</h1>
+          {errorMessage && <p className="error-message">{errorMessage}</p>}
           <div className="input-container">
             <input
               type="text"

@@ -10,7 +10,7 @@ import Register from "./pages/Register.jsx";
 import Connexion from "./pages/Connexion.jsx";
 import { AuthProvider } from "./contexts/AuthContext";
 import { CartProvider } from "react-use-cart";
-import { OrderProvider } from "./contexts/OrdersContext"; // Importer OrderProvider
+import { OrderProvider } from "./contexts/OrdersContext";
 import UserManagement from "./pages/UserManagement.jsx";
 import ProductInfo from "./pages/ProductInfo.jsx";
 import AdminPage from "./pages/AdminPage.jsx";
@@ -19,6 +19,7 @@ import DetailProduct from "./pages/DetailProduct.jsx";
 import PaymentPage from "./pages/PaymentPage.jsx";
 import PaymentComplete from "./pages/PaymentComplete.jsx";
 import ContactPage from "./pages/ContactPage.jsx";
+import VerifyOtp from "./pages/VerifyOtp";
 
 const router = createBrowserRouter([
   {
@@ -37,6 +38,7 @@ const router = createBrowserRouter([
       { element: <PaymentPage />, path: "/payment-page" },
       { element: <PaymentComplete />, path: "/payment-complete" },
       { element: <ContactPage />, path: "/contact-page" },
+      { element: <VerifyOtp />, path: "/verification-otp" },
     ],
   },
 ]);
