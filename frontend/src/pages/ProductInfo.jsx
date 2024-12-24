@@ -23,26 +23,6 @@ function ProductInfo() {
       [fieldName]: event.target.files[0],
     }));
   };
-  const upload = async (file) => {
-    try {
-      const formData = new FormData();
-      formData.append("file", file); // Ajoutez le fichier au formulaire
-
-      const response = await axios.post(
-        "http://localhost:3335/upload",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data", // Indiquez le type de contenu
-          },
-        }
-      );
-
-      console.log("Réponse du serveur :", response.data);
-    } catch (error) {
-      console.error("Erreur lors de l'upload de l'image :", error);
-    }
-  };
 
   const handleFile = (event) => {
     setFile(event.target.files[0]);
@@ -62,6 +42,7 @@ function ProductInfo() {
 
     fetchProducts();
   }, []);
+
   const ReFetchProducts = async () => {
     try {
       const response = await axios.get(
@@ -78,7 +59,6 @@ function ProductInfo() {
     setEditProductData({
       product_name: product.product_name,
       product_description: product.product_description,
-
       price: product.price,
       quantity_available: product.quantity_available || "",
       image_url: product.image_url || "default.png",
@@ -110,13 +90,27 @@ function ProductInfo() {
       return;
     }
 
+    const formData = new FormData();
+    Object.keys(editProductData).forEach((key) => {
+      formData.append(key, editProductData[key]);
+    });
+
+    // Ajoutez les fichiers sélectionnés
+    if (files) {
+      Object.keys(files).forEach((key) => {
+        if (files[key]) {
+          formData.append(key, files[key]);
+        }
+      });
+    }
+
     try {
       const response = await axios.put(
         `${import.meta.env.VITE_API_URL}/products/${editProductId}`,
-        editProductData,
+        formData,
         {
           headers: {
-            "Content-Type": "application/json",
+            "Content-Type": "multipart/form-data",
             Authorization: `Bearer ${token}`,
           },
         }
@@ -155,11 +149,13 @@ function ProductInfo() {
     });
 
     // Ajoutez les fichiers au FormData
-    Object.keys(files).forEach((key) => {
-      if (files[key]) {
-        formData.append(key, files[key]);
-      }
-    });
+    if (files) {
+      Object.keys(files).forEach((key) => {
+        if (files[key]) {
+          formData.append(key, files[key]);
+        }
+      });
+    }
 
     try {
       const response = await axios.post(
@@ -195,7 +191,6 @@ function ProductInfo() {
     setEditProductData({
       product_name: "",
       product_description: "",
-
       price: "",
       quantity_available: "",
       image_url: "default.png",
@@ -252,12 +247,29 @@ function ProductInfo() {
                   <label htmlFor="">Image principale</label>
                   <input
                     type="file"
-                    name="image_url"
-                    onChange={() => setFile(event.target.files[0])}
-                    className="input"
-                    placeholder="URL de l'image"
+                    name="first_image"
+                    onChange={(e) => setFile(e, "first_image")}
                   />
-                  <input type="file" name="file" onChange={handleFile} />
+                  <input
+                    type="file"
+                    name="second_image"
+                    onChange={(e) => setFile(e, "second_image")}
+                  />
+                  <input
+                    type="file"
+                    name="third_image"
+                    onChange={(e) => setFile(e, "third_image")}
+                  />
+                  <input
+                    type="file"
+                    name="fourth_image"
+                    onChange={(e) => setFile(e, "fourth_image")}
+                  />
+                  <input
+                    type="file"
+                    name="fifth_image"
+                    onChange={(e) => setFile(e, "fifth_image")}
+                  />
                   <label htmlFor="">Hauteur</label>
                   <input
                     type="number"
@@ -412,9 +424,6 @@ function ProductInfo() {
             name="fifth_image"
             onChange={(e) => setFile(e, "fifth_image")}
           />
-          <button type="button" onClick={upload}>
-            Upload
-          </button>
           <input
             type="number"
             name="height"

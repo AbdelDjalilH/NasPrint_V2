@@ -24,7 +24,7 @@
   text-decoration: none;
   color: white;
 }
-/* navbar.css */
+
 .cart-container {
   position: relative;
   display: inline-block;
@@ -32,8 +32,8 @@
 
 .cart-count {
   position: absolute;
-  top: -5px; /* Ajustez la position */
-  right: -5px; /* Ajustez la position */
+  top: -5px;
+  right: -5px;
   background-color: white;
   color: red;
   font-weight: bold;

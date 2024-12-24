@@ -14,14 +14,13 @@ export default function Home() {
   };
 
   useEffect(() => {
-    // Charger les produits depuis l'API
     const fetchProducts = async () => {
       try {
         const response = await axios.get(
           `${import.meta.env.VITE_API_URL}/products`
         );
         setProducts(response.data);
-        setRandomProducts(getRandomProducts(response.data, 4)); // 4 produits aléatoires
+        setRandomProducts(getRandomProducts(response.data, 4));
       } catch (error) {
         console.error("Erreur lors de la récupération des produits :", error);
       }
