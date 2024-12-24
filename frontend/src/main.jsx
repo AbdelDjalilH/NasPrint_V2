@@ -1,8 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import App from "./App.jsx";
 import "./index.css";
+
+import App from "./App.jsx";
 import Home from "./pages/Home.jsx";
 import APropos from "./pages/APropos.jsx";
 import NosProduits from "./pages/NosProduits.jsx";
@@ -50,8 +51,6 @@ root.render(
     <AuthProvider>
       <CartProvider>
         <OrderProvider>
-          {" "}
-          {/* Enveloppe votre application avec OrderProvider */}
           <RouterProvider router={router} />
         </OrderProvider>
       </CartProvider>

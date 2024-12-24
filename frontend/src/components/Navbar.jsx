@@ -3,9 +3,11 @@ import logoNas from "../assets/navImages/logoNas.png";
 import panier from "../assets/navImages/panier.png";
 import "../styles/navbar.css";
 import { useAuth } from "../contexts/AuthContext";
+import { useCart } from "react-use-cart"; // Import du hook
 
-export default function Navbar({ toggleCartModal, cartItemCount }) {
+export default function Navbar({ toggleCartModal }) {
   const { auth, logout, user } = useAuth();
+  const { totalItems } = useCart(); // Utilisation du hook pour récupérer le nombre total d'articles
 
   return (
     <nav className="navbar-container">
@@ -48,7 +50,7 @@ export default function Navbar({ toggleCartModal, cartItemCount }) {
       )}
 
       {auth && (
-        <Link to="/client-Info" className="secret-nav">
+        <Link to="/client-info" className="secret-nav">
           Infos Client
         </Link>
       )}
@@ -56,12 +58,10 @@ export default function Navbar({ toggleCartModal, cartItemCount }) {
       <div
         className="cart-container"
         onClick={toggleCartModal}
-        style={{ cursor: "pointer" }}
+        style={{ cursor: "pointer", position: "relative" }}
       >
         <img className="panier-img" src={panier} alt="Panier" />
-        {cartItemCount > 0 && (
-          <span className="cart-count">{cartItemCount}</span>
-        )}
+        {totalItems > 0 && <span className="cart-count">{totalItems}</span>}
       </div>
     </nav>
   );

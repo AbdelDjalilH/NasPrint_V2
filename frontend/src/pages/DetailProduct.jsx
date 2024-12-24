@@ -98,14 +98,11 @@ export default function DetailProduct() {
             <button onClick={handleAddToCart} className="add-to-cart-button">
               Ajouter au panier
             </button>
+            <p className="detail-product-description">
+              {product.product_description}
+            </p>
           </section>
         </section>
-      </section>
-
-      <section className="column-section2">
-        <p className="detail-product-description">
-          {product.product_description}
-        </p>
       </section>
     </div>
   );

@@ -56,6 +56,7 @@ export default function CartModal({ isOpen, onClose, productDetails, id }) {
         quantity,
         image_url: mainImage,
       });
+      console.log("Produit ajouté au panier :", productDetails);
 
       setQuantityById((prevQuantities) => ({
         ...prevQuantities,

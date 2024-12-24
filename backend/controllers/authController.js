@@ -81,30 +81,33 @@ const register = async (req, res) => {
 };
 
 const verifyOtp = async (req, res) => {
-    const { email, otp } = req.body;
-    console.log("Vérification OTP pour :", { email, otp });
-
+    const { email, otp, password, username } = req.body;
+  
     if (!email || !otp) {
-        return res.status(400).json({ success: false, message: "Email et OTP requis." });
+      return res.status(400).json({ success: false, message: "Email et OTP requis." });
     }
-
+  
     try {
-        const storedOtp = await findOtpByEmail(email);
-        console.log("OTP récupéré de la base de données :", storedOtp);
-
-        if (!storedOtp || storedOtp.otp !== otp) {
-            return res.status(400).json({ success: false, message: ERROR_MESSAGES.INVALID_OTP });
-        }
-
-        await deleteOtp(email);
-        console.log("OTP supprimé pour :", email);
-
-        res.status(200).json({ success: true, message: "OTP validé avec succès." });
+      const storedOtp = await findOtpByEmail(email);
+  
+      if (!storedOtp || storedOtp.otp !== otp) {
+        return res.status(400).json({ success: false, message: "OTP invalide ou expiré." });
+      }
+  
+      // Supprimer l'OTP
+      await deleteOtp(email);
+  
+      // Ajouter l'utilisateur si l'OTP est valide
+      const hashedPassword = await argon2.hash(password);
+      await createUser({ email, username, password: hashedPassword });
+  
+      res.status(200).json({ success: true, message: "Utilisateur enregistré avec succès." });
     } catch (error) {
-        console.error("Erreur lors de la vérification de l'OTP :", error);
-        res.status(500).json({ success: false, message: ERROR_MESSAGES.INTERNAL_SERVER_ERROR });
+      console.error("Erreur lors de la vérification de l'OTP :", error);
+      res.status(500).json({ success: false, message: "Erreur interne du serveur." });
     }
-};
+  };
+  
 
 module.exports = {
     login,

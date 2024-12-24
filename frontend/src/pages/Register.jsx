@@ -41,7 +41,7 @@ export default function Register() {
 
         // Redirige l'utilisateur vers une page pour entrer l'OTP
         navigate(`/verification-otp`, {
-          state: { email: formDatas.email }, // Passe l'email pour associer l'OTP
+          state: { ...formDatas }, // Passe toutes les données nécessaires pour le login et OTP
         });
       } else {
         console.error("Erreur lors de l'inscription :", response);
