@@ -1,4 +1,4 @@
-import "react-responsive-carousel/lib/styles/carousel.min.css"; // Styles pour react-responsive-carousel
+import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { Carousel } from "react-responsive-carousel";
 import "../styles/sliderProducts.css";
 import { useEffect, useState } from "react";
@@ -19,11 +19,9 @@ export default function SliderProducts({ id }) {
 
         const data = response.data;
         if (data && typeof data === "object") {
-          // Fonction pour gérer les chemins locaux et distants
           const getImageSrc = (imagePath) => {
             if (!imagePath) return null;
 
-            // Vérifiez si l'image est un lien distant
             if (
               imagePath.startsWith("http://") ||
               imagePath.startsWith("https://")
@@ -31,11 +29,9 @@ export default function SliderProducts({ id }) {
               return imagePath;
             }
 
-            // Sinon, concaténez avec l'URL de base locale
             return `http://localhost:3335${imagePath}`;
           };
 
-          // Créez un tableau d'images
           const imageUrls = [
             getImageSrc(data.first_image),
             getImageSrc(data.second_image),
@@ -78,7 +74,7 @@ export default function SliderProducts({ id }) {
               src={url}
               alt={`Image de produit ${index + 1}`}
               onError={(e) => {
-                e.target.src = "/path/to/default-image.jpg"; // Image par défaut
+                e.target.src = "/path/to/default-image.jpg";
                 console.error("Erreur de chargement pour l'image :", url);
               }}
             />

@@ -41,7 +41,7 @@ export default function PaymentPage() {
     <div className="payment-container">
       <h1>Page de Paiement</h1>
       <p>Montant total de la commande : {totalRising} €</p>
-      {/* Passer totalRising au composant Stripe */}
+
       <StripeContainer totalRising={totalRising} />
     </div>
   );

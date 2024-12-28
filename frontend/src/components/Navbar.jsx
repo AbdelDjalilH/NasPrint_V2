@@ -10,7 +10,7 @@ import closeButton from "../assets/navImages/closeButton.png";
 
 export default function Navbar({ toggleCartModal }) {
   const { auth, logout, user } = useAuth();
-  const { totalItems } = useCart(); // Utilisation du hook pour récupérer le nombre total d'articles
+  const { totalItems } = useCart();
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (

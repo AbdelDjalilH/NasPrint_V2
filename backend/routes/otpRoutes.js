@@ -1,7 +1,7 @@
 const router = require("express").Router();
-const { pool } = require("../database/db-connection"); // Importation du pool pour la base de données
+const { pool } = require("../database/db-connection"); 
 
-// Route pour récupérer tous les OTPs
+
 router.get("/", async (req, res) => {
     try {
         const [otps] = await pool.execute("SELECT * FROM otps");
@@ -11,7 +11,7 @@ router.get("/", async (req, res) => {
     }
 });
 
-// Route pour récupérer un OTP par ID
+
 router.get("/:id", async (req, res) => {
     try {
         const [otps] = await pool.execute("SELECT * FROM otps WHERE id = ?", [req.params.id]);
@@ -24,11 +24,11 @@ router.get("/:id", async (req, res) => {
     }
 });
 
-// Route pour créer un nouvel OTP
+
 router.post("/", async (req, res) => {
     const { otp_code, user_id, expiration_date } = req.body;
 
-    // Vérifier que tous les champs requis sont fournis
+    
     if (!otp_code || !user_id || !expiration_date) {
         return res.status(400).json({ message: "Tous les champs (otp_code, user_id, expiration_date) sont requis" });
     }
@@ -45,7 +45,7 @@ router.post("/", async (req, res) => {
     }
 });
 
-// Route pour mettre à jour un OTP
+
 router.put("/:id", async (req, res) => {
     const { otp_code, expiration_date } = req.body;
 
@@ -71,7 +71,7 @@ router.put("/:id", async (req, res) => {
     }
 });
 
-// Route pour supprimer un OTP
+
 router.delete("/:id", async (req, res) => {
     try {
         const [otps] = await pool.execute("SELECT * FROM otps WHERE id = ?", [req.params.id]);

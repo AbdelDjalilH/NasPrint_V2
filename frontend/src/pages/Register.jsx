@@ -12,7 +12,7 @@ export default function Register() {
     password: "",
   });
 
-  const [errorMessage, setErrorMessage] = useState(null); // Pour afficher un message d'erreur
+  const [errorMessage, setErrorMessage] = useState(null);
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -26,7 +26,7 @@ export default function Register() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setErrorMessage(null); // Réinitialise le message d'erreur avant de soumettre
+    setErrorMessage(null);
 
     try {
       console.log("Données envoyées au backend :", formDatas);
@@ -39,9 +39,8 @@ export default function Register() {
       if (response.status === 200 || response.status === 201) {
         console.info("Données reçues du backend :", response.data);
 
-        // Redirige l'utilisateur vers une page pour entrer l'OTP
         navigate(`/verification-otp`, {
-          state: { ...formDatas }, // Passe toutes les données nécessaires pour le login et OTP
+          state: { ...formDatas },
         });
       } else {
         console.error("Erreur lors de l'inscription :", response);

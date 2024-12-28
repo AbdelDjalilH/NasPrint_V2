@@ -67,7 +67,6 @@ function UserManagement() {
     return parts.length === 3;
   };
 
-  // Soumission de la modification
   const handleEditSubmit = async () => {
     if (!editUserId) return;
     const token = localStorage.getItem("token");
@@ -108,27 +107,6 @@ function UserManagement() {
       });
       setUsers((prevUsers) => prevUsers.filter((user) => user.id !== id));
       console.log("Utilisateur supprimé avec succès");
-    } catch (error) {
-      handleError(error);
-    }
-  };
-
-  const handleCreateUser = async () => {
-    const token = localStorage.getItem("token");
-    try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/users`,
-        editUserData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      console.log("Nouvel utilisateur créé:", response.data);
-      await fetchUsers();
-      resetEditForm();
     } catch (error) {
       handleError(error);
     }

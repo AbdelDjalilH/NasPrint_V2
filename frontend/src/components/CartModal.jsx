@@ -12,7 +12,6 @@ export default function CartModal({ isOpen, onClose, productDetails, id }) {
   const { setOrderId } = useOrder();
   const [mainImage, setMainImage] = useState(null);
 
-  // Récupération de l'image principale
   useEffect(() => {
     const fetchMainImage = async () => {
       if (!id) return;
@@ -32,11 +31,11 @@ export default function CartModal({ isOpen, onClose, productDetails, id }) {
           setMainImage(getImageSrc(data.first_image));
         } else {
           console.warn("Aucune image trouvée pour l'ID :", id);
-          setMainImage("https://via.placeholder.com/150"); // Default image
+          setMainImage("https://via.placeholder.com/150");
         }
       } catch (err) {
         console.error("Erreur lors de la récupération de l'image :", err);
-        setMainImage("https://via.placeholder.com/150"); // Default on error
+        setMainImage("https://via.placeholder.com/150");
       }
     };
 
@@ -165,7 +164,6 @@ export default function CartModal({ isOpen, onClose, productDetails, id }) {
     0
   );
 
-  // Si le modal est fermé, affichez null ici
   if (!isOpen) return null;
 
   return (
@@ -186,7 +184,7 @@ export default function CartModal({ isOpen, onClose, productDetails, id }) {
               return (
                 <div key={item.id} className="product-cart-data">
                   <img
-                    src={item.image_url || "https://via.placeholder.com/150"} // Fallback image
+                    src={item.image_url || "https://via.placeholder.com/150"}
                     alt={item.product_name}
                     className="img-product-modal"
                   />

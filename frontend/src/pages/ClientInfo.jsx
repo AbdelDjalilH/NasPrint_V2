@@ -19,9 +19,9 @@ const ClientInfo = () => {
       console.log(
         "Utilisateur non connecté, redirection vers la page d'accueil."
       );
-      navigate("/"); // Redirection vers la page d'accueil si non connecté
+      navigate("/");
     }
-  }, [user, navigate]); // Assurez-vous d'ajouter navigate comme dépendance
+  }, [user, navigate]);
 
   const addInformations = async () => {
     if (!user) {
@@ -44,8 +44,7 @@ const ClientInfo = () => {
       );
       console.log("Informations enregistrées :", response.data);
 
-      // Redirection après succès de l'enregistrement
-      navigate("/payment-page"); // Rediriger vers la page d'accueil ou une autre page de votre choix
+      navigate("/payment-page");
     } catch (error) {
       console.error(
         "Erreur lors de l'enregistrement des informations :",

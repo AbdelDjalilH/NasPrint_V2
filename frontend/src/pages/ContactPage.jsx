@@ -32,7 +32,7 @@ const ContactPage = () => {
       );
   };
 
-  const closeModal = () => setIsModalOpen(false); // Fermer la modale
+  const closeModal = () => setIsModalOpen(false);
 
   return (
     <div className="contact-div">

@@ -26,7 +26,7 @@ const checkLoginDatas = (req, res, next) => {
     if (!error) {
         next();
     } else {
-        const errorMessages = error.details.map(err => err.message); // Récupération des messages d'erreur
+        const errorMessages = error.details.map(err => err.message); 
         console.error("Erreur de validation lors de la connexion :", errorMessages);
         res.status(400).json({ message: "Erreur de validation", details: errorMessages });
     }

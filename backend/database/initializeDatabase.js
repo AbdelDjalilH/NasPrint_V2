@@ -6,7 +6,7 @@ const initializeDatabase = async () => {
     const connection = await pool.getConnection();
     
     try {
-        // Vérification de l'existence du fichier SQL
+       
         const sqlPath = path.join(__dirname, 'datas.sql');
         if (!fs.existsSync(sqlPath)) {
             console.error("Le fichier datas.sql est introuvable dans le répertoire.");
@@ -19,7 +19,7 @@ const initializeDatabase = async () => {
             .map((query) => query.trim())
             .filter((query) => query.length);
 
-        // Démarrer la transaction
+       
         await connection.beginTransaction();
 
         for (const query of queries) {
@@ -28,17 +28,17 @@ const initializeDatabase = async () => {
         }
         console.log("Base de données initialisée avec succès.");
 
-        // Ajout des utilisateurs par défaut
+        
         await addUserOrUpdate("adj.hamzaoui@gmail.com", "adj", "Iamthebest","Administrateur","2024-10-20");
         await addUserOrUpdate("adjo@adjo.dz", "adjo", "Youarethebest","Utilisateur","2024-10-21");
        
 
-        // Valider la transaction
+       
         await connection.commit();
         console.log("Utilisateurs ajoutés avec succès.");
 
     } catch (error) {
-        // Annuler la transaction en cas d'erreur
+        
         await connection.rollback();
         console.error("Erreur lors de l'initialisation de la base de données :", error.message);
     } finally {

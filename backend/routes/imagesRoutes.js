@@ -32,7 +32,7 @@ router.get("/:id", async (req, res) => {
             return res.status(404).json({ message: "Image non trouvée" });
         }
 
-        // Ajout d'une valeur par défaut pour `first_image`
+        
         const image = images[0];
         image.first_image = image.first_image || "https://via.placeholder.com/150";
 

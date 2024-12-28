@@ -11,7 +11,7 @@ export default function DetailProduct() {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [productList, setProductList] = useState([]); // Liste de tous les produits
+  const [productList, setProductList] = useState([]);
 
   const next = "|  Suivant  >";
   const previous = "<  Précédent  ";
@@ -57,7 +57,7 @@ export default function DetailProduct() {
   const handlePrevious = () => {
     const currentId = parseInt(id);
     if (currentId === 1) {
-      const maxId = Math.max(...productList.map((p) => p.id)); // Trouver le plus grand ID
+      const maxId = Math.max(...productList.map((p) => p.id));
       navigate(`/nos-produits/${maxId}`);
     } else {
       navigate(`/nos-produits/${currentId - 1}`);
@@ -66,9 +66,9 @@ export default function DetailProduct() {
 
   const handleNext = () => {
     const currentId = parseInt(id);
-    const maxId = Math.max(...productList.map((p) => p.id)); // Trouver le plus grand ID
+    const maxId = Math.max(...productList.map((p) => p.id));
     if (currentId === maxId) {
-      navigate(`/nos-produits/1`); // Aller à l'ID 1
+      navigate(`/nos-produits/1`);
     } else {
       navigate(`/nos-produits/${currentId + 1}`);
     }
@@ -90,7 +90,6 @@ export default function DetailProduct() {
         </section>
 
         <section className="row-section">
-          {/* Retiré l'image actuelle et remplacé par le slider */}
           <section className="column-section1">
             <h1 className="detail-product-name">{product.product_name}</h1>
 

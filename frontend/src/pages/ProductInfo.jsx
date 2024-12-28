@@ -25,10 +25,6 @@ function ProductInfo() {
     }));
   };
 
-  const handleFile = (event) => {
-    setFile(event.target.files[0]);
-  };
-
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -148,7 +144,6 @@ function ProductInfo() {
       formData.append(key, editProductData[key]);
     });
 
-    // Ajoutez les fichiers au FormData
     if (files) {
       Object.keys(files).forEach((key) => {
         if (files[key]) {

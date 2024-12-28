@@ -16,14 +16,13 @@ export default function NosProduits() {
   ];
 
   useEffect(() => {
-    // Requête pour récupérer les produits depuis le backend avec axios
     const fetchProducts = async () => {
       try {
         const response = await axios.get(
           `${import.meta.env.VITE_API_URL}/products`
         );
-        setProducts(response.data); // Assigne les produits récupérés
-        setFilteredProducts(response.data); // Filtrage initial
+        setProducts(response.data);
+        setFilteredProducts(response.data);
       } catch (error) {
         console.error("Erreur lors de la récupération des produits :", error);
       }
@@ -43,7 +42,7 @@ export default function NosProduits() {
         )
       );
     }
-  }, [category, products]); // products dépend aussi du nouvel upload
+  }, [category, products]);
 
   return (
     <div className="nosProduits-container">

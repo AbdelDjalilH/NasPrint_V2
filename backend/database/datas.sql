@@ -20,7 +20,7 @@ DROP TABLE IF EXISTS users;
 
 DROP TABLE IF EXISTS otps;
 
--- Création des tables
+
 CREATE TABLE users (
     id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT NOT NULL,
     email VARCHAR(255) NOT NULL UNIQUE,
@@ -377,21 +377,18 @@ VALUES (
         'New York',
         10001
     );
--- Ajout d'une adresse pour l'utilisateur avec user_id = 3
--- Insertion des paniers
+
 INSERT INTO
     cart (user_id, date_creation)
 VALUES (1, '2023-01-12'),
     (2, '2023-01-15'),
     (3, '2024-11-21');
--- Ajout d'un panier pour l'utilisateur avec user_id = 3
--- Insertion des produits dans les paniers
+
 INSERT INTO
     cart_products (cart_id, product_id, quantity)
-VALUES (3, 1, 2), -- Exemple pour ajouter 2 unités du produit avec ID 1
+VALUES (3, 1, 2), 
     (3, 2, 1);
--- Exemple pour ajouter 1 unité du produit avec ID 2
--- Insertion des notices
+
 INSERT INTO
     notices (
         product_id,

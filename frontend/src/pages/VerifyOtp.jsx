@@ -8,7 +8,7 @@ export default function VerifyOtp() {
   const [otp, setOtp] = useState("");
   const { state } = useLocation();
   const navigate = useNavigate();
-  const { login } = useAuth(); // Intégration avec le contexte Auth
+  const { login } = useAuth();
 
   const handleChange = (e) => {
     setOtp(e.target.value);
@@ -23,18 +23,16 @@ export default function VerifyOtp() {
         {
           email: state?.email,
           otp,
-          password: state?.password, // Requis pour l'enregistrement
-          username: state?.username, // Requis pour l'enregistrement
+          password: state?.password,
+          username: state?.username,
         }
       );
 
       if (response.status === 200) {
         console.info("OTP validé avec succès :", response.data);
 
-        // Connectez l'utilisateur automatiquement après l'inscription
         await login(state?.email, state?.password);
 
-        // Redirigez vers une route existante, par exemple "/client-info"
         navigate("/client-info");
       }
     } catch (error) {

@@ -1,4 +1,4 @@
-require("dotenv").config(); // Chargez les variables d'environnement au début
+require("dotenv").config(); 
 
 const express = require("express");
 const cors = require("cors");
@@ -24,7 +24,7 @@ const uploadRouter = require("./routes/uploadRoutes");
 
 const app = express();
 
-// Utilisez les variables d'environnement pour la configuration CORS
+
 const corsOptions = {
     origin: process.env.CLIENT_URL,
     credentials: true,
@@ -36,13 +36,13 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static('public'));
 
-// Route de paiement Stripe
+
 app.post("/create-payment-intent", async (req, res) => {
     try {
         console.log("Requête reçue :", req.body);
         const { amount, user_id } = req.body;
 
-        // Vérification des paramètres
+        
         if (!amount || !user_id) {
             return res.status(400).send("Le montant et l'ID utilisateur sont requis.");
         }
@@ -51,7 +51,7 @@ app.post("/create-payment-intent", async (req, res) => {
             return res.status(400).send("Le montant doit être un entier positif.");
         }
 
-        // Récupérer l'e-mail de l'utilisateur
+        
         const [user] = await pool.execute("SELECT email FROM users WHERE id = ?", [user_id]);
         if (user.length === 0) {
             return res.status(404).send("Utilisateur non trouvé.");
@@ -59,13 +59,13 @@ app.post("/create-payment-intent", async (req, res) => {
         const email = user[0].email;
         console.log("Adresse e-mail de l'utilisateur :", email);
 
-        // Créer un PaymentIntent avec Stripe
+        
         const paymentIntent = await stripe.paymentIntents.create({
-            amount: amount, // Montant en centimes
+            amount: amount, 
             currency: "eur",
         });
 
-        // Récupérer l'adresse de l'utilisateur
+        
         const [userAddress] = await pool.execute(
             "SELECT lastname, firstname, number_road, city, postal_code FROM adresses WHERE user_id = ?",
             [user_id]
@@ -77,11 +77,11 @@ app.post("/create-payment-intent", async (req, res) => {
 
         const { firstname, lastname, number_road, city, postal_code } = userAddress[0];
 
-        // Vérifier ou créer un panier actif pour l'utilisateur
+        
         let cartId;
         const [cart] = await pool.execute("SELECT id FROM cart WHERE user_id = ?", [user_id]);
         if (cart.length === 0) {
-            // Si aucun panier n'existe, en créer un
+            
             await pool.execute("INSERT INTO cart (user_id, date_creation) VALUES (?, CURDATE())", [user_id]);
             const [newCart] = await pool.execute("SELECT id FROM cart WHERE user_id = ?", [user_id]);
             cartId = newCart[0].id;
@@ -91,7 +91,7 @@ app.post("/create-payment-intent", async (req, res) => {
             console.log("ID du panier existant :", cartId);
         }
 
-        // Récupérer les produits du panier
+        
         let cartProducts = [];
         try {
             const [results] = await pool.execute(
@@ -107,7 +107,7 @@ app.post("/create-payment-intent", async (req, res) => {
             console.error("Erreur lors de la récupération des produits du panier :", error);
         }
 
-        // Construire les détails des produits pour l'email
+       
         let productDetails = "";
         if (cartProducts.length > 0) {
             cartProducts.forEach((product) => {
@@ -118,7 +118,7 @@ app.post("/create-payment-intent", async (req, res) => {
         }
         console.log("Détails des produits pour l'email :", productDetails);
 
-        // Envoyer un e-mail de confirmation à l'utilisateur
+       
         const transporter = nodemailer.createTransport({
             service: "gmail",
             auth: {
@@ -142,7 +142,7 @@ app.post("/create-payment-intent", async (req, res) => {
             }
         });
 
-        // Envoyer un e-mail de notification à l'administrateur
+        
         const mailOptionsAdmin = {
             from: process.env.EMAIL_USER,
             to: "adj.hamzaoui@gmail.com",
@@ -158,7 +158,7 @@ app.post("/create-payment-intent", async (req, res) => {
             }
         });
         await pool.execute("DELETE FROM cart_products WHERE cart_id = ?", [cartId]);
-        // Réponse au client
+       
         res.send({
             clientSecret: paymentIntent.client_secret,
             cartProducts: cartProducts,
@@ -170,13 +170,13 @@ app.post("/create-payment-intent", async (req, res) => {
 });
 
 
-// Middleware pour logger les requêtes
+
 app.use((req, res, next) => {
     console.log(`Received ${req.method} request for '${req.url}'`);
     next();
 });
 
-// Route de test pour vérifier CORS
+
 app.get("/test-cors", (req, res) => {
     res.json({ message: "CORS fonctionne!" });
 });
