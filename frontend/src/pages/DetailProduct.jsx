@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useOutletContext, useNavigate } from "react-router-dom";
 import axios from "axios";
-import "../styles/detailproduct.css";
+import "../styles/detailProduct.css";
 import SliderProducts from "../components/SliderProducts";
 
 export default function DetailProduct() {

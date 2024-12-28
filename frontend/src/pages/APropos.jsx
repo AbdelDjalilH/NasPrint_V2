@@ -50,14 +50,14 @@ export default function APropos() {
           fonctionnelles, dimensionnelles Vérifier la faisabilité et la
           conformité technique d’une installation Participer à la réalisation
           d’essais industriels et proposer des améliorations Contrôler les
-          réalisations et assister les services de production
+          réalisations et assister les services de production.
         </p>
         <p>
           Implantation d’une nouvelle ligne de production Vérifier le process de
           fabrication prévu par les équipes projet Proposer des hypothèses
           d'implantation en prenant en compte les surfaces Optimiser la
           répartition des surfaces entre les zones de production Assurer sur le
-          terrain de la cohérence de l'implantation
+          terrain de la cohérence de l'implantation.
         </p>
         <p>
           Conception des moyens de test pour des produits cosmétiques Concevoir
@@ -68,7 +68,7 @@ export default function APropos() {
           actionneurs) et de fabrication (choix du matériaux adéquate) Rédiger
           des documents technique: plans 2D, 3D, dossier de montage,
           nomenclature, rapport de simulation, … Présenter au service Recherche
-          Appliquée la conception du banc d’essai
+          Appliquée la conception du banc d’essai.
         </p>
       </section>
     </div>
