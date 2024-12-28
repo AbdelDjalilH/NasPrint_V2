@@ -19,7 +19,11 @@ export default function APropos() {
           les idées en réalité. J'aime aider les gens à réaliser leurs projets,
           tout en leur proposant des designs originaux et fonctionnels.
         </p>
-        <img src={dessinInd} alt="dessin Industriel img" />
+        <img
+          className="dessinIndImg"
+          src={dessinInd}
+          alt="dessin Industriel img"
+        />
       </section>
       <section className="formation-container">
         <h2 className="formation-title">Formation</h2>

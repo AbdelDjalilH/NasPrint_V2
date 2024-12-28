@@ -1,4 +1,4 @@
-import "react-responsive-carousel/lib/styles/carousel.min.css"; // Styles pour react-responsive-carousel
+import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { Carousel } from "react-responsive-carousel";
 import "../styles/sliderProducts.css";
 import { useEffect, useState } from "react";
@@ -17,17 +17,29 @@ export default function SliderProducts({ id }) {
         );
         console.log("Données récupérées : ", response.data);
 
-        // Vérifiez si `response.data` est un objet
         const data = response.data;
         if (data && typeof data === "object") {
-          // Créez un tableau d'images en filtrant les valeurs non vides
+          const getImageSrc = (imagePath) => {
+            if (!imagePath) return null;
+
+            if (
+              imagePath.startsWith("http://") ||
+              imagePath.startsWith("https://")
+            ) {
+              return imagePath;
+            }
+
+            return `${import.meta.env.VITE_API_URL}${imagePath}`;
+          };
+
           const imageUrls = [
-            data.first_image,
-            data.second_image,
-            data.third_image,
-            data.four_image,
-            data.five_image,
-          ].filter((url) => url); // Filtre les valeurs vides ou nulles
+            getImageSrc(data.first_image),
+            getImageSrc(data.second_image),
+            getImageSrc(data.third_image),
+            getImageSrc(data.fourth_image),
+            getImageSrc(data.fifth_image),
+          ].filter((url) => url);
+
           setImages(imageUrls);
         } else {
           console.warn(
@@ -52,7 +64,6 @@ export default function SliderProducts({ id }) {
   if (loading) return <p>Chargement...</p>;
   if (error) return <p>{error}</p>;
 
-  // Affichage des images dans le carousel
   return (
     <div className="carousel-container-2">
       <Carousel showThumbs={true} autoPlay interval={12000} infiniteLoop>
@@ -62,9 +73,10 @@ export default function SliderProducts({ id }) {
               className="img-balise"
               src={url}
               alt={`Image de produit ${index + 1}`}
-              onError={() =>
-                console.error("Erreur de chargement pour l'image :", url)
-              }
+              onError={(e) => {
+                e.target.src = "/path/to/default-image.jpg";
+                console.error("Erreur de chargement pour l'image :", url);
+              }}
             />
           </div>
         ))}

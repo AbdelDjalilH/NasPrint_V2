@@ -2,11 +2,11 @@ const express = require("express");
 const router = express.Router();
 const { pool } = require("../database/db-connection");
 const jwt = require("jsonwebtoken");
-const adminOnly = require("../services/adminOnly"); // Middleware pour les accès admin
+const adminOnly = require("../services/adminOnly"); 
 const verifyToken = require("../services/authMiddleware");
 
 
-// Route pour récupérer tous les utilisateurs (admin seulement)
+
 router.get("/", verifyToken, adminOnly, async (req, res) => {
     try {
         const [users] = await pool.execute("SELECT * FROM users");
@@ -16,7 +16,7 @@ router.get("/", verifyToken, adminOnly, async (req, res) => {
     }
 });
 
-// Route pour récupérer un utilisateur spécifique par ID
+
 router.get("/:id", verifyToken, adminOnly, async (req, res) => {
     try {
         const [user] = await pool.execute("SELECT * FROM users WHERE id = ?", [req.params.id]);
@@ -29,7 +29,7 @@ router.get("/:id", verifyToken, adminOnly, async (req, res) => {
     }
 });
 
-// Route pour créer un nouvel utilisateur (ouverte à tous)
+
 router.post("/", verifyToken, async (req, res) => {
     const { username, email, password } = req.body;
 
@@ -50,7 +50,7 @@ router.post("/", verifyToken, async (req, res) => {
     }
 });
 
-// Route de login pour l'authentification de l'utilisateur
+
 router.post("/login", verifyToken, async (req, res) => {
     const { username, password } = req.body;
 
@@ -69,7 +69,7 @@ router.post("/login", verifyToken, async (req, res) => {
     }
 });
 
-// Route pour mettre à jour un utilisateur (admin seulement)
+
 router.put("/:id", verifyToken, adminOnly, async (req, res) => {
     const { username, email, password } = req.body;
 
@@ -102,7 +102,7 @@ router.put("/:id", verifyToken, adminOnly, async (req, res) => {
     }
 });
 
-// Route pour supprimer un utilisateur (admin seulement)
+
 router.delete("/:id", verifyToken, adminOnly, async (req, res) => {
     try {
         const [user] = await pool.execute("SELECT * FROM users WHERE id = ?", [req.params.id]);

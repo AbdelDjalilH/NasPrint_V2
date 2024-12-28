@@ -19,7 +19,7 @@ function App() {
   };
 
   return (
-    <>
+    <div className="App-container">
       <Navbar toggleCartModal={toggleCartModal} />
       <Outlet context={{ openCartModalWithProduct }} />{" "}
       {/* Passez la fonction */}
@@ -30,7 +30,7 @@ function App() {
         productDetails={productDetails}
       />{" "}
       {/* Passez les détails du produit */}
-    </>
+    </div>
   );
 }
 

@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const { pool } = require("../database/db-connection");
 
-// Route pour récupérer tous les carts
+
 router.get("/", async (req, res) => {
     try {
         const [cart] = await pool.execute("SELECT * FROM cart");
@@ -12,7 +12,7 @@ router.get("/", async (req, res) => {
     }
 });
 
-// Route pour récupérer un cart par ID
+
 router.get("/:id", async (req, res) => {
     try {
         const [cart] = await pool.execute(
@@ -22,14 +22,14 @@ router.get("/:id", async (req, res) => {
         if (cart.length === 0) {
             return res.status(404).json({ message: "Cart non trouvé" });
         }
-        res.json(cart[0]); // Retourner un seul cart
+        res.json(cart[0]); 
     } catch (err) {
         console.error("Erreur lors de la récupération du cart :", err);
         res.status(500).json({ error: "Erreur lors de la récupération du cart" });
     }
 });
 
-// Route pour créer un nouveau cart
+
 router.post("/", async (req, res) => {
     const { date_creation, user_id } = req.body;
 
@@ -56,7 +56,7 @@ router.post("/", async (req, res) => {
     }
 });
 
-// Route pour mettre à jour un cart
+
 router.put("/:id", async (req, res) => {
     const { date_creation, user_id } = req.body;
 
@@ -83,7 +83,7 @@ router.put("/:id", async (req, res) => {
     }
 });
 
-// Route pour supprimer un cart
+
 router.delete("/:id", async (req, res) => {
     try {
         const [cart] = await pool.execute("SELECT * FROM cart WHERE id = ?", [req.params.id]);

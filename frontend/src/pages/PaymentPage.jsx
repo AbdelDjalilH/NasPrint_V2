@@ -1,15 +1,16 @@
+import "../styles/paymentPage.css";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useOrder } from "../contexts/OrdersContext"; // Importer le contexte
+import { useOrder } from "../contexts/OrdersContext";
 import StripeContainer from "../stripe/StripeContainer";
 
 export default function PaymentPage() {
-  const { orderId } = useOrder(); // Utiliser l'orderId depuis le contexte
+  const { orderId } = useOrder();
   const [orderData, setOrderData] = useState(null);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (!orderId) return; // Vérifier que l'orderId existe
+    if (!orderId) return;
 
     const fetchOrderData = async () => {
       try {
@@ -37,11 +38,11 @@ export default function PaymentPage() {
   const totalRising = orderData.total_rising;
 
   return (
-    <>
+    <div className="payment-container">
       <h1>Page de Paiement</h1>
       <p>Montant total de la commande : {totalRising} €</p>
-      {/* Passer totalRising au composant Stripe */}
+
       <StripeContainer totalRising={totalRising} />
-    </>
+    </div>
   );
 }

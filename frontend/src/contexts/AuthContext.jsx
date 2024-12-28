@@ -14,17 +14,17 @@ export const AuthProvider = ({ children }) => {
         { email, password },
         { withCredentials: true }
       );
-      // Stocker le token dans le localStorage ou les cookies
+
       localStorage.setItem("token", response.data.token);
       setAuth(true);
-      setUser(response.data.user); // `response.data.user` doit contenir l'id de l'utilisateur
+      setUser(response.data.user);
     } catch (error) {
       console.error("Erreur lors de la connexion :", error);
     }
   };
 
   const logout = () => {
-    localStorage.removeItem("token"); // Supprimer le token du stockage
+    localStorage.removeItem("token");
     setAuth(false);
     setUser(null);
   };

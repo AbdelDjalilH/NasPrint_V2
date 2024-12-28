@@ -18,7 +18,9 @@ DROP TABLE IF EXISTS categories;
 
 DROP TABLE IF EXISTS users;
 
--- Création des tables
+DROP TABLE IF EXISTS otps;
+
+
 CREATE TABLE users (
     id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT NOT NULL,
     email VARCHAR(255) NOT NULL UNIQUE,
@@ -51,11 +53,11 @@ CREATE TABLE products (
 CREATE TABLE images (
     id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT NOT NULL,
     product_id INT UNSIGNED NOT NULL,
-    first_image VARCHAR(255) DEFAULT 'default.png',
-    second_image VARCHAR(255) DEFAULT 'default.png',
-    third_image VARCHAR(255) DEFAULT 'default.png',
-    four_image VARCHAR(255) DEFAULT 'default.png',
-    five_image VARCHAR(255) DEFAULT 'default.png',
+    first_image VARCHAR(255) DEFAULT NULL,
+    second_image VARCHAR(255) DEFAULT NULL,
+    third_image VARCHAR(255) DEFAULT NULL,
+    fourth_image VARCHAR(255) DEFAULT NULL,
+    fifth_image VARCHAR(255) DEFAULT NULL,
     FOREIGN KEY (product_id) REFERENCES products (id) ON DELETE CASCADE
 );
 
@@ -117,6 +119,14 @@ CREATE TABLE orders (
     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
     FOREIGN KEY (payment_id) REFERENCES payments (id) ON DELETE CASCADE,
     FOREIGN KEY (address_id) REFERENCES adresses (id) ON DELETE CASCADE
+);
+
+CREATE TABLE otps (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(255) NOT NULL,
+    otp VARCHAR(6) NOT NULL,
+    expires_at DATETIME NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Insertion des catégories
@@ -274,8 +284,8 @@ INSERT INTO
         first_image,
         second_image,
         third_image,
-        four_image,
-        five_image
+        fourth_image,
+        fifth_image
     )
 VALUES (
         1,
@@ -367,21 +377,18 @@ VALUES (
         'New York',
         10001
     );
--- Ajout d'une adresse pour l'utilisateur avec user_id = 3
--- Insertion des paniers
+
 INSERT INTO
     cart (user_id, date_creation)
 VALUES (1, '2023-01-12'),
     (2, '2023-01-15'),
     (3, '2024-11-21');
--- Ajout d'un panier pour l'utilisateur avec user_id = 3
--- Insertion des produits dans les paniers
+
 INSERT INTO
     cart_products (cart_id, product_id, quantity)
-VALUES (3, 1, 2), -- Exemple pour ajouter 2 unités du produit avec ID 1
+VALUES (3, 1, 2), 
     (3, 2, 1);
--- Exemple pour ajouter 1 unité du produit avec ID 2
--- Insertion des notices
+
 INSERT INTO
     notices (
         product_id,

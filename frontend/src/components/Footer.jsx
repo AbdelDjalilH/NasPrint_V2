@@ -11,14 +11,18 @@ export default function Footer() {
   return (
     <footer className="footer-container">
       <section className="first-section">
-        <img src={madeInFrance} alt="" />
+        <img src={madeInFrance} alt="madeinfrance" />
+        <img
+          className="biodegradable-img"
+          src={biodegradable}
+          alt="biodegradable"
+        />
         <div className="socialNetworksLogos">
-          <img src={instagram} alt="" />
-          <img src={facebook} alt="" />
-          <img src={linkedin} alt="" />
-          <img src={pinterest} alt="" />
+          <img src={instagram} alt="instagram" />
+          <img src={facebook} alt="facebook" />
+          <img src={linkedin} alt="linkedin" />
+          <img src={pinterest} alt="pinterest" />
         </div>
-        <img src={biodegradable} alt="" />
       </section>
       <section className="second-section">
         <p className="contact-sentence">

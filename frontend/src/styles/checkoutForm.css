@@ -4,6 +4,7 @@
   border-radius: 4px;
   background-color: #f9f9f9;
   margin-bottom: 20px;
+  min-width: 30rem;
 }
 
 .stripe-card-element {
@@ -28,4 +29,8 @@
 
 .payment-btn:hover:enabled {
   background-color: #5469d4;
+}
+.checkout-form {
+  display: flex;
+  flex-direction: column;
 }

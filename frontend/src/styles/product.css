@@ -23,5 +23,6 @@
 .product-btn {
   background-color: #e8c902;
   border: none;
-  height: 3rem;
+  min-height: 2rem;
+  margin-top: auto;
 }
