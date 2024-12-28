@@ -26,7 +26,7 @@ export default function CartModal({ isOpen, onClose, productDetails, id }) {
           const getImageSrc = (imagePath) =>
             imagePath.startsWith("http://") || imagePath.startsWith("https://")
               ? imagePath
-              : `http://localhost:3335${imagePath}`;
+              : `${import.meta.env.VITE_API_URL}${imagePath}`;
 
           setMainImage(getImageSrc(data.first_image));
         } else {
@@ -78,7 +78,7 @@ export default function CartModal({ isOpen, onClose, productDetails, id }) {
         }
       );
       console.log(response.data);
-    } catch (error) {
+    } catch {
       throw new Error(
         "Erreur lors de l'ajout au panier dans la base de données"
       );

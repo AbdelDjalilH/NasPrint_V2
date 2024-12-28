@@ -201,7 +201,7 @@ app.use((err, req, res, next) => {
     res.status(500).send("Quelque chose s'est mal passé !");
 });
 
-const PORT = process.env.APP_PORT || 3335;
+const PORT = process.env.APP_PORT;
 
 app.listen(PORT, async () => {
     console.log(`Serveur démarré sur le port ${PORT}`);

@@ -29,7 +29,7 @@ export default function SliderProducts({ id }) {
               return imagePath;
             }
 
-            return `http://localhost:3335${imagePath}`;
+            return `${import.meta.env.VITE_API_URL}${imagePath}`;
           };
 
           const imageUrls = [
