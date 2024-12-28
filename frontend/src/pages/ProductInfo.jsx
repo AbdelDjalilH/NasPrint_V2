@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import "../styles/productInfo.css";
 import axios from "axios";
@@ -95,7 +96,6 @@ function ProductInfo() {
       formData.append(key, editProductData[key]);
     });
 
-    // Ajoutez les fichiers sélectionnés
     if (files) {
       Object.keys(files).forEach((key) => {
         if (files[key]) {
@@ -202,6 +202,9 @@ function ProductInfo() {
 
   return (
     <div className="container">
+      <Link className="retour-link" to="/admin-page">
+        Retour
+      </Link>
       <div className="wrapper">
         <h2 className="title">Gestion des produits</h2>
         <div className="grid">
@@ -375,14 +378,6 @@ function ProductInfo() {
             className="input"
             placeholder="Description du produit"
           ></textarea>
-          <input
-            type="number"
-            name="category_id"
-            value={editProductData.category_id}
-            onChange={handleInputChange}
-            className="input"
-            placeholder="ID de la catégorie"
-          />
           <input
             type="number"
             name="price"

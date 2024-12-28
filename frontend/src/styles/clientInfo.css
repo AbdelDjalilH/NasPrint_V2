@@ -25,3 +25,9 @@
   width: 10rem;
   text-align: center;
 }
+@media screen and (max-width: 830px) {
+  .hello-title,
+  .info-title {
+    text-align: center;
+  }
+}

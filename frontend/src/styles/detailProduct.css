@@ -69,3 +69,21 @@
 button {
   cursor: pointer;
 }
+@media screen and (max-width: 830px) {
+  .img-container-row-section {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-top: 3rem;
+    gap: 9rem;
+  }
+  .column-section1 {
+    display: flex;
+    align-items: center;
+  }
+  .detail-product-description {
+    width: 20rem;
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+}

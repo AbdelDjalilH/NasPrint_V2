@@ -47,17 +47,20 @@ export default function VerifyOtp() {
 
   return (
     <div className="verify-otp">
-      <form onSubmit={handleSubmit}>
+      <form className="otp-form" onSubmit={handleSubmit}>
         <h1>Vérifiez votre compte</h1>
         <p>Un code OTP a été envoyé à votre email.</p>
         <input
+          className="otp-input"
           type="text"
           placeholder="Entrez le code OTP"
           value={otp}
           onChange={handleChange}
           required
         />
-        <button type="submit">Valider</button>
+        <button className="otp-btn" type="submit">
+          Valider
+        </button>
       </form>
     </div>
   );

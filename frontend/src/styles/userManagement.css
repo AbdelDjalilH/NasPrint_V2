@@ -32,6 +32,11 @@ body {
   gap: 1.5rem; /* gap-6 */
   margin-top: 2rem; /* mt-8 */
 }
+.retour-link {
+  color: black;
+  margin-top: 2rem;
+  font-weight: bold;
+}
 
 @media (min-width: 640px) {
   .grid {

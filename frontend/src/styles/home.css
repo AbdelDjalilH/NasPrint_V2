@@ -5,14 +5,19 @@
 .slider-container {
   margin-top: 3rem;
 }
-.nouveaute-title {
+.card-title {
   text-align: center;
   margin-top: 3rem;
   font-size: 2rem;
 }
-.nouveautees-product {
+.card-product {
   margin-top: 3rem;
   justify-content: space-evenly;
   display: flex;
   flex-wrap: wrap;
+}
+@media screen and (max-width: 830px) {
+  .card-product {
+    gap: 3rem;
+  }
 }

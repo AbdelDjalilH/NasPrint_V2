@@ -2,6 +2,7 @@
   margin-top: 5rem;
   display: flex;
   justify-content: center;
+  margin-top: 5rem;
 }
 .contact-form {
   display: flex;
@@ -48,4 +49,34 @@
   background: rgb(249, 105, 14);
   color: white;
   border: none;
+}
+.modal-overlay-contact {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content-contact {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  min-width: 300px;
+}
+
+.close-button-contact {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
 }

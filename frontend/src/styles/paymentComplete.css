@@ -1,0 +1,16 @@
+.paymentComplete-container {
+  margin-top: 5rem;
+  margin-bottom: 5rem;
+}
+.confirmation-text {
+  margin-top: 1rem;
+  text-align: center;
+}
+.confirmation-title {
+  text-align: center;
+}
+@media screen and (max-width: 830px) {
+  .paymentComplete-container {
+    margin-top: 5rem;
+  }
+}

@@ -33,9 +33,9 @@ export default function Home() {
     <div className="home-container">
       <section className="slider-container"></section>
       <Slider />
-      <section className="nouveautes-container">
-        <h2 className="nouveaute-title">Quelques produits</h2>
-        <div className="nouveautees-product">
+      <section className="card-container">
+        <h2 className="card-title">Quelques produits</h2>
+        <div className="card-product">
           {randomProducts.map((product) => (
             <Product key={product.id} product={product} id={product.id} />
           ))}

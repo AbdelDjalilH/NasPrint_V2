@@ -1,11 +1,10 @@
 const multer = require("multer");
 const path = require("path");
 const { pool } = require("../database/db-connection");
-
 const express = require("express");
 const router = express.Router();
 
-// Configuration de Multer
+
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
       cb(null, "public/images");
@@ -17,8 +16,7 @@ const storage = multer.diskStorage({
   
   const upload = multer({ storage: storage });
   
-  // Configuration pour gérer plusieurs champs
-  const uploadFields = upload.fields([
+    const uploadFields = upload.fields([
     { name: "first_image", maxCount: 1 },
     { name: "second_image", maxCount: 1 },
     { name: "third_image", maxCount: 1 },
@@ -30,21 +28,20 @@ const storage = multer.diskStorage({
 
 router.get("/", async (req, res) => {
     try {
-        const [products] = await pool.execute("SELECT * FROM products"); // Utilise execute()
+        const [products] = await pool.execute("SELECT * FROM products");
         res.json(products);
     } catch (err) {
         res.status(500).json({ error: "Erreur lors de la récupération des produits" });
     }
 });
 
-// Route pour récupérer un produit par ID
 router.get("/:id", async (req, res) => {
     try {
         const [products] = await pool.execute("SELECT * FROM products WHERE id = ?", [req.params.id]);
         if (products.length === 0) {
             return res.status(404).json({ message: "produit non trouvé" });
         }
-        res.json(products[0]); // Retourner un seul produit
+        res.json(products[0]); 
     } catch (err) {
         res.status(500).json({ error: "Erreur lors de la récupération de l'produit" });
     }
@@ -78,8 +75,7 @@ router.post("/", uploadFields, async (req, res) => {
     }
   
     try {
-      // Étape 1 : Ajouter le produit dans la table `products`
-      const [productResult] = await pool.execute(
+            const [productResult] = await pool.execute(
         "INSERT INTO products (product_name, product_description, category_id, price, quantity_available, height, length, weight) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
         [
           product_name,
@@ -93,9 +89,7 @@ router.post("/", uploadFields, async (req, res) => {
         ]
       );
   
-      const productId = productResult.insertId;
-  
-      // Étape 2 : Ajouter les images dans la table `images`
+      const productId = productResult.insertId;  
       const files = req.files;
       const firstImage = files.first_image ? `/images/${files.first_image[0].filename}` : null;
       const secondImage = files.second_image ? `/images/${files.second_image[0].filename}` : null;

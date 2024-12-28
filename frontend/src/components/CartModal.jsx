@@ -21,6 +21,7 @@ export default function CartModal({ isOpen, onClose, productDetails, id }) {
           `${import.meta.env.VITE_API_URL}/images/${id}`
         );
         const data = response.data;
+        console.log("Réponse API pour les images :", data);
 
         if (data && data.first_image) {
           const getImageSrc = (imagePath) =>
@@ -28,19 +29,14 @@ export default function CartModal({ isOpen, onClose, productDetails, id }) {
               ? imagePath
               : `http://localhost:3335${imagePath}`;
 
-          const imageUrl = getImageSrc(data.first_image);
-          console.log("Image principale récupérée :", imageUrl);
-          setMainImage(imageUrl);
+          setMainImage(getImageSrc(data.first_image));
         } else {
-          console.warn("Aucune image principale disponible pour l'ID :", id);
-          setMainImage(null);
+          console.warn("Aucune image trouvée pour l'ID :", id);
+          setMainImage("https://via.placeholder.com/150"); // Default image
         }
       } catch (err) {
-        console.error(
-          "Erreur lors de la récupération de l'image principale :",
-          err
-        );
-        setMainImage(null);
+        console.error("Erreur lors de la récupération de l'image :", err);
+        setMainImage("https://via.placeholder.com/150"); // Default on error
       }
     };
 
@@ -69,8 +65,6 @@ export default function CartModal({ isOpen, onClose, productDetails, id }) {
       } catch (error) {
         console.error("Erreur lors de l'ajout au panier :", error);
       }
-
-      onClose(); // Fermer le modal après l'ajout
     }
   };
 
