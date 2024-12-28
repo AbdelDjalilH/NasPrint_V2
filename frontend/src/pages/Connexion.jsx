@@ -6,41 +6,38 @@ import { useNavigate } from "react-router-dom";
 export default function Connexion() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { login } = useAuth(); // Récupérer la méthode login du contexte
-  const [error, setError] = useState(""); // État pour stocker les erreurs
+  const { login } = useAuth();
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate(); // État pour gérer le chargement
+  const navigate = useNavigate();
 
-  // Fonction de connexion
   const handleLogin = async (e) => {
-    e.preventDefault(); // Empêche le rechargement de la page
+    e.preventDefault();
 
-    setLoading(true); // Activer le chargement
-    setError(""); // Réinitialiser les erreurs au début de chaque tentative de connexion
+    setLoading(true);
+    setError("");
 
     try {
       await login(email, password);
-      navigate("/client-info"); // Utiliser la méthode login du contexte
+      navigate("/client-info");
+      e;
     } catch (error) {
       console.error("Erreur lors de la connexion:", error);
 
-      // Gestion des erreurs de réponse
       if (error.response?.data?.message) {
-        setError(error.response.data.message); // Assigner le message d'erreur du backend
+        setError(error.response.data.message);
       } else {
-        setError("Erreur de connexion, veuillez réessayer."); // Message d'erreur générique
+        setError("Erreur de connexion, veuillez réessayer.");
       }
     } finally {
-      setLoading(false); // Désactiver le chargement dans tous les cas
+      setLoading(false);
     }
   };
 
-  // Vérifiez si un token est déjà stocké dans le localStorage
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
       console.log("Token trouvé dans le localStorage :", token);
-      // Si nécessaire, vérifier ou récupérer les infos de l'utilisateur avec le token
     }
   }, []);
 
@@ -50,7 +47,6 @@ export default function Connexion() {
         <form onSubmit={handleLogin} className="connexion-form">
           <h1 className="connexion-title">Connectez-vous!</h1>
           {error && <div className="error-message">{error}</div>}{" "}
-          {/* Afficher l'erreur s'il y en a */}
           <div className="input-container-connexion">
             <input
               type="email"

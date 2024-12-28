@@ -48,16 +48,27 @@ export default function Product({ product, id }) {
     }
   }, [id]);
 
-  // Afficher un message de chargement ou d'erreur si nécessaire
   if (loading) return <p>Chargement...</p>;
   if (error) return <p>{error}</p>;
+
+  const getImageSrc = (imagePath) => {
+    if (!imagePath) {
+      return "/path/to/default-image.jpg";
+    }
+
+    if (imagePath.startsWith("http://") || imagePath.startsWith("https://")) {
+      return imagePath;
+    }
+
+    return `${import.meta.env.VITE_API_URL}${imagePath}`;
+  };
 
   return (
     <NavLink to={`/nos-produits/${product.id}`} className="product-link">
       <div className="product-container">
         <img
           className="product-image"
-          src={images.first_image || "/path/to/default-image.jpg"} // Affiche une image par défaut si first_image est manquant
+          src={getImageSrc(images.first_image)}
           alt={product.product_name || "Produit"}
         />
         <ul className="product-info">

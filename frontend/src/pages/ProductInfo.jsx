@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import "../styles/productInfo.css";
 import axios from "axios";
@@ -15,12 +16,14 @@ function ProductInfo() {
     length: "",
     weight: "",
   });
-  const [file, setFile] = useState();
+  const [files, setFiles] = useState();
 
-  function handleFile(event) {
-    setFile(event.target.files[0]);
-    console.log(file);
-  }
+  const setFile = (event, fieldName) => {
+    setFiles((prevFiles) => ({
+      ...prevFiles,
+      [fieldName]: event.target.files[0],
+    }));
+  };
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -36,6 +39,7 @@ function ProductInfo() {
 
     fetchProducts();
   }, []);
+
   const ReFetchProducts = async () => {
     try {
       const response = await axios.get(
@@ -52,7 +56,6 @@ function ProductInfo() {
     setEditProductData({
       product_name: product.product_name,
       product_description: product.product_description,
-
       price: product.price,
       quantity_available: product.quantity_available || "",
       image_url: product.image_url || "default.png",
@@ -84,13 +87,26 @@ function ProductInfo() {
       return;
     }
 
+    const formData = new FormData();
+    Object.keys(editProductData).forEach((key) => {
+      formData.append(key, editProductData[key]);
+    });
+
+    if (files) {
+      Object.keys(files).forEach((key) => {
+        if (files[key]) {
+          formData.append(key, files[key]);
+        }
+      });
+    }
+
     try {
       const response = await axios.put(
         `${import.meta.env.VITE_API_URL}/products/${editProductId}`,
-        editProductData,
+        formData,
         {
           headers: {
-            "Content-Type": "application/json",
+            "Content-Type": "multipart/form-data",
             Authorization: `Bearer ${token}`,
           },
         }
@@ -122,22 +138,37 @@ function ProductInfo() {
 
   const handleCreateProduct = async () => {
     const token = localStorage.getItem("token");
+
+    const formData = new FormData();
+    Object.keys(editProductData).forEach((key) => {
+      formData.append(key, editProductData[key]);
+    });
+
+    if (files) {
+      Object.keys(files).forEach((key) => {
+        if (files[key]) {
+          formData.append(key, files[key]);
+        }
+      });
+    }
+
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/products`,
-        editProductData,
+        formData,
         {
           headers: {
-            "Content-Type": "application/json",
+            "Content-Type": "multipart/form-data",
             Authorization: `Bearer ${token}`,
           },
         }
       );
-      console.log("Nouveau produit créé:", response.data);
+
+      console.log("Produit et images créés :", response.data);
       await ReFetchProducts();
       resetEditForm();
     } catch (error) {
-      handleError(error);
+      console.error("Erreur lors de la création du produit :", error);
     }
   };
 
@@ -155,7 +186,6 @@ function ProductInfo() {
     setEditProductData({
       product_name: "",
       product_description: "",
-
       price: "",
       quantity_available: "",
       image_url: "default.png",
@@ -167,6 +197,9 @@ function ProductInfo() {
 
   return (
     <div className="container">
+      <Link className="retour-link" to="/admin-page">
+        Retour
+      </Link>
       <div className="wrapper">
         <h2 className="title">Gestion des produits</h2>
         <div className="grid">
@@ -211,14 +244,30 @@ function ProductInfo() {
                   />
                   <label htmlFor="">Image principale</label>
                   <input
-                    type="text"
-                    name="image_url"
-                    value={editProductData.image_url}
-                    onChange={handleInputChange}
-                    className="input"
-                    placeholder="URL de l'image"
+                    type="file"
+                    name="first_image"
+                    onChange={(e) => setFile(e, "first_image")}
                   />
-                  <input type="file" name="file" onChange={handleFile} />
+                  <input
+                    type="file"
+                    name="second_image"
+                    onChange={(e) => setFile(e, "second_image")}
+                  />
+                  <input
+                    type="file"
+                    name="third_image"
+                    onChange={(e) => setFile(e, "third_image")}
+                  />
+                  <input
+                    type="file"
+                    name="fourth_image"
+                    onChange={(e) => setFile(e, "fourth_image")}
+                  />
+                  <input
+                    type="file"
+                    name="fifth_image"
+                    onChange={(e) => setFile(e, "fifth_image")}
+                  />
                   <label htmlFor="">Hauteur</label>
                   <input
                     type="number"
@@ -307,7 +356,7 @@ function ProductInfo() {
             </div>
           ))}
         </div>
-        <div className="mt-4">
+        <form className="mt-4">
           <h3 className="title">Créer un produit</h3>
           <input
             type="text"
@@ -326,14 +375,6 @@ function ProductInfo() {
           ></textarea>
           <input
             type="number"
-            name="category_id"
-            value={editProductData.category_id}
-            onChange={handleInputChange}
-            className="input"
-            placeholder="ID de la catégorie"
-          />
-          <input
-            type="number"
             name="price"
             value={editProductData.price}
             onChange={handleInputChange}
@@ -349,12 +390,29 @@ function ProductInfo() {
             placeholder="Quantité disponible"
           />
           <input
-            type="text"
-            name="image_url"
-            value={editProductData.image_url}
-            onChange={handleInputChange}
-            className="input"
-            placeholder="URL de l'image"
+            type="file"
+            name="first_image"
+            onChange={(e) => setFile(e, "first_image")}
+          />
+          <input
+            type="file"
+            name="second_image"
+            onChange={(e) => setFile(e, "second_image")}
+          />
+          <input
+            type="file"
+            name="third_image"
+            onChange={(e) => setFile(e, "third_image")}
+          />
+          <input
+            type="file"
+            name="fourth_image"
+            onChange={(e) => setFile(e, "fourth_image")}
+          />
+          <input
+            type="file"
+            name="fifth_image"
+            onChange={(e) => setFile(e, "fifth_image")}
           />
           <input
             type="number"
@@ -387,7 +445,7 @@ function ProductInfo() {
           >
             Ajouter
           </button>
-        </div>
+        </form>
       </div>
     </div>
   );

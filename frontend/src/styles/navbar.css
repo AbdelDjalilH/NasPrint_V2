@@ -2,44 +2,84 @@
   background-color: black;
   align-items: center;
   display: flex;
-  justify-content: center;
-  gap: 2rem;
+  justify-content: space-evenly;
 }
-.links-nav {
+
+.links-nav,
+.links-nav2,
+.secret-nav {
   text-decoration: none;
   color: white;
   font-size: 1.5rem;
 }
-.list-2boutons {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  margin-left: 4rem;
-  gap: 3rem;
-}
+
 .panier-img {
   width: 3rem;
 }
-.links-nav2 {
-  text-decoration: none;
-  color: white;
-}
-/* navbar.css */
+
 .cart-container {
-  position: relative; /* Pour positionner le compteur par rapport à l'image du panier */
+  position: relative;
+  display: inline-block;
 }
 
 .cart-count {
   position: absolute;
-  top: -5px; /* Ajustez la position selon vos besoins */
-  right: -10px; /* Ajustez la position selon vos besoins */
-  background-color: red; /* Couleur de fond du cercle */
-  color: white; /* Couleur du texte */
-  border-radius: 50%; /* Pour rendre le cercle */
-  width: 20px; /* Largeur du cercle */
-  height: 20px; /* Hauteur du cercle */
+  top: -5px;
+  right: -5px;
+  background-color: white;
+  color: black;
+  font-weight: bold;
+  font-size: 12px;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px; /* Taille de la police */
+  border: 1px solid black;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.menu-container {
+  display: flex;
+  flex-direction: row;
+}
+.menu-btn {
+  height: 2.8rem;
+  width: auto;
+  display: none;
+  cursor: pointer;
+}
+.menu-items,
+.menu-open {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+}
+
+@media screen and (max-width: 830px) {
+  .menu-btn {
+    display: block;
+  }
+
+  .menu-items {
+    display: none;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+    padding: 20px;
+    position: absolute;
+    top: 70px;
+    right: 10px;
+    background: rgb(25, 55, 109);
+    background: black;
+    padding: 16px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+  }
+
+  .menu-open {
+    display: flex;
+  }
 }

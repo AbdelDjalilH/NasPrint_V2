@@ -1,17 +1,16 @@
 const router = require("express").Router();
-const { pool } = require("../database/db-connection"); // Import correct du pool
+const { pool } = require("../database/db-connection"); 
 
-// Route pour récupérer tous les cart-products
 router.get("/", async (req, res) => {
     try {
-        const [cartProducts] = await pool.execute("SELECT * FROM cart_products"); // Utilise execute()
+        const [cartProducts] = await pool.execute("SELECT * FROM cart_products"); 
         res.json(cartProducts);
     } catch (err) {
         res.status(500).json({ error: "Erreur lors de la récupération des cart-products" });
     }
 });
 
-// Route pour récupérer un cart-product par cart_id et product_id
+
 router.get("/:cart_id/:product_id", async (req, res) => {
     try {
         const { cart_id, product_id } = req.params;
@@ -22,7 +21,7 @@ router.get("/:cart_id/:product_id", async (req, res) => {
         if (cartProduct.length === 0) {
             return res.status(404).json({ message: "Cart-product non trouvé" });
         }
-        res.json(cartProduct[0]); // Retourner un seul cart-product
+        res.json(cartProduct[0]); 
     } catch (err) {
         res.status(500).json({ error: "Erreur lors de la récupération du cart-product" });
     }
@@ -36,19 +35,19 @@ router.post("/", async (req, res) => {
     }
 
     try {
-        // Vérifiez si cart_id existe
+        
         const [cart] = await pool.execute("SELECT * FROM cart WHERE id = ?", [cart_id]);
         if (cart.length === 0) {
             return res.status(404).json({ message: "Le cart_id spécifié n'existe pas" });
         }
 
-        // Vérifiez si product_id existe
+       
         const [product] = await pool.execute("SELECT * FROM products WHERE id = ?", [product_id]);
         if (product.length === 0) {
             return res.status(404).json({ message: "Le product_id spécifié n'existe pas" });
         }
 
-        // Insérez dans la base de données
+       
         await pool.execute(
             "INSERT INTO cart_products (cart_id, product_id, quantity) VALUES (?, ?, ?)",
             [cart_id, product_id, quantity]

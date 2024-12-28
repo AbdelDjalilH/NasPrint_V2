@@ -5,8 +5,8 @@ const nodemailer= require("nodemailer");
 const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-        user: process.env.EMAIL_USER, // Utiliser l'email configuré dans les variables d'environnement
-        pass: process.env.EMAIL_PASS, // Utiliser le mot de passe de l'application
+        user: process.env.EMAIL_USER, 
+        pass: process.env.EMAIL_PASS, 
     },
 });
 
@@ -19,7 +19,7 @@ const mailOptions = {
 };
 console.log("Tentative d'envoi de l'email...");
 
-// Envoyer l'email
+
 transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
         console.error("Erreur lors de l'envoi de l'e-mail :", error);

@@ -1,5 +1,3 @@
-
-// middleware/verifyToken.js
 const jwt = require("jsonwebtoken");
 
 const verifyToken = (req, res, next) => {
@@ -21,8 +19,8 @@ const verifyToken = (req, res, next) => {
         }
 
         console.log("Token valide, utilisateur décodé :", user);
-        req.user = user; // Ajoute les informations utilisateur au `req` pour un usage ultérieur
-        next(); // Passe au middleware suivant
+        req.user = user; 
+        next(); 
     });
 };
 

@@ -3,6 +3,7 @@
   display: flex;
   align-items: center;
   flex-direction: column;
+  margin-bottom: 5rem;
 }
 .info-form {
   margin-top: 3rem;
@@ -23,4 +24,10 @@
 .info-btn {
   width: 10rem;
   text-align: center;
+}
+@media screen and (max-width: 830px) {
+  .hello-title,
+  .info-title {
+    text-align: center;
+  }
 }

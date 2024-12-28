@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import "../styles/userManagement.css";
 import axios from "axios";
@@ -11,7 +12,6 @@ function UserManagement() {
     password: "",
   });
 
-  // Fonction pour récupérer les utilisateurs
   const fetchUsers = async () => {
     const token = localStorage.getItem("token");
 
@@ -25,7 +25,7 @@ function UserManagement() {
         `${import.meta.env.VITE_API_URL}/users`,
         {
           headers: {
-            Authorization: `Bearer ${token}`, // Inclure le token
+            Authorization: `Bearer ${token}`,
           },
         }
       );
@@ -41,12 +41,10 @@ function UserManagement() {
     }
   };
 
-  // Récupérer les utilisateurs au montage du composant
   useEffect(() => {
     fetchUsers();
   }, []);
 
-  // Gestion de la modification d'un utilisateur
   const handleEditClick = (user) => {
     setEditUserId(user.id);
     setEditUserData({
@@ -64,20 +62,18 @@ function UserManagement() {
     }));
   };
 
-  // Vérifie si le token est valide
   const isTokenValid = (token) => {
     const parts = token.split(".");
-    return parts.length === 3; // Doit contenir 3 parties
+    return parts.length === 3;
   };
 
-  // Soumission de la modification
   const handleEditSubmit = async () => {
     if (!editUserId) return;
-    const token = localStorage.getItem("token"); // Récupérer le token
+    const token = localStorage.getItem("token");
 
-    console.log("Token utilisé pour la requête :", token); // Pour déboguer
+    console.log("Token utilisé pour la requête :", token);
     if (!isTokenValid(token)) {
-      console.error("Le token est manquant ou mal formé."); // Message d'erreur si le format est incorrect
+      console.error("Le token est manquant ou mal formé.");
       return;
     }
 
@@ -88,7 +84,7 @@ function UserManagement() {
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`, // Ajout du token dans l'en-tête
+            Authorization: `Bearer ${token}`,
           },
         }
       );
@@ -101,13 +97,12 @@ function UserManagement() {
     }
   };
 
-  // Suppression d'un utilisateur
   const handleDelete = async (id) => {
-    const token = localStorage.getItem("token"); // Récupérer le token
+    const token = localStorage.getItem("token");
     try {
       await axios.delete(`${import.meta.env.VITE_API_URL}/users/${id}`, {
         headers: {
-          Authorization: `Bearer ${token}`, // Ajout du token dans l'en-tête
+          Authorization: `Bearer ${token}`,
         },
       });
       setUsers((prevUsers) => prevUsers.filter((user) => user.id !== id));
@@ -117,29 +112,6 @@ function UserManagement() {
     }
   };
 
-  // Création d'un nouvel utilisateur
-  const handleCreateUser = async () => {
-    const token = localStorage.getItem("token"); // Récupérer le token
-    try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/users`,
-        editUserData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`, // Ajout du token dans l'en-tête
-          },
-        }
-      );
-      console.log("Nouvel utilisateur créé:", response.data);
-      await fetchUsers(); // Mettre à jour la liste des utilisateurs après ajout
-      resetEditForm();
-    } catch (error) {
-      handleError(error);
-    }
-  };
-
-  // Fonction pour gérer les erreurs
   const handleError = (error) => {
     if (error.response) {
       console.error("Erreur API:", error.response.data);
@@ -149,7 +121,6 @@ function UserManagement() {
     }
   };
 
-  // Réinitialiser le formulaire d'édition
   const resetEditForm = () => {
     setEditUserId(null);
     setEditUserData({ username: "", email: "", password: "" });
@@ -157,6 +128,9 @@ function UserManagement() {
 
   return (
     <div className="container">
+      <Link className="retour-link" to="/admin-page">
+        Retour
+      </Link>
       <div className="wrapper">
         <h2 className="title">Gestion des utilisateurs</h2>
         <div className="grid">
@@ -208,22 +182,14 @@ function UserManagement() {
               ) : (
                 <div>
                   <h3 className="text-title">{user.username}</h3>
-                  <p className="text-black mb-1">
+                  <p>
                     <strong>Email:</strong> {user.email}
                   </p>
-                  <div className="flex justify-end mt-4">
-                    <button
-                      type="button"
-                      className="button button-green"
-                      onClick={() => handleEditClick(user)}
-                    >
+                  <div>
+                    <button type="button" onClick={() => handleEditClick(user)}>
                       Editer
                     </button>
-                    <button
-                      type="button"
-                      className="button button-gray"
-                      onClick={() => handleDelete(user.id)}
-                    >
+                    <button type="button" onClick={() => handleDelete(user.id)}>
                       Supprimer
                     </button>
                   </div>
@@ -231,40 +197,6 @@ function UserManagement() {
               )}
             </div>
           ))}
-        </div>
-        <div className="mt-4">
-          <h3 className="title">Créer un utilisateur</h3>
-          <input
-            type="text"
-            name="username"
-            value={editUserData.username}
-            onChange={handleInputChange}
-            className="input"
-            placeholder="Pseudo"
-          />
-          <input
-            type="email"
-            name="email"
-            value={editUserData.email}
-            onChange={handleInputChange}
-            className="input"
-            placeholder="Email"
-          />
-          <input
-            type="password"
-            name="password"
-            value={editUserData.password}
-            onChange={handleInputChange}
-            className="input"
-            placeholder="Mot de passe"
-          />
-          <button
-            type="button"
-            className="button button-green"
-            onClick={handleCreateUser}
-          >
-            Ajouter
-          </button>
         </div>
       </div>
     </div>

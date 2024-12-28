@@ -1,9 +1,7 @@
 const router = require("express").Router();
-const { pool } = require("../database/db-connection"); // Importation correcte du pool
+const { pool } = require("../database/db-connection"); 
 
- // Importation de Nodemailer
-
-// Route pour récupérer tous les paiements
+ 
 router.get("/", async (req, res) => {
     try {
         const [payments] = await pool.execute("SELECT * FROM payments");
@@ -13,7 +11,7 @@ router.get("/", async (req, res) => {
     }
 });
 
-// Route pour récupérer un paiement par ID
+
 router.get("/:id", async (req, res) => {
     try {
         const [payments] = await pool.execute("SELECT * FROM payments INNER JOIN users ON payments.user_id = users.id WHERE payments.id = ?", [req.params.id]);
@@ -26,11 +24,11 @@ router.get("/:id", async (req, res) => {
     }
 });
 
-// Route pour créer un nouvel paiement
+
 router.post("/", async (req, res) => {
     const { rising, payment_date, payment_mean, payment_status, user_id } = req.body;
 
-    // Vérifier que tous les champs, y compris user_id, sont présents
+    
     if (!rising || !payment_date || !payment_mean || !payment_status || !user_id) {
         return res.status(400).json({ message: "Tous les champs sont requis, y compris user_id" });
     }
@@ -43,12 +41,12 @@ router.post("/", async (req, res) => {
         res.status(201).json({ message: "paiement créé", id: result.insertId });
        
     } catch (err) {
-        console.error("Erreur lors de la création du paiement :", err);  // Affiche l'erreur dans la console
+        console.error("Erreur lors de la création du paiement :", err);  
         res.status(500).json({ error: "Erreur lors de la création du paiement" });
     }
 });
 
-// Route pour mettre à jour un paiement
+
 router.put("/:id", async (req, res) => {
     const { rising, payment_date, payment_mean, payment_status } = req.body;
 
@@ -80,7 +78,7 @@ router.put("/:id", async (req, res) => {
     }
 });
 
-// Route pour supprimer un paiement
+
 router.delete("/:id", async (req, res) => {
     try {
         const [payments] = await pool.execute("SELECT * FROM payments WHERE id = ?", [req.params.id]);

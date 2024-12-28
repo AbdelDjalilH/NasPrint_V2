@@ -2,15 +2,15 @@ import { useEffect, useState } from "react";
 import { useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import "../styles/checkoutForm.css"; // Assurez-vous d'avoir un fichier CSS pour styliser le formulaire
+import "../styles/checkoutForm.css";
 
 const CheckoutForm = ({ totalRising, userId }) => {
   const stripe = useStripe();
   const elements = useElements();
   const navigate = useNavigate();
   const [clientSecret, setClientSecret] = useState("");
-  const [errorMessage, setErrorMessage] = useState(""); // Pour afficher les erreurs
-  const [isLoading, setIsLoading] = useState(false); // Gestion du chargement
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const createPaymentIntent = async () => {
@@ -18,8 +18,8 @@ const CheckoutForm = ({ totalRising, userId }) => {
         const response = await axios.post(
           `${import.meta.env.VITE_API_URL}/create-payment-intent`,
           {
-            amount: totalRising * 100, // Montant en centimes
-            user_id: userId, // Ajoutez `user_id` ici
+            amount: totalRising * 100,
+            user_id: userId,
           }
         );
         setClientSecret(response.data.clientSecret);
@@ -41,8 +41,8 @@ const CheckoutForm = ({ totalRising, userId }) => {
       return;
     }
 
-    setIsLoading(true); // Démarre le chargement
-    setErrorMessage(""); // Réinitialise les messages d'erreur
+    setIsLoading(true);
+    setErrorMessage("");
 
     try {
       const { error, paymentIntent } = await stripe.confirmCardPayment(
@@ -69,11 +69,10 @@ const CheckoutForm = ({ totalRising, userId }) => {
         "Une erreur inattendue s'est produite. Veuillez réessayer."
       );
     } finally {
-      setIsLoading(false); // Arrête le chargement
+      setIsLoading(false);
     }
   };
 
-  // Options de style pour le CardElement
   const cardStyle = {
     style: {
       base: {
@@ -101,14 +100,12 @@ const CheckoutForm = ({ totalRising, userId }) => {
         />
       </div>
 
-      {/* Affichage des erreurs ou messages d'état */}
       {errorMessage && (
         <div className="error-message" aria-live="polite">
           {errorMessage}
         </div>
       )}
 
-      {/* Bouton de paiement avec gestion du chargement */}
       <button
         className="payment-btn"
         type="submit"
