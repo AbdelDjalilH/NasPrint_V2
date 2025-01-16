@@ -3,10 +3,10 @@ const argon2 = require("argon2");
 const mysql = require("mysql2/promise");
 
 const pool = mysql.createPool({
-    host: "localhost",
-    user: "adja",
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
+    host: "localhost" || process.env.MYSQL_HOST,
+    user: "adja" || process.env.MYSQL_USER,
+    password: process.env.DB_PASSWORD || process.env.MYSQL_PASSWORD,
+    database: process.env.DB_NAME || process.env.MYSQL_DATABASE,
 });
 
 async function addUserOrUpdate(email, username, password) {
